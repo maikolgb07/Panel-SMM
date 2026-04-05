@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS SMM — Panel Profesional de Élite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050508;
+    --surface: #0c0c14;
+    --surface2: #13131f;
+    --border: rgba(120,100,255,0.12);
+    --accent: #7c5cfc;
+    --accent2: #00e5ff;
+    --accent3: #ff3d6e;
+    --text: #e8e6f0;
+    --muted: #6b6880;
+    --glow: rgba(124,92,252,0.35);
+    --glow2: rgba(0,229,255,0.2);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--accent2);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, background 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(124,92,252,0.6);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.18s ease;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.45;
+  }
+
+  /* GRID BG */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(120,100,255,0.04) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(120,100,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 500;
+    padding: 18px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: rgba(5,5,8,0.85);
+    backdrop-filter: blur(20px);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: -0.02em;
+    color: #fff;
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex; gap: 36px; list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    display: flex; gap: 12px; align-items: center;
+  }
+  .btn-ghost {
+    padding: 8px 20px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: none;
+    transition: border-color 0.2s, background 0.2s;
+    text-decoration: none;
+  }
+  .btn-ghost:hover { border-color: var(--accent); background: rgba(124,92,252,0.08); }
+
+  .btn-primary {
+    padding: 8px 22px;
+    border: none;
+    border-radius: 6px;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 60%);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 30px rgba(124,92,252,0.45);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+  }
+  .orb-1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(124,92,252,0.18) 0%, transparent 70%);
+    top: -100px; left: 50%;
+    transform: translateX(-50%);
+    animation: float 8s ease-in-out infinite;
+  }
+  .orb-2 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(0,229,255,0.12) 0%, transparent 70%);
+    bottom: 100px; right: 10%;
+    animation: float 11s ease-in-out infinite reverse;
+  }
+  .orb-3 {
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(255,61,110,0.1) 0%, transparent 70%);
+    top: 200px; left: 5%;
+    animation: float 9s ease-in-out infinite 2s;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) translateX(-50%); }
+    50% { transform: translateY(-30px) translateX(-50%); }
+  }
+  @keyframes float-free {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-25px); }
+  }
+  .orb-2, .orb-3 { animation-name: float-free; }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 16px;
+    border: 1px solid rgba(0,229,255,0.25);
+    border-radius: 100px;
+    background: rgba(0,229,255,0.05);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 8px var(--accent2);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 7vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    color: #fff;
+    max-width: 900px;
+    animation: fadeUp 0.6s ease 0.1s both;
+  }
+  .hero h1 .line-accent { color: var(--accent); }
+  .hero h1 .line-cyan { color: var(--accent2); }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--muted);
+    max-width: 540px;
+    line-height: 1.7;
+    margin-top: 24px;
+    font-weight: 300;
+    animation: fadeUp 0.6s ease 0.2s both;
+  }
+
+  .hero-actions {
+    display: flex; gap: 14px; margin-top: 40px;
+    animation: fadeUp 0.6s ease 0.3s both;
+    flex-wrap: wrap; justify-content: center;
+  }
+
+  .btn-large {
+    padding: 14px 36px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 8px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* LIVE STATS TICKER */
+  .stats-ticker {
+    width: 100%;
+    margin-top: 80px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    overflow: hidden;
+    animation: fadeUp 0.6s ease 0.4s both;
+  }
+  .ticker-inner {
+    display: flex; gap: 60px;
+    animation: ticker 30s linear infinite;
+    white-space: nowrap;
+    width: max-content;
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .ticker-item {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .ticker-item strong { color: var(--accent2); }
+  .ticker-sep { color: rgba(255,255,255,0.1); }
+
+  /* STATS GRID */
+  .stats-section {
+    position: relative; z-index: 1;
+    padding: 80px 40px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--border);
+  }
+  .stat-card {
+    background: var(--surface);
+    padding: 40px 32px;
+    text-align: center;
+    transition: background 0.2s;
+  }
+  .stat-card:hover { background: var(--surface2); }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.03em;
+  }
+  .stat-num span { color: var(--accent); }
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  /* FEATURES */
+  .section {
+    position: relative; z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 40px;
+  }
+
+  .section-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .section-tag::before {
+    content: '';
+    display: block;
+    width: 20px; height: 1px;
+    background: var(--accent);
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    letter-spacing: -0.03em;
+    color: #fff;
+    line-height: 1.05;
+    max-width: 600px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 60px;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    cursor: none;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .feature-card:hover {
+    border-color: rgba(124,92,252,0.35);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 40px rgba(124,92,252,0.08);
+  }
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    background: rgba(124,92,252,0.1);
+    border: 1px solid rgba(124,92,252,0.2);
+  }
+  .feature-icon.cyan { background: rgba(0,229,255,0.08); border-color: rgba(0,229,255,0.2); }
+  .feature-icon.red { background: rgba(255,61,110,0.08); border-color: rgba(255,61,110,0.2); }
+
+  .feature-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .feature-desc {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .feature-card.large {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+
+  /* SERVICES TABLE */
+  .services-wrap {
+    margin-top: 60px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .services-header {
+    display: grid;
+    grid-template-columns: 1fr 140px 140px 120px;
+    padding: 14px 24px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .service-row {
+    display: grid;
+    grid-template-columns: 1fr 140px 140px 120px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    background: var(--surface);
+    transition: background 0.15s;
+    cursor: none;
+  }
+  .service-row:last-child { border-bottom: none; }
+  .service-row:hover { background: var(--surface2); }
+  .service-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+  .service-platform {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.8rem; color: var(--muted);
+  }
+  .platform-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+  .pd-ig { background: #e1306c; }
+  .pd-yt { background: #ff0000; }
+  .pd-tt { background: #69c9d0; }
+  .pd-fb { background: #1877f2; }
+  .pd-tw { background: #1da1f2; }
+  .service-price {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent2);
+  }
+  .service-badge {
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .badge-fast { background: rgba(0,229,255,0.1); color: var(--accent2); }
+  .badge-pop { background: rgba(124,92,252,0.15); color: var(--accent); }
+  .badge-new { background: rgba(255,61,110,0.1); color: var(--accent3); }
+
+  /* PAYMENT */
+  .payment-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-top: 50px;
+  }
+  .pay-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 16px;
+    text-align: center;
+    background: var(--surface);
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: none;
+  }
+  .pay-card:hover {
+    border-color: rgba(124,92,252,0.35);
+    transform: translateY(-3px);
+  }
+  .pay-icon { font-size: 1.8rem; margin-bottom: 10px; }
+  .pay-name {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* FLOW */
+  .flow-steps {
+    display: flex;
+    gap: 0;
+    margin-top: 60px;
+    position: relative;
+  }
+  .flow-steps::before {
+    content: '';
+    position: absolute;
+    top: 28px; left: 28px; right: 28px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent));
+    z-index: 0;
+  }
+  .flow-step {
+    flex: 1;
+    text-align: center;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+  }
+  .flow-num {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin: 0 auto 20px;
+    box-shadow: 0 0 20px rgba(124,92,252,0.3);
+  }
+  .flow-step:nth-child(2) .flow-num { border-color: var(--accent2); color: var(--accent2); box-shadow: 0 0 20px rgba(0,229,255,0.25); }
+  .flow-step:nth-child(3) .flow-num { border-color: var(--accent3); color: var(--accent3); box-shadow: 0 0 20px rgba(255,61,110,0.25); }
+  .flow-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .flow-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* MEMBERSHIP */
+  .membership-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 60px;
+  }
+  .member-card {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 36px 28px;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.3s;
+    cursor: none;
+  }
+  .member-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+  }
+  .member-card.featured {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, rgba(124,92,252,0.08), var(--surface));
+  }
+  .member-card.featured::after {
+    content: 'POPULAR';
+    position: absolute; top: 16px; right: -20px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 4px 32px;
+    transform: rotate(45deg);
+  }
+  .member-tier {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .member-card.featured .member-tier { color: var(--accent2); }
+  .member-card:last-child .member-tier { color: var(--accent3); }
+  .member-price {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2.4rem;
+    color: #fff;
+    letter-spacing: -0.03em;
+    margin-bottom: 4px;
+  }
+  .member-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .member-perks { list-style: none; }
+  .member-perks li {
+    font-size: 0.85rem;
+    color: var(--text);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .member-perks li::before { content: '✦'; color: var(--accent); font-size: 0.6rem; }
+  .member-card.featured .member-perks li::before { color: var(--accent2); }
+  .member-card:last-child .member-perks li::before { color: var(--accent3); }
+
+  /* FOOTER */
+  footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border);
+    background: rgba(5,5,8,0.9);
+    padding: 60px 40px 30px;
+    max-width: 100%;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 50px;
+  }
+  .footer-brand p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-top: 14px;
+    max-width: 260px;
+  }
+  .footer-col h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #fff;
+    letter-spacing: 0.05em;
+    margin-bottom: 18px;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 10px; }
+  .footer-col a {
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--text); }
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+  }
+  .footer-status {
+    display: flex; align-items: center; gap: 8px;
+    color: #22c55e;
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 6px #22c55e;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    position: relative; z-index: 1;
+  }
+
+  /* SCROLL ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .stats-section { grid-template-columns: repeat(2,1fr); }
+    .features-grid { grid-template-columns: 1fr; }
+    .feature-card.large { grid-column: span 1; grid-template-columns: 1fr; }
+    .payment-grid { grid-template-columns: repeat(3,1fr); }
+    .membership-grid { grid-template-columns: 1fr; }
+    .flow-steps { flex-direction: column; }
+    .flow-steps::before { display: none; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .services-header, .service-row { grid-template-columns: 1fr 100px; }
+    .services-header span:nth-child(3),
+    .services-header span:nth-child(4),
+    .service-row > *:nth-child(3),
+    .service-row > *:nth-child(4) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">NEX<span>US</span></a>
+  <ul class="nav-links">
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#pagos">Pagos</a></li>
+    <li><a href="#planes">Planes</a></li>
+    <li><a href="#api">API</a></li>
+    <li><a href="#soporte">Soporte</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="#" class="btn-ghost">Iniciar sesión</a>
+    <a href="#" class="btn-primary">Registrarse gratis</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-orb orb-1"></div>
+  <div class="hero-orb orb-2"></div>
+  <div class="hero-orb orb-3"></div>
+
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Panel SMM Profesional de Élite — v4.2 ONLINE
+  </div>
+
+  <h1>
+    Crecimiento en<br>
+    redes sociales<br>
+    <span class="line-accent">totalmente</span> <span class="line-cyan">automatizado</span>
+  </h1>
+
+  <p class="hero-sub">
+    API multiveedor, pagos globales, reposición automática y soporte 24/7. La infraestructura que necesitan los resellers serios.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#" class="btn-primary btn-large">Comenzar ahora →</a>
+    <a href="#servicios" class="btn-ghost btn-large">Ver servicios</a>
+  </div>
+
+  <!-- LIVE TICKER -->
+  <div class="stats-ticker">
+    <div class="ticker-inner" id="ticker">
+      <span class="ticker-item">📦 Pedidos hoy <strong id="ordersToday">47,392</strong></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">⚡ Tiempo medio <strong>1m 24s</strong></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">✅ Tasa completado <strong>99.4%</strong></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">🌐 Usuarios activos <strong>12,847</strong></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">💳 Depósitos hoy <strong>$84,210</strong></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">🔄 API uptime <strong>99.98%</strong></span>
+      <span class="ticker-sep">·</span>
+      <!-- Duplicate for seamless loop -->
+      <span class="ticker-item">📦 Pedidos hoy <strong>47,392</strong></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">⚡ Tiempo medio <strong>1m 24s</strong></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">✅ Tasa completado <strong>99.4%</strong></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">🌐 Usuarios activos <strong>12,847</strong></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">💳 Depósitos hoy <strong>$84,210</strong></span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">🔄 API uptime <strong>99.98%</strong></span>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="divider"></div>
+<div style="padding: 60px 40px; position:relative;z-index:1;">
+  <div class="stats-section reveal">
+    <div class="stat-card">
+      <div class="stat-num" data-target="2400000">0<span>+</span></div>
+      <div class="stat-label">Pedidos ejecutados</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" data-target="58000">0<span>+</span></div>
+      <div class="stat-label">Usuarios registrados</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" data-target="380">0<span>+</span></div>
+      <div class="stat-label">Servicios disponibles</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" data-target="99.98">0<span>%</span></div>
+      <div class="stat-label">Uptime garantizado</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="api">
+  <div class="reveal">
+    <div class="section-tag">Infraestructura</div>
+    <h2 class="section-title">Tecnología que opera sin descanso</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">API Multiveedor</div>
+      <div class="feature-desc">Conexión directa con proveedores líderes. Ejecución de órdenes en segundos con failover automático para máxima disponibilidad.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon cyan">🔄</div>
+      <div class="feature-title">Auto-Refill 24/7</div>
+      <div class="feature-desc">Sistema que detecta caídas en los servicios y solicita recarga automática al proveedor sin ninguna intervención humana.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon red">🛡️</div>
+      <div class="feature-title">Anti-DDoS + SSL 256bit</div>
+      <div class="feature-desc">Servidor VPS dedicado con protección enterprise, certificados SSL y uptime del 99.98% garantizado por SLA.</div>
+    </div>
+    <div class="feature-card large reveal">
+      <div>
+        <div class="feature-icon">⏱️</div>
+        <div class="feature-title">Cronjobs cada 60 segundos</div>
+        <div class="feature-desc">Tareas automáticas de sincronización de estados, actualización de precios desde proveedor y verificación de pagos en pasarelas. Todo funciona solo.</div>
+      </div>
+      <div style="background: var(--surface2); border-radius: 8px; padding: 16px; border: 1px solid var(--border);">
+        <div style="font-family:'Space Mono',monospace; font-size:0.72rem; color: var(--accent2); line-height:1.9;">
+          <div style="color:var(--muted)">// cron.schedule</div>
+          <div><span style="color:#ff79c6">every</span>(60, <span style="color:#f1fa8c">'seconds'</span>)</div>
+          <div>&nbsp;&nbsp;.run(<span style="color:#50fa7b">syncOrders</span>)</div>
+          <div>&nbsp;&nbsp;.run(<span style="color:#50fa7b">updatePrices</span>)</div>
+          <div>&nbsp;&nbsp;.run(<span style="color:#50fa7b">verifyPayments</span>)</div>
+          <div>&nbsp;&nbsp;.run(<span style="color:#50fa7b">autoRefill</span>)</div>
+        </div>
+      </div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon cyan">💸</div>
+      <div class="feature-title">Reembolso Automático</div>
+      <div class="feature-desc">Si el proveedor marca un error, el saldo se devuelve al usuario al instante. Cero tickets, cero fricciones.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SERVICES TABLE -->
+<section class="section" id="servicios">
+  <div class="reveal">
+    <div class="section-tag">Catálogo</div>
+    <h2 class="section-title">Servicios disponibles</h2>
+  </div>
+  <div class="services-wrap reveal">
+    <div class="services-header">
+      <span>Servicio</span>
+      <span>Plataforma</span>
+      <span>Precio / 1K</span>
+      <span>Estado</span>
+    </div>
+    <div class="service-row">
+      <div class="service-name">Seguidores Reales Orgánicos</div>
+      <div class="service-platform"><span class="platform-dot pd-ig"></span> Instagram</div>
+      <div class="service-price">$0.89</div>
+      <div><span class="service-badge badge-fast">Rápido</span></div>
+    </div>
+    <div class="service-row">
+      <div class="service-name">Visualizaciones de Video</div>
+      <div class="service-platform"><span class="platform-dot pd-yt"></span> YouTube</div>
+      <div class="service-price">$1.20</div>
+      <div><span class="service-badge badge-pop">Popular</span></div>
+    </div>
+    <div class="service-row">
+      <div class="service-name">Seguidores TikTok Activos</div>
+      <div class="service-platform"><span class="platform-dot pd-tt"></span> TikTok</div>
+      <div class="service-price">$0.65</div>
+      <div><span class="service-badge badge-fast">Rápido</span></div>
+    </div>
+    <div class="service-row">
+      <div class="service-name">Likes Instagram Premium</div>
+      <div class="service-platform"><span class="platform-dot pd-ig"></span> Instagram</div>
+      <div class="service-price">$0.30</div>
+      <div><span class="service-badge badge-pop">Popular</span></div>
+    </div>
+    <div class="service-row">
+      <div class="service-name">Likes en Página Facebook</div>
+      <div class="service-platform"><span class="platform-dot pd-fb"></span> Facebook</div>
+      <div class="service-price">$0.45</div>
+      <div><span class="service-badge badge-new">Nuevo</span></div>
+    </div>
+    <div class="service-row">
+      <div class="service-name">Suscriptores YouTube Reales</div>
+      <div class="service-platform"><span class="platform-dot pd-yt"></span> YouTube</div>
+      <div class="service-price">$2.10</div>
+      <div><span class="service-badge badge-new">Nuevo</span></div>
+    </div>
+    <div class="service-row">
+      <div class="service-name">Comentarios Personalizados</div>
+      <div class="service-platform"><span class="platform-dot pd-ig"></span> Instagram</div>
+      <div class="service-price">$3.50</div>
+      <div><span class="service-badge badge-fast">Rápido</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PAYMENT -->
+<section class="section" id="pagos">
+  <div class="reveal">
+    <div class="section-tag">Pagos</div>
+    <h2 class="section-title">Ecosistema de pagos global</h2>
+  </div>
+  <div class="payment-grid reveal">
+    <div class="pay-card">
+      <div class="pay-icon">💳</div>
+      <div class="pay-name">Stripe</div>
+    </div>
+    <div class="pay-card">
+      <div class="pay-icon">🅿️</div>
+      <div class="pay-name">PayPal</div>
+    </div>
+    <div class="pay-card">
+      <div class="pay-icon">₿</div>
+      <div class="pay-name">Bitcoin / Crypto</div>
+    </div>
+    <div class="pay-card">
+      <div class="pay-icon">🔶</div>
+      <div class="pay-name">Binance Pay</div>
+    </div>
+    <div class="pay-card">
+      <div class="pay-icon">💼</div>
+      <div class="pay-name">Payeer</div>
+    </div>
+  </div>
+  <p style="margin-top:20px;font-size:0.8rem;color:var(--muted);text-align:center;">Acreditación automática en menos de 2 minutos · SSL 256-bit en todas las transacciones</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- FLOW -->
+<section class="section">
+  <div class="reveal">
+    <div class="section-tag">Proceso</div>
+    <h2 class="section-title">Tres pasos. Cero complicaciones.</h2>
+  </div>
+  <div class="flow-steps reveal">
+    <div class="flow-step">
+      <div class="flow-num">01</div>
+      <div class="flow-title">Registro y Depósito</div>
+      <div class="flow-desc">El usuario se registra, paga y el saldo aparece en su cuenta en menos de 2 minutos. Sin demoras.</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">02</div>
+      <div class="flow-title">Ejecución de Orden</div>
+      <div class="flow-desc">Compra, la API envía la orden al proveedor y el servicio comienza a entregarse de forma inmediata.</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">03</div>
+      <div class="flow-title">Finalización</div>
+      <div class="flow-desc">El sistema detecta que terminó, cambia el estado a "Completado" y descuenta el saldo correctamente.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MEMBERSHIP -->
+<section class="section" id="planes">
+  <div class="reveal">
+    <div class="section-tag">Membresías</div>
+    <h2 class="section-title">Niveles pensados para escalar</h2>
+  </div>
+  <div class="membership-grid">
+    <div class="member-card reveal">
+      <div class="member-tier">Reseller</div>
+      <div class="member-price">$0.00</div>
+      <div class="member-desc">Para quienes comienzan. Acceso completo al catálogo desde el primer día.</div>
+      <ul class="member-perks">
+        <li>Acceso a 380+ servicios</li>
+        <li>API pública incluida</li>
+        <li>Panel de afiliados 5%</li>
+        <li>Soporte por tickets</li>
+        <li>Sin costo mensual</li>
+      </ul>
+    </div>
+    <div class="member-card featured reveal">
+      <div class="member-tier">VIP</div>
+      <div class="member-price">-15%</div>
+      <div class="member-desc">Descuento automático en todos los servicios al superar $500 en volumen.</div>
+      <ul class="member-perks">
+        <li>15% descuento global</li>
+        <li>Auto-refill prioritario</li>
+        <li>Comisión afiliados 10%</li>
+        <li>Soporte prioritario 24h</li>
+        <li>Precios especiales API</li>
+      </ul>
+    </div>
+    <div class="member-card reveal">
+      <div class="member-tier">Master</div>
+      <div class="member-price">-30%</div>
+      <div class="member-desc">Para revendedores de alto volumen. Acceso a precios de proveedor directo.</div>
+      <ul class="member-perks">
+        <li>30% descuento global</li>
+        <li>Gestor de cuenta dedicado</li>
+        <li>Comisión afiliados 20%</li>
+        <li>SLA de uptime garantizado</li>
+        <li>Acceso a API whitelabel</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo" style="font-size:1.6rem">NEX<span>US</span></a>
+        <p>Panel SMM profesional de élite. Automatización total, pagos globales y soporte en tiempo real para resellers serios.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Plataforma</h4>
+        <ul>
+          <li><a href="#">Servicios</a></li>
+          <li><a href="#">Precios API</a></li>
+          <li><a href="#">Membresías</a></li>
+          <li><a href="#">Afiliados</a></li>
+          <li><a href="#">Estado del sistema</a></li>
+        </ul>
+      </div>
+      <div class="footer-col" id="soporte">
+        <h4>Soporte</h4>
+        <ul>
+          <li><a href="#">Abrir ticket</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Documentación API</a></li>
+          <li><a href="#">Tutoriales</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Términos de Servicio</a></li>
+          <li><a href="#">Política de Privacidad</a></li>
+          <li><a href="#">Política de Reembolso</a></li>
+          <li><a href="#">Garantías</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 NEXUS SMM Panel · Todos los derechos reservados</div>
+      <div class="footer-status">
+        <span class="status-dot"></span>
+        Todos los sistemas operativos
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(() => {
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
+    }, 60);
+  });
+
+  // SCROLL REVEAL
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  reveals.forEach(r => observer.observe(r));
+
+  // COUNTER ANIMATION
+  function animateCounter(el, target, suffix) {
+    const isDecimal = target % 1 !== 0;
+    const duration = 2000;
+    const start = performance.now();
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const value = isDecimal ? (target * eased).toFixed(2) : Math.floor(target * eased).toLocaleString();
+      el.innerHTML = value + '<span>' + suffix + '</span>';
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
+  const statObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const el = e.target;
+        const target = parseFloat(el.dataset.target);
+        const suffix = el.querySelector('span').textContent;
+        animateCounter(el, target, suffix);
+        statObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('[data-target]').forEach(el => statObserver.observe(el));
+
+  // LIVE ORDER COUNT
+  let orders = 47392;
+  setInterval(() => {
+    orders += Math.floor(Math.random() * 3);
+    const el = document.getElementById('ordersToday');
+    if (el) el.textContent = orders.toLocaleString();
+  }, 3000);
+</script>
+</body>
+</html>
