@@ -1,1171 +1,1704 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEXUS SMM — Panel Profesional de Élite</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<title>SMMBoost Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <style>
-  :root {
-    --bg: #050508;
-    --surface: #0c0c14;
-    --surface2: #13131f;
-    --border: rgba(120,100,255,0.12);
-    --accent: #7c5cfc;
-    --accent2: #00e5ff;
-    --accent3: #ff3d6e;
-    --text: #e8e6f0;
-    --muted: #6b6880;
-    --glow: rgba(124,92,252,0.35);
-    --glow2: rgba(0,229,255,0.2);
-  }
+:root{--bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a26;--border:rgba(255,255,255,0.08);--accent:#7c3aed;--accent2:#06b6d4;--accent3:#10b981;--gold:#f59e0b;--wa:#25d366;--text:#f0f0f8;--muted:#8888aa;--radius:16px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Syne',sans-serif}
+.orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+.orb1{width:500px;height:500px;background:rgba(124,58,237,0.12);top:-100px;right:-100px}
+.orb2{width:400px;height:400px;background:rgba(6,182,212,0.08);bottom:-50px;left:-100px}
+.container{max-width:900px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
+.view{display:none;animation:fadeIn 0.3s ease}
+.view.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* AUTH GATE */
+.auth-gate{position:fixed;inset:0;background:var(--bg);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:36px 32px;max-width:400px;width:100%;text-align:center;box-shadow:0 0 80px rgba(124,58,237,0.15)}
+.auth-logo{font-size:48px;margin-bottom:12px}
+.auth-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;margin-bottom:6px;background:linear-gradient(135deg,#fff 0%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.auth-sub{color:var(--muted);font-size:13px;margin-bottom:24px}
+.auth-tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--bg);border-radius:10px;padding:4px}
+.auth-tab{flex:1;padding:9px;border:none;border-radius:8px;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;cursor:pointer;transition:all 0.2s}
+.auth-tab.active{background:var(--accent);color:#fff}
+.auth-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;margin-bottom:10px}
+.auth-input:focus{border-color:var(--accent)}
+.auth-btn{width:100%;padding:14px;background:var(--accent);border:none;border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:all 0.2s;margin-top:6px}
+.auth-btn:hover{background:#6d28d9;box-shadow:0 0 30px rgba(124,58,237,0.4)}
+.auth-err{color:#f87171;font-size:13px;margin-top:10px;min-height:18px}
+.auth-note{color:var(--muted);font-size:11px;margin-top:14px;line-height:1.6}
 
-  html { scroll-behavior: smooth; }
+/* HEADER */
+header{padding:36px 0 16px;text-align:center}
+.profile-pic{width:88px;height:88px;border-radius:50%;border:3px solid var(--accent);box-shadow:0 0 30px rgba(124,58,237,0.4);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:34px;overflow:hidden;margin:0 auto 14px}
+.profile-pic img{width:100%;height:100%;object-fit:cover;display:none}
+.site-name{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;background:linear-gradient(135deg,#fff 0%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.site-tagline{color:var(--muted);font-size:13px;margin-top:4px}
+.aff-banner{background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(6,182,212,0.1));border:1px solid rgba(124,58,237,0.3);border-radius:10px;padding:8px 16px;margin:12px auto;max-width:400px;font-size:12px;color:var(--accent2);display:none}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    overflow-x: hidden;
-    cursor: none;
-  }
+/* CREDIT BALANCE BAR */
+.balance-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px auto;flex-wrap:wrap}
+.credit-chip{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05));border:1px solid rgba(245,158,11,0.35);border-radius:100px;padding:7px 16px;font-size:14px;font-weight:700;color:var(--gold)}
+.credit-chip .coin{font-size:16px}
+.user-chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:6px 14px;font-size:12px;color:var(--muted)}
+.user-chip strong{color:var(--text)}
+.logout-chip{padding:6px 12px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;transition:all 0.2s}
+.logout-chip:hover{border-color:var(--accent);color:var(--text)}
 
-  /* CUSTOM CURSOR */
-  .cursor {
-    width: 10px; height: 10px;
-    background: var(--accent2);
-    border-radius: 50%;
-    position: fixed; top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s, background 0.2s;
-    mix-blend-mode: difference;
-  }
-  .cursor-ring {
-    width: 36px; height: 36px;
-    border: 1px solid rgba(124,92,252,0.6);
-    border-radius: 50%;
-    position: fixed; top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%, -50%);
-    transition: all 0.18s ease;
-  }
+/* NAV */
+nav{display:flex;justify-content:center;gap:8px;margin:16px 0;flex-wrap:wrap}
+.nav-btn{padding:9px 18px;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.nav-btn:hover,.nav-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 20px rgba(124,58,237,0.3)}
 
-  /* NOISE OVERLAY */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1000;
-    opacity: 0.45;
-  }
+/* PROMO */
+.promo-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:550;display:none;align-items:center;justify-content:center;padding:20px}
+.promo-overlay.open{display:flex}
+.promo-box{background:var(--surface);border:2px solid var(--accent);border-radius:24px;padding:36px 28px;max-width:400px;width:100%;text-align:center;position:relative;box-shadow:0 0 80px rgba(124,58,237,0.4);animation:promoIn 0.4s cubic-bezier(0.34,1.56,0.64,1)}
+@keyframes promoIn{from{transform:scale(0.8);opacity:0}to{transform:scale(1);opacity:1}}
+.promo-close{position:absolute;top:14px;right:16px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:16px;cursor:pointer;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.promo-badge{display:inline-block;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:10px;font-weight:800;padding:4px 14px;border-radius:100px;letter-spacing:3px;margin-bottom:14px;text-transform:uppercase}
+.promo-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:10px;line-height:1.2}
+.promo-desc{color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:22px}
+.promo-cta{padding:13px 24px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:100px;color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;cursor:pointer;width:100%}
 
-  /* GRID BG */
-  body::after {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: linear-gradient(rgba(120,100,255,0.04) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(120,100,255,0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-    pointer-events: none;
-    z-index: 0;
-  }
+/* STORE */
+.section-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:18px;text-align:center}
+.platforms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:28px}
+.platform-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 14px;text-align:center;cursor:pointer;transition:all 0.25s}
+.platform-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,0.3);border-color:rgba(124,58,237,0.4)}
+.platform-icon{margin-bottom:8px;display:flex;justify-content:center;align-items:center;height:46px}
+.platform-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+.breadcrumb{display:flex;align-items:center;gap:8px;margin-bottom:20px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.breadcrumb span{cursor:pointer;transition:color 0.2s}
+.breadcrumb span:hover{color:var(--text)}
+.breadcrumb .sep{opacity:0.4}
+.breadcrumb .current{color:var(--text);font-weight:600}
+.categories-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+.cat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;text-align:center;cursor:pointer;transition:all 0.25s}
+.cat-card:hover{border-color:var(--accent2);background:rgba(6,182,212,0.05);transform:translateY(-2px)}
+.cat-icon{font-size:26px;margin-bottom:6px}
+.cat-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:700}
+.products-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.product-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;transition:all 0.2s;position:relative}
+.product-card:hover{background:var(--surface2)}
+.product-info{flex:1;min-width:0}
+.product-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.product-desc{font-size:11px;color:var(--muted)}
+.product-qty{font-size:11px;color:var(--accent2);margin-top:3px}
+.product-right{text-align:right;flex-shrink:0}
+.credit-price{display:flex;align-items:center;justify-content:flex-end;gap:4px;font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--gold)}
+.credit-price small{font-size:11px;color:var(--muted);font-weight:400;font-family:'DM Sans',sans-serif}
+.buy-btn{margin-top:7px;padding:8px 14px;background:var(--accent);border:none;border-radius:100px;color:#fff;font-family:'DM Sans',sans-serif;font-weight:600;font-size:12px;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.buy-btn:hover{background:#6d28d9;box-shadow:0 4px 16px rgba(124,58,237,0.35)}
+.buy-btn.insufficient{background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);cursor:not-allowed}
+.buy-btn.insufficient:hover{box-shadow:none;background:rgba(239,68,68,0.15)}
 
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0;
-    z-index: 500;
-    padding: 18px 40px;
-    display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-    background: rgba(5,5,8,0.85);
-    backdrop-filter: blur(20px);
-  }
+/* TAGS */
+.tag{display:inline-block;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:0.5px}
+.tag-promo{background:rgba(239,68,68,0.2);color:#f87171;border:1px solid rgba(239,68,68,0.3)}
+.tag-hot{background:rgba(251,146,60,0.2);color:#fb923c;border:1px solid rgba(251,146,60,0.3)}
+.tag-rec{background:rgba(16,185,129,0.2);color:#34d399;border:1px solid rgba(16,185,129,0.3)}
+.tag-new{background:rgba(6,182,212,0.2);color:#22d3ee;border:1px solid rgba(6,182,212,0.3)}
+.tag-custom{background:rgba(124,58,237,0.2);color:#a78bfa;border:1px solid rgba(124,58,237,0.3)}
 
-  .nav-logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 1.4rem;
-    letter-spacing: -0.02em;
-    color: #fff;
-    text-decoration: none;
-  }
-  .nav-logo span { color: var(--accent); }
+/* INSUFFICIENT ALERT */
+.insuf-alert{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.insuf-alert p{font-size:13px;color:var(--muted);flex:1}
+.wa-mini-btn{padding:8px 14px;background:var(--wa);border:none;border-radius:100px;color:#fff;font-family:'DM Sans',sans-serif;font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
 
-  .nav-links {
-    display: flex; gap: 36px; list-style: none;
-  }
-  .nav-links a {
-    font-size: 0.82rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--text); }
+/* PANELS */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:26px;margin-bottom:18px}
+.panel h3{font-size:17px;margin-bottom:18px}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:20px}
+.stat-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.stat-value{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--accent2)}
+.stat-value.gold{color:var(--gold)}
+.stat-label{font-size:10px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:1px}
+.ref-link-box{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.ref-link-box input{flex:1;background:none;border:none;color:var(--accent2);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;min-width:0}
+.copy-btn{padding:7px 12px;background:var(--accent);border:none;border-radius:7px;color:#fff;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.input-field{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;margin-bottom:12px}
+.input-field:focus{border-color:var(--accent)}
+select.input-field{appearance:none}
+.btn{padding:11px 18px;border-radius:10px;border:none;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;cursor:pointer;transition:all 0.2s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#6d28d9}
+.btn-gold{background:rgba(245,158,11,0.15);color:var(--gold);border:1px solid rgba(245,158,11,0.3)}
+.btn-gold:hover{background:rgba(245,158,11,0.25)}
+.btn-success{background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3)}
+.btn-success:hover{background:rgba(16,185,129,0.25)}
+.btn-danger{background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3)}
+.btn-danger:hover{background:rgba(239,68,68,0.25)}
+.btn-sm{padding:7px 13px;font-size:12px;border-radius:8px}
+.badge{display:inline-block;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:600}
+.badge-green{background:rgba(16,185,129,0.15);color:var(--accent3)}
+.badge-gold{background:rgba(245,158,11,0.15);color:var(--gold)}
+.badge-yellow{background:rgba(234,179,8,0.15);color:#facc15}
+.badge-red{background:rgba(239,68,68,0.15);color:#f87171}
+.lbl{font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:1px;display:block}
+.divider{height:1px;background:var(--border);margin:18px 0}
+.alert-info{background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.2);color:var(--accent2);padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:12px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-  .nav-cta {
-    display: flex; gap: 12px; align-items: center;
-  }
-  .btn-ghost {
-    padding: 8px 20px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: transparent;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: none;
-    transition: border-color 0.2s, background 0.2s;
-    text-decoration: none;
-  }
-  .btn-ghost:hover { border-color: var(--accent); background: rgba(124,92,252,0.08); }
+/* ADMIN */
+.admin-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:20px}
+.admin-tab{padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-size:12px;cursor:pointer;transition:all 0.2s}
+.admin-tab.active,.admin-tab:hover{background:var(--surface2);border-color:var(--accent);color:var(--text)}
+.admin-section{display:none}
+.admin-section.active{display:block}
+.prow{display:flex;align-items:flex-start;gap:10px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px}
+.prow-info{flex:1;font-size:13px;min-width:0}
+.prow-price{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--gold);white-space:nowrap}
+.order-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:9px}
+.order-header{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+.order-id{font-size:11px;color:var(--muted)}
+.order-body{font-size:12px;line-height:1.7;color:var(--muted)}
+.order-body strong{color:var(--text)}
+.order-actions{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
+.color-dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0}
 
-  .btn-primary {
-    padding: 8px 22px;
-    border: none;
-    border-radius: 6px;
-    background: var(--accent);
-    color: #fff;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: none;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.15s, box-shadow 0.2s;
-    text-decoration: none;
-    display: inline-block;
-  }
-  .btn-primary::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 60%);
-  }
-  .btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 30px rgba(124,92,252,0.45);
-  }
+/* CREDIT RECHARGE PANEL */
+.recharge-box{background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(245,158,11,0.03));border:1px solid rgba(245,158,11,0.25);border-radius:16px;padding:20px;margin-bottom:20px}
+.recharge-box h4{font-family:'Syne',sans-serif;font-size:15px;color:var(--gold);margin-bottom:14px}
+.verify-result{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px;font-size:13px;display:none}
+.verify-result.found{border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.05)}
+.verify-result.notfound{border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.05)}
 
-  /* HERO */
-  .hero {
-    position: relative;
-    min-height: 100vh;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    text-align: center;
-    padding: 120px 24px 80px;
-    overflow: hidden;
-    z-index: 1;
-  }
+/* WA FLOAT */
+.wa-float{position:fixed;bottom:24px;right:24px;width:54px;height:54px;background:var(--wa);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,0.4);z-index:100;transition:all 0.2s;text-decoration:none}
+.wa-float:hover{transform:scale(1.1)}
 
-  .hero-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    pointer-events: none;
-  }
-  .orb-1 {
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(124,92,252,0.18) 0%, transparent 70%);
-    top: -100px; left: 50%;
-    transform: translateX(-50%);
-    animation: float 8s ease-in-out infinite;
-  }
-  .orb-2 {
-    width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(0,229,255,0.12) 0%, transparent 70%);
-    bottom: 100px; right: 10%;
-    animation: float 11s ease-in-out infinite reverse;
-  }
-  .orb-3 {
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(255,61,110,0.1) 0%, transparent 70%);
-    top: 200px; left: 5%;
-    animation: float 9s ease-in-out infinite 2s;
-  }
+/* ORDER MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:26px;max-width:400px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
+.modal h3{margin-bottom:14px;font-size:17px}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--muted);font-size:19px;cursor:pointer}
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0) translateX(-50%); }
-    50% { transform: translateY(-30px) translateX(-50%); }
-  }
-  @keyframes float-free {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-25px); }
-  }
-  .orb-2, .orb-3 { animation-name: float-free; }
+/* TOAST */
+.toast{position:fixed;bottom:88px;right:22px;background:var(--accent3);color:#fff;padding:11px 16px;border-radius:10px;font-size:13px;font-weight:600;z-index:700;opacity:0;transition:opacity 0.3s;pointer-events:none;max-width:270px}
+.toast.show{opacity:1}
 
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 6px 16px;
-    border: 1px solid rgba(0,229,255,0.25);
-    border-radius: 100px;
-    background: rgba(0,229,255,0.05);
-    font-family: 'Space Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--accent2);
-    letter-spacing: 0.1em;
-    margin-bottom: 28px;
-    animation: fadeUp 0.6s ease both;
-  }
-  .badge-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--accent2);
-    box-shadow: 0 0 8px var(--accent2);
-    animation: pulse 1.5s ease-in-out infinite;
-  }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+/* ABOUT */
+.about-section{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;margin:36px 0 28px;text-align:center}
+.about-section h2{font-size:20px;margin-bottom:8px}
+.about-section p{color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:18px}
+.about-contacts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.about-link{display:flex;align-items:center;gap:7px;padding:9px 16px;border-radius:100px;font-size:13px;font-weight:600;text-decoration:none;transition:all 0.2s}
+.about-wa{background:rgba(37,211,102,0.12);color:var(--wa);border:1px solid rgba(37,211,102,0.25)}
+.about-wa:hover{background:rgba(37,211,102,0.22)}
+.about-em{background:rgba(6,182,212,0.1);color:var(--accent2);border:1px solid rgba(6,182,212,0.2)}
+.about-em:hover{background:rgba(6,182,212,0.18)}
+.login-wrap{max-width:360px;margin:50px auto}
+.tx-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 13px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.tx-item .tx-left{color:var(--muted)}.tx-item .tx-right{font-weight:700;color:var(--accent3)}
 
-  .hero h1 {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: clamp(3rem, 7vw, 7rem);
-    line-height: 0.95;
-    letter-spacing: -0.04em;
-    color: #fff;
-    max-width: 900px;
-    animation: fadeUp 0.6s ease 0.1s both;
-  }
-  .hero h1 .line-accent { color: var(--accent); }
-  .hero h1 .line-cyan { color: var(--accent2); }
-
-  .hero-sub {
-    font-size: clamp(1rem, 2vw, 1.2rem);
-    color: var(--muted);
-    max-width: 540px;
-    line-height: 1.7;
-    margin-top: 24px;
-    font-weight: 300;
-    animation: fadeUp 0.6s ease 0.2s both;
-  }
-
-  .hero-actions {
-    display: flex; gap: 14px; margin-top: 40px;
-    animation: fadeUp 0.6s ease 0.3s both;
-    flex-wrap: wrap; justify-content: center;
-  }
-
-  .btn-large {
-    padding: 14px 36px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    border-radius: 8px;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* LIVE STATS TICKER */
-  .stats-ticker {
-    width: 100%;
-    margin-top: 80px;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 0;
-    overflow: hidden;
-    animation: fadeUp 0.6s ease 0.4s both;
-  }
-  .ticker-inner {
-    display: flex; gap: 60px;
-    animation: ticker 30s linear infinite;
-    white-space: nowrap;
-    width: max-content;
-  }
-  @keyframes ticker {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-  .ticker-item {
-    display: flex; align-items: center; gap: 10px;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-  }
-  .ticker-item strong { color: var(--accent2); }
-  .ticker-sep { color: rgba(255,255,255,0.1); }
-
-  /* STATS GRID */
-  .stats-section {
-    position: relative; z-index: 1;
-    padding: 80px 40px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1px;
-    max-width: 1200px;
-    margin: 0 auto;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    background: var(--border);
-  }
-  .stat-card {
-    background: var(--surface);
-    padding: 40px 32px;
-    text-align: center;
-    transition: background 0.2s;
-  }
-  .stat-card:hover { background: var(--surface2); }
-  .stat-num {
-    font-family: 'Syne', sans-serif;
-    font-size: 2.8rem;
-    font-weight: 800;
-    color: #fff;
-    letter-spacing: -0.03em;
-  }
-  .stat-num span { color: var(--accent); }
-  .stat-label {
-    font-size: 0.78rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-top: 8px;
-  }
-
-  /* FEATURES */
-  .section {
-    position: relative; z-index: 1;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 100px 40px;
-  }
-
-  .section-tag {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--accent);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-  .section-tag::before {
-    content: '';
-    display: block;
-    width: 20px; height: 1px;
-    background: var(--accent);
-  }
-
-  .section-title {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: clamp(2rem, 4vw, 3.2rem);
-    letter-spacing: -0.03em;
-    color: #fff;
-    line-height: 1.05;
-    max-width: 600px;
-  }
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-top: 60px;
-  }
-
-  .feature-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 32px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.3s, transform 0.2s, box-shadow 0.3s;
-    cursor: none;
-  }
-  .feature-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .feature-card:hover {
-    border-color: rgba(124,92,252,0.35);
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 40px rgba(124,92,252,0.08);
-  }
-  .feature-card:hover::before { opacity: 1; }
-
-  .feature-icon {
-    width: 44px; height: 44px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.3rem;
-    margin-bottom: 20px;
-    background: rgba(124,92,252,0.1);
-    border: 1px solid rgba(124,92,252,0.2);
-  }
-  .feature-icon.cyan { background: rgba(0,229,255,0.08); border-color: rgba(0,229,255,0.2); }
-  .feature-icon.red { background: rgba(255,61,110,0.08); border-color: rgba(255,61,110,0.2); }
-
-  .feature-title {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 1.05rem;
-    color: #fff;
-    margin-bottom: 10px;
-  }
-  .feature-desc {
-    font-size: 0.875rem;
-    color: var(--muted);
-    line-height: 1.65;
-  }
-
-  .feature-card.large {
-    grid-column: span 2;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    align-items: center;
-  }
-
-  /* SERVICES TABLE */
-  .services-wrap {
-    margin-top: 60px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  .services-header {
-    display: grid;
-    grid-template-columns: 1fr 140px 140px 120px;
-    padding: 14px 24px;
-    background: var(--surface2);
-    border-bottom: 1px solid var(--border);
-    font-family: 'Space Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-  .service-row {
-    display: grid;
-    grid-template-columns: 1fr 140px 140px 120px;
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--border);
-    align-items: center;
-    background: var(--surface);
-    transition: background 0.15s;
-    cursor: none;
-  }
-  .service-row:last-child { border-bottom: none; }
-  .service-row:hover { background: var(--surface2); }
-  .service-name {
-    font-weight: 500;
-    font-size: 0.9rem;
-  }
-  .service-platform {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 0.8rem; color: var(--muted);
-  }
-  .platform-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-  }
-  .pd-ig { background: #e1306c; }
-  .pd-yt { background: #ff0000; }
-  .pd-tt { background: #69c9d0; }
-  .pd-fb { background: #1877f2; }
-  .pd-tw { background: #1da1f2; }
-  .service-price {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.85rem;
-    color: var(--accent2);
-  }
-  .service-badge {
-    padding: 3px 10px;
-    border-radius: 100px;
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  .badge-fast { background: rgba(0,229,255,0.1); color: var(--accent2); }
-  .badge-pop { background: rgba(124,92,252,0.15); color: var(--accent); }
-  .badge-new { background: rgba(255,61,110,0.1); color: var(--accent3); }
-
-  /* PAYMENT */
-  .payment-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
-    margin-top: 50px;
-  }
-  .pay-card {
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 24px 16px;
-    text-align: center;
-    background: var(--surface);
-    transition: border-color 0.2s, transform 0.2s;
-    cursor: none;
-  }
-  .pay-card:hover {
-    border-color: rgba(124,92,252,0.35);
-    transform: translateY(-3px);
-  }
-  .pay-icon { font-size: 1.8rem; margin-bottom: 10px; }
-  .pay-name {
-    font-size: 0.78rem;
-    color: var(--muted);
-    font-weight: 500;
-  }
-
-  /* FLOW */
-  .flow-steps {
-    display: flex;
-    gap: 0;
-    margin-top: 60px;
-    position: relative;
-  }
-  .flow-steps::before {
-    content: '';
-    position: absolute;
-    top: 28px; left: 28px; right: 28px;
-    height: 1px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent));
-    z-index: 0;
-  }
-  .flow-step {
-    flex: 1;
-    text-align: center;
-    padding: 0 20px;
-    position: relative;
-    z-index: 1;
-  }
-  .flow-num {
-    width: 56px; height: 56px;
-    border-radius: 50%;
-    background: var(--bg);
-    border: 2px solid var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 1.1rem;
-    color: var(--accent);
-    margin: 0 auto 20px;
-    box-shadow: 0 0 20px rgba(124,92,252,0.3);
-  }
-  .flow-step:nth-child(2) .flow-num { border-color: var(--accent2); color: var(--accent2); box-shadow: 0 0 20px rgba(0,229,255,0.25); }
-  .flow-step:nth-child(3) .flow-num { border-color: var(--accent3); color: var(--accent3); box-shadow: 0 0 20px rgba(255,61,110,0.25); }
-  .flow-title {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 1rem;
-    color: #fff;
-    margin-bottom: 10px;
-  }
-  .flow-desc {
-    font-size: 0.82rem;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-
-  /* MEMBERSHIP */
-  .membership-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-top: 60px;
-  }
-  .member-card {
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 36px 28px;
-    background: var(--surface);
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.3s;
-    cursor: none;
-  }
-  .member-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 24px 48px rgba(0,0,0,0.5);
-  }
-  .member-card.featured {
-    border-color: var(--accent);
-    background: linear-gradient(135deg, rgba(124,92,252,0.08), var(--surface));
-  }
-  .member-card.featured::after {
-    content: 'POPULAR';
-    position: absolute; top: 16px; right: -20px;
-    background: var(--accent);
-    color: #fff;
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    padding: 4px 32px;
-    transform: rotate(45deg);
-  }
-  .member-tier {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--accent);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-  .member-card.featured .member-tier { color: var(--accent2); }
-  .member-card:last-child .member-tier { color: var(--accent3); }
-  .member-price {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 2.4rem;
-    color: #fff;
-    letter-spacing: -0.03em;
-    margin-bottom: 4px;
-  }
-  .member-desc {
-    font-size: 0.82rem;
-    color: var(--muted);
-    margin-bottom: 28px;
-  }
-  .member-perks { list-style: none; }
-  .member-perks li {
-    font-size: 0.85rem;
-    color: var(--text);
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 10px;
-  }
-  .member-perks li::before { content: '✦'; color: var(--accent); font-size: 0.6rem; }
-  .member-card.featured .member-perks li::before { color: var(--accent2); }
-  .member-card:last-child .member-perks li::before { color: var(--accent3); }
-
-  /* FOOTER */
-  footer {
-    position: relative; z-index: 1;
-    border-top: 1px solid var(--border);
-    background: rgba(5,5,8,0.9);
-    padding: 60px 40px 30px;
-    max-width: 100%;
-  }
-  .footer-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .footer-top {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr;
-    gap: 60px;
-    margin-bottom: 50px;
-  }
-  .footer-brand p {
-    font-size: 0.85rem;
-    color: var(--muted);
-    line-height: 1.7;
-    margin-top: 14px;
-    max-width: 260px;
-  }
-  .footer-col h4 {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 0.85rem;
-    color: #fff;
-    letter-spacing: 0.05em;
-    margin-bottom: 18px;
-  }
-  .footer-col ul { list-style: none; }
-  .footer-col li { margin-bottom: 10px; }
-  .footer-col a {
-    font-size: 0.82rem;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .footer-col a:hover { color: var(--text); }
-  .footer-bottom {
-    display: flex; justify-content: space-between; align-items: center;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    font-size: 0.75rem;
-    color: var(--muted);
-    font-family: 'Space Mono', monospace;
-  }
-  .footer-status {
-    display: flex; align-items: center; gap: 8px;
-    color: #22c55e;
-  }
-  .status-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #22c55e;
-    box-shadow: 0 0 6px #22c55e;
-    animation: pulse 1.5s ease-in-out infinite;
-  }
-
-  /* DIVIDER */
-  .divider {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
-    position: relative; z-index: 1;
-  }
-
-  /* SCROLL ANIMATIONS */
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  @media (max-width: 900px) {
-    nav { padding: 16px 20px; }
-    .nav-links { display: none; }
-    .stats-section { grid-template-columns: repeat(2,1fr); }
-    .features-grid { grid-template-columns: 1fr; }
-    .feature-card.large { grid-column: span 1; grid-template-columns: 1fr; }
-    .payment-grid { grid-template-columns: repeat(3,1fr); }
-    .membership-grid { grid-template-columns: 1fr; }
-    .flow-steps { flex-direction: column; }
-    .flow-steps::before { display: none; }
-    .footer-top { grid-template-columns: 1fr 1fr; }
-    .services-header, .service-row { grid-template-columns: 1fr 100px; }
-    .services-header span:nth-child(3),
-    .services-header span:nth-child(4),
-    .service-row > *:nth-child(3),
-    .service-row > *:nth-child(4) { display: none; }
-  }
+@media(max-width:600px){
+  .categories-grid{grid-template-columns:repeat(3,1fr)}
+  .form-row{grid-template-columns:1fr}
+  .platforms-grid{grid-template-columns:repeat(2,1fr)}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .product-card{flex-direction:column;align-items:flex-start}
+  .product-right{width:100%;display:flex;justify-content:space-between;align-items:center}
+  .auth-box{padding:26px 18px}
+}
 </style>
 </head>
 <body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="toast" id="toast"></div>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-
-<!-- NAV -->
-<nav>
-  <a href="#" class="nav-logo">NEX<span>US</span></a>
-  <ul class="nav-links">
-    <li><a href="#servicios">Servicios</a></li>
-    <li><a href="#pagos">Pagos</a></li>
-    <li><a href="#planes">Planes</a></li>
-    <li><a href="#api">API</a></li>
-    <li><a href="#soporte">Soporte</a></li>
-  </ul>
-  <div class="nav-cta">
-    <a href="#" class="btn-ghost">Iniciar sesión</a>
-    <a href="#" class="btn-primary">Registrarse gratis</a>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-orb orb-1"></div>
-  <div class="hero-orb orb-2"></div>
-  <div class="hero-orb orb-3"></div>
-
-  <div class="hero-badge">
-    <span class="badge-dot"></span>
-    Panel SMM Profesional de Élite — v4.2 ONLINE
-  </div>
-
-  <h1>
-    Crecimiento en<br>
-    redes sociales<br>
-    <span class="line-accent">totalmente</span> <span class="line-cyan">automatizado</span>
-  </h1>
-
-  <p class="hero-sub">
-    API multiveedor, pagos globales, reposición automática y soporte 24/7. La infraestructura que necesitan los resellers serios.
-  </p>
-
-  <div class="hero-actions">
-    <a href="#" class="btn-primary btn-large">Comenzar ahora →</a>
-    <a href="#servicios" class="btn-ghost btn-large">Ver servicios</a>
-  </div>
-
-  <!-- LIVE TICKER -->
-  <div class="stats-ticker">
-    <div class="ticker-inner" id="ticker">
-      <span class="ticker-item">📦 Pedidos hoy <strong id="ordersToday">47,392</strong></span>
-      <span class="ticker-sep">·</span>
-      <span class="ticker-item">⚡ Tiempo medio <strong>1m 24s</strong></span>
-      <span class="ticker-sep">·</span>
-      <span class="ticker-item">✅ Tasa completado <strong>99.4%</strong></span>
-      <span class="ticker-sep">·</span>
-      <span class="ticker-item">🌐 Usuarios activos <strong>12,847</strong></span>
-      <span class="ticker-sep">·</span>
-      <span class="ticker-item">💳 Depósitos hoy <strong>$84,210</strong></span>
-      <span class="ticker-sep">·</span>
-      <span class="ticker-item">🔄 API uptime <strong>99.98%</strong></span>
-      <span class="ticker-sep">·</span>
-      <!-- Duplicate for seamless loop -->
-      <span class="ticker-item">📦 Pedidos hoy <strong>47,392</strong></span>
-      <span class="ticker-sep">·</span>
-      <span class="ticker-item">⚡ Tiempo medio <strong>1m 24s</strong></span>
-      <span class="ticker-sep">·</span>
-      <span class="ticker-item">✅ Tasa completado <strong>99.4%</strong></span>
-      <span class="ticker-sep">·</span>
-      <span class="ticker-item">🌐 Usuarios activos <strong>12,847</strong></span>
-      <span class="ticker-sep">·</span>
-      <span class="ticker-item">💳 Depósitos hoy <strong>$84,210</strong></span>
-      <span class="ticker-sep">·</span>
-      <span class="ticker-item">🔄 API uptime <strong>99.98%</strong></span>
+<!-- AUTH GATE -->
+<div class="auth-gate" id="authGate">
+  <div class="auth-box">
+    <div class="auth-logo">&#x1F680;</div>
+    <div class="auth-title" id="authSiteName">SMMBoost Pro</div>
+    <div class="auth-sub">Crea tu cuenta gratis para acceder</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabReg" onclick="switchAuthTab('reg')">Registrarse</button>
+      <button class="auth-tab" id="tabLog" onclick="switchAuthTab('log')">Iniciar sesion</button>
     </div>
+    <div id="authRegForm">
+      <input class="auth-input" id="regName" type="text" placeholder="Tu nombre completo">
+      <input class="auth-input" id="regEmail" type="email" placeholder="Correo electronico">
+      <input class="auth-input" id="regPass" type="password" placeholder="Contrasena (minimo 6 caracteres)">
+      <input class="auth-input" id="regPass2" type="password" placeholder="Repetir contrasena">
+      <button class="auth-btn" onclick="doRegister()">Crear cuenta</button>
+    </div>
+    <div id="authLogForm" style="display:none">
+      <input class="auth-input" id="logEmail" type="email" placeholder="Correo electronico">
+      <input class="auth-input" id="logPass" type="password" placeholder="Contrasena" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="auth-btn" onclick="doLogin()">Entrar</button>
+    </div>
+    <div class="auth-err" id="authErr"></div>
+    <div class="auth-note">Tus datos son privados y estan protegidos. Solo tu puedes acceder a tu cuenta.</div>
   </div>
-</section>
+</div>
 
-<!-- STATS -->
-<div class="divider"></div>
-<div style="padding: 60px 40px; position:relative;z-index:1;">
-  <div class="stats-section reveal">
-    <div class="stat-card">
-      <div class="stat-num" data-target="2400000">0<span>+</span></div>
-      <div class="stat-label">Pedidos ejecutados</div>
+<!-- WA FLOAT -->
+<a class="wa-float" id="waFloat" href="#" target="_blank">
+  <svg viewBox="0 0 24 24" width="28" height="28" fill="white"><path d="M12 4a8 8 0 0 0-6.9 12L4 20l4.1-1.1A8 8 0 1 0 12 4zm4.7 10.9c-.2.6-1.2 1.1-1.6 1.2-.4 0-.8.1-2.4-.5-2-1-3.3-3-3.4-3.2-.1-.2-1-1.3-1-2.5s.6-1.8.9-2c.2-.3.5-.3.6-.3h.5c.1 0 .3 0 .5.4l.6 1.6c.1.2.1.4 0 .5l-.3.5-.3.3c.1.2.6.9 1.2 1.5.7.7 1.4 1 1.6 1.1l.5-.6c.1-.2.3-.2.5-.1l1.5.7c.2.1.4.2.4.4s-.1.8-.3 1z"/></svg>
+</a>
+
+<!-- PROMO POPUP -->
+<div class="promo-overlay" id="promoOverlay">
+  <div class="promo-box">
+    <button class="promo-close" onclick="closePromo()">&#x2715;</button>
+    <div class="promo-badge" id="promoLabel">PROMOCION</div>
+    <div class="promo-title" id="promoTitle"></div>
+    <div class="promo-desc" id="promoDesc"></div>
+    <button class="promo-cta" onclick="closePromo()">&#x1F4AB; Ver ofertas ahora</button>
+  </div>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+    <h3>Confirmar pedido</h3>
+    <div id="orderModalContent"></div>
+    <div id="orderInstructions" style="display:none;margin-bottom:14px"></div>
+    <div id="marcaRevisionAlert" style="display:none;background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.35);border-radius:12px;padding:14px;margin-bottom:14px">
+      <div style="font-family:Syne,sans-serif;font-weight:700;font-size:13px;color:#facc15;margin-bottom:8px">&#x26A0;&#xFE0F; OBLIGATORIO: Desactiva "Marca por Revision" antes de continuar</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Si no desactivas esta opcion, los seguidores no llegaran y <strong style="color:#f87171">no se reembolsara tu credito</strong>.</p>
+      <div style="font-size:12px;color:var(--muted);line-height:1.9">
+        <div style="display:grid;grid-template-columns:20px 1fr;gap:4px 8px;align-items:start">
+          <span style="color:#facc15;font-weight:700">1.</span><span>Abre Instagram y entra a tu perfil.</span>
+          <span style="color:#facc15;font-weight:700">2.</span><span>Ve a <strong style="color:var(--text)">"Seguir e Invitar a Amigos"</strong>.</span>
+          <span style="color:#facc15;font-weight:700">3.</span><span>Busca la opcion <strong style="color:var(--text)">"Marca por Revision"</strong>.</span>
+          <span style="color:#facc15;font-weight:700">4.</span><span>Desactivala completamente.</span>
+          <span style="color:#facc15;font-weight:700">5.</span><span>Vuelve aqui y procede con la compra.</span>
+        </div>
+      </div>
+      <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
+        <input type="checkbox" id="marcaCheck" onchange="updateOrderCheck()" style="width:16px;height:16px;cursor:pointer">
+        <label for="marcaCheck" style="font-size:12px;color:var(--text);cursor:pointer">Confirmo que ya desactive "Marca por Revision"</label>
+      </div>
     </div>
-    <div class="stat-card">
-      <div class="stat-num" data-target="58000">0<span>+</span></div>
-      <div class="stat-label">Usuarios registrados</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" data-target="380">0<span>+</span></div>
-      <div class="stat-label">Servicios disponibles</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" data-target="99.98">0<span>%</span></div>
-      <div class="stat-label">Uptime garantizado</div>
+    <label class="lbl" id="orderUserLabel">Enlace de tu perfil</label>
+    <input class="input-field" id="orderUser" placeholder="https://www.instagram.com/tuusuario">
+    <label class="lbl">Cantidad</label>
+    <select class="input-field" id="orderQty"></select>
+    <div id="creditCheck" style="margin-top:8px;font-size:13px"></div>
+    <button class="btn btn-primary" id="confirmOrderBtn" style="width:100%;margin-top:14px" onclick="sendOrder()">&#x2705; Confirmar pedido</button>
+  </div>
+</div>
+
+<!-- SUCCESS NOTIFICATION MODAL -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal" style="text-align:center;padding:32px 24px">
+    <div style="font-size:52px;margin-bottom:14px">&#x1F389;</div>
+    <h3 style="margin-bottom:10px;font-size:20px">&#x2705; Pedido realizado con exito</h3>
+    <p style="color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:18px" id="successMsg">Tu pedido ha sido registrado correctamente. Revisa tu perfil en los proximos minutos para confirmar la entrega.</p>
+    <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:18px;font-size:12px;color:var(--muted);line-height:1.8" id="successDetail"></div>
+    <button class="btn btn-primary" style="width:100%" onclick="closeSuccess()">Entendido</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- STORE VIEW -->
+<div class="view active" id="view-store">
+  <header>
+    <div class="profile-pic"><img id="headerImg" src="" alt=""><span id="headerEmoji"></span></div>
+    <div class="site-name" id="headerName">SMMBoost Pro</div>
+    <div class="site-tagline" id="headerTagline">Servicios SMM al mejor precio</div>
+    <div class="aff-banner" id="affBanner">Estas navegando con enlace de afiliado</div>
+  </header>
+  <div class="balance-bar" id="balanceBar" style="display:none">
+    <div class="credit-chip"><span class="coin">&#x1FA99;</span><span id="balanceDisplay">0</span> Creditos</div>
+    <div class="user-chip">Hola, <strong id="userBarName"></strong></div>
+    <button class="logout-chip" onclick="logoutUser()">Salir</button>
+  </div>
+  <nav>
+    <button class="nav-btn active" onclick="showView('store')">&#x1F3EA; Catalogo</button>
+    <button class="nav-btn" onclick="showView('my-account')">&#x1F4B3; Mi Cuenta</button>
+    <button class="nav-btn" onclick="showView('affiliate')">&#x1F91D; Afiliados</button>
+    <button class="nav-btn" onclick="showView('admin-login')">&#x1F510; Admin</button>
+  </nav>
+  <div id="storeContent"></div>
+  <div class="about-section">
+    <h2>&#x1F4AC; Sobre Nosotros</h2>
+    <p>Somos tu aliado para crecer en redes sociales. Servicios SMM de alta calidad. Contactanos para recargar creditos o cualquier consulta.</p>
+    <div class="about-contacts">
+      <a class="about-link about-wa" id="aboutWA" href="#" target="_blank">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 4a8 8 0 0 0-6.9 12L4 20l4.1-1.1A8 8 0 1 0 12 4zm4.7 10.9c-.2.6-1.2 1.1-1.6 1.2-.4 0-.8.1-2.4-.5-2-1-3.3-3-3.4-3.2-.1-.2-1-1.3-1-2.5s.6-1.8.9-2c.2-.3.5-.3.6-.3h.5c.1 0 .3 0 .5.4l.6 1.6c.1.2.1.4 0 .5l-.3.5-.3.3c.1.2.6.9 1.2 1.5.7.7 1.4 1 1.6 1.1l.5-.6c.1-.2.3-.2.5-.1l1.5.7c.2.1.4.2.4.4s-.1.8-.3 1z"/></svg>
+        <span id="aboutWAtext">WhatsApp</span>
+      </a>
+      <a class="about-link about-em" id="aboutEM" href="#">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span id="aboutEMtext">Email</span>
+      </a>
     </div>
   </div>
 </div>
 
-<!-- FEATURES -->
-<section class="section" id="api">
-  <div class="reveal">
-    <div class="section-tag">Infraestructura</div>
-    <h2 class="section-title">Tecnología que opera sin descanso</h2>
-  </div>
-  <div class="features-grid">
-    <div class="feature-card reveal">
-      <div class="feature-icon">⚡</div>
-      <div class="feature-title">API Multiveedor</div>
-      <div class="feature-desc">Conexión directa con proveedores líderes. Ejecución de órdenes en segundos con failover automático para máxima disponibilidad.</div>
+<!-- MY ACCOUNT VIEW -->
+<div class="view" id="view-my-account">
+  <header><div class="site-name">Mi Cuenta</div><div class="site-tagline">Saldo, historial y configuracion</div></header>
+  <nav>
+    <button class="nav-btn" onclick="showView('store')">&#x1F3EA; Catalogo</button>
+    <button class="nav-btn active" onclick="showView('my-account')">&#x1F4B3; Mi Cuenta</button>
+    <button class="nav-btn" onclick="showView('affiliate')">&#x1F91D; Afiliados</button>
+    <button class="nav-btn" onclick="showView('admin-login')">&#x1F510; Admin</button>
+  </nav>
+  <div class="panel">
+    <h3>&#x1FA99; Mi Saldo de Creditos</h3>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-value gold" id="myBalance">0</div><div class="stat-label">Creditos disponibles</div></div>
+      <div class="stat-card"><div class="stat-value" id="myOrdersCount">0</div><div class="stat-label">Pedidos realizados</div></div>
+      <div class="stat-card"><div class="stat-value" id="myTotalSpent">0</div><div class="stat-label">Creditos gastados</div></div>
     </div>
-    <div class="feature-card reveal">
-      <div class="feature-icon cyan">🔄</div>
-      <div class="feature-title">Auto-Refill 24/7</div>
-      <div class="feature-desc">Sistema que detecta caídas en los servicios y solicita recarga automática al proveedor sin ninguna intervención humana.</div>
-    </div>
-    <div class="feature-card reveal">
-      <div class="feature-icon red">🛡️</div>
-      <div class="feature-title">Anti-DDoS + SSL 256bit</div>
-      <div class="feature-desc">Servidor VPS dedicado con protección enterprise, certificados SSL y uptime del 99.98% garantizado por SLA.</div>
-    </div>
-    <div class="feature-card large reveal">
-      <div>
-        <div class="feature-icon">⏱️</div>
-        <div class="feature-title">Cronjobs cada 60 segundos</div>
-        <div class="feature-desc">Tareas automáticas de sincronización de estados, actualización de precios desde proveedor y verificación de pagos en pasarelas. Todo funciona solo.</div>
-      </div>
-      <div style="background: var(--surface2); border-radius: 8px; padding: 16px; border: 1px solid var(--border);">
-        <div style="font-family:'Space Mono',monospace; font-size:0.72rem; color: var(--accent2); line-height:1.9;">
-          <div style="color:var(--muted)">// cron.schedule</div>
-          <div><span style="color:#ff79c6">every</span>(60, <span style="color:#f1fa8c">'seconds'</span>)</div>
-          <div>&nbsp;&nbsp;.run(<span style="color:#50fa7b">syncOrders</span>)</div>
-          <div>&nbsp;&nbsp;.run(<span style="color:#50fa7b">updatePrices</span>)</div>
-          <div>&nbsp;&nbsp;.run(<span style="color:#50fa7b">verifyPayments</span>)</div>
-          <div>&nbsp;&nbsp;.run(<span style="color:#50fa7b">autoRefill</span>)</div>
-        </div>
+    <div id="insufAlertAccount" style="display:none">
+      <div class="insuf-alert">
+        <p>No tienes creditos. Contacta al administrador para recargar tu cuenta.</p>
+        <a class="wa-mini-btn" id="insufWABtn" href="#" target="_blank">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="white"><path d="M12 4a8 8 0 0 0-6.9 12L4 20l4.1-1.1A8 8 0 1 0 12 4zm4.7 10.9c-.2.6-1.2 1.1-1.6 1.2-.4 0-.8.1-2.4-.5-2-1-3.3-3-3.4-3.2-.1-.2-1-1.3-1-2.5s.6-1.8.9-2c.2-.3.5-.3.6-.3h.5c.1 0 .3 0 .5.4l.6 1.6c.1.2.1.4 0 .5l-.3.5-.3.3c.1.2.6.9 1.2 1.5.7.7 1.4 1 1.6 1.1l.5-.6c.1-.2.3-.2.5-.1l1.5.7c.2.1.4.2.4.4s-.1.8-.3 1z"/></svg>
+          Recargar creditos
+        </a>
       </div>
     </div>
-    <div class="feature-card reveal">
-      <div class="feature-icon cyan">💸</div>
-      <div class="feature-title">Reembolso Automático</div>
-      <div class="feature-desc">Si el proveedor marca un error, el saldo se devuelve al usuario al instante. Cero tickets, cero fricciones.</div>
-    </div>
+    <div class="divider"></div>
+    <label class="lbl">Historial de recargas</label>
+    <div id="myRechargeHistory"><p style="color:var(--muted);font-size:13px">Sin recargas aun.</p></div>
   </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- SERVICES TABLE -->
-<section class="section" id="servicios">
-  <div class="reveal">
-    <div class="section-tag">Catálogo</div>
-    <h2 class="section-title">Servicios disponibles</h2>
+  <div class="panel">
+    <h3>&#x1F514; Mis Notificaciones <span id="userNotifCount" style="font-size:12px;color:var(--muted);font-weight:400"></span></h3>
+    <div id="userNotifsList"><p style="color:var(--muted);font-size:13px">Sin notificaciones aun.</p></div>
   </div>
-  <div class="services-wrap reveal">
-    <div class="services-header">
-      <span>Servicio</span>
-      <span>Plataforma</span>
-      <span>Precio / 1K</span>
-      <span>Estado</span>
-    </div>
-    <div class="service-row">
-      <div class="service-name">Seguidores Reales Orgánicos</div>
-      <div class="service-platform"><span class="platform-dot pd-ig"></span> Instagram</div>
-      <div class="service-price">$0.89</div>
-      <div><span class="service-badge badge-fast">Rápido</span></div>
-    </div>
-    <div class="service-row">
-      <div class="service-name">Visualizaciones de Video</div>
-      <div class="service-platform"><span class="platform-dot pd-yt"></span> YouTube</div>
-      <div class="service-price">$1.20</div>
-      <div><span class="service-badge badge-pop">Popular</span></div>
-    </div>
-    <div class="service-row">
-      <div class="service-name">Seguidores TikTok Activos</div>
-      <div class="service-platform"><span class="platform-dot pd-tt"></span> TikTok</div>
-      <div class="service-price">$0.65</div>
-      <div><span class="service-badge badge-fast">Rápido</span></div>
-    </div>
-    <div class="service-row">
-      <div class="service-name">Likes Instagram Premium</div>
-      <div class="service-platform"><span class="platform-dot pd-ig"></span> Instagram</div>
-      <div class="service-price">$0.30</div>
-      <div><span class="service-badge badge-pop">Popular</span></div>
-    </div>
-    <div class="service-row">
-      <div class="service-name">Likes en Página Facebook</div>
-      <div class="service-platform"><span class="platform-dot pd-fb"></span> Facebook</div>
-      <div class="service-price">$0.45</div>
-      <div><span class="service-badge badge-new">Nuevo</span></div>
-    </div>
-    <div class="service-row">
-      <div class="service-name">Suscriptores YouTube Reales</div>
-      <div class="service-platform"><span class="platform-dot pd-yt"></span> YouTube</div>
-      <div class="service-price">$2.10</div>
-      <div><span class="service-badge badge-new">Nuevo</span></div>
-    </div>
-    <div class="service-row">
-      <div class="service-name">Comentarios Personalizados</div>
-      <div class="service-platform"><span class="platform-dot pd-ig"></span> Instagram</div>
-      <div class="service-price">$3.50</div>
-      <div><span class="service-badge badge-fast">Rápido</span></div>
-    </div>
+  <div class="panel">
+    <h3>&#x1F4E6; Mis Pedidos</h3>
+    <div id="myOrdersList"><p style="color:var(--muted);font-size:13px">Sin pedidos aun.</p></div>
   </div>
-</section>
+</div>
 
-<div class="divider"></div>
-
-<!-- PAYMENT -->
-<section class="section" id="pagos">
-  <div class="reveal">
-    <div class="section-tag">Pagos</div>
-    <h2 class="section-title">Ecosistema de pagos global</h2>
-  </div>
-  <div class="payment-grid reveal">
-    <div class="pay-card">
-      <div class="pay-icon">💳</div>
-      <div class="pay-name">Stripe</div>
-    </div>
-    <div class="pay-card">
-      <div class="pay-icon">🅿️</div>
-      <div class="pay-name">PayPal</div>
-    </div>
-    <div class="pay-card">
-      <div class="pay-icon">₿</div>
-      <div class="pay-name">Bitcoin / Crypto</div>
-    </div>
-    <div class="pay-card">
-      <div class="pay-icon">🔶</div>
-      <div class="pay-name">Binance Pay</div>
-    </div>
-    <div class="pay-card">
-      <div class="pay-icon">💼</div>
-      <div class="pay-name">Payeer</div>
-    </div>
-  </div>
-  <p style="margin-top:20px;font-size:0.8rem;color:var(--muted);text-align:center;">Acreditación automática en menos de 2 minutos · SSL 256-bit en todas las transacciones</p>
-</section>
-
-<div class="divider"></div>
-
-<!-- FLOW -->
-<section class="section">
-  <div class="reveal">
-    <div class="section-tag">Proceso</div>
-    <h2 class="section-title">Tres pasos. Cero complicaciones.</h2>
-  </div>
-  <div class="flow-steps reveal">
-    <div class="flow-step">
-      <div class="flow-num">01</div>
-      <div class="flow-title">Registro y Depósito</div>
-      <div class="flow-desc">El usuario se registra, paga y el saldo aparece en su cuenta en menos de 2 minutos. Sin demoras.</div>
-    </div>
-    <div class="flow-step">
-      <div class="flow-num">02</div>
-      <div class="flow-title">Ejecución de Orden</div>
-      <div class="flow-desc">Compra, la API envía la orden al proveedor y el servicio comienza a entregarse de forma inmediata.</div>
-    </div>
-    <div class="flow-step">
-      <div class="flow-num">03</div>
-      <div class="flow-title">Finalización</div>
-      <div class="flow-desc">El sistema detecta que terminó, cambia el estado a "Completado" y descuenta el saldo correctamente.</div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- MEMBERSHIP -->
-<section class="section" id="planes">
-  <div class="reveal">
-    <div class="section-tag">Membresías</div>
-    <h2 class="section-title">Niveles pensados para escalar</h2>
-  </div>
-  <div class="membership-grid">
-    <div class="member-card reveal">
-      <div class="member-tier">Reseller</div>
-      <div class="member-price">$0.00</div>
-      <div class="member-desc">Para quienes comienzan. Acceso completo al catálogo desde el primer día.</div>
-      <ul class="member-perks">
-        <li>Acceso a 380+ servicios</li>
-        <li>API pública incluida</li>
-        <li>Panel de afiliados 5%</li>
-        <li>Soporte por tickets</li>
-        <li>Sin costo mensual</li>
-      </ul>
-    </div>
-    <div class="member-card featured reveal">
-      <div class="member-tier">VIP</div>
-      <div class="member-price">-15%</div>
-      <div class="member-desc">Descuento automático en todos los servicios al superar $500 en volumen.</div>
-      <ul class="member-perks">
-        <li>15% descuento global</li>
-        <li>Auto-refill prioritario</li>
-        <li>Comisión afiliados 10%</li>
-        <li>Soporte prioritario 24h</li>
-        <li>Precios especiales API</li>
-      </ul>
-    </div>
-    <div class="member-card reveal">
-      <div class="member-tier">Master</div>
-      <div class="member-price">-30%</div>
-      <div class="member-desc">Para revendedores de alto volumen. Acceso a precios de proveedor directo.</div>
-      <ul class="member-perks">
-        <li>30% descuento global</li>
-        <li>Gestor de cuenta dedicado</li>
-        <li>Comisión afiliados 20%</li>
-        <li>SLA de uptime garantizado</li>
-        <li>Acceso a API whitelabel</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a href="#" class="nav-logo" style="font-size:1.6rem">NEX<span>US</span></a>
-        <p>Panel SMM profesional de élite. Automatización total, pagos globales y soporte en tiempo real para resellers serios.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Plataforma</h4>
-        <ul>
-          <li><a href="#">Servicios</a></li>
-          <li><a href="#">Precios API</a></li>
-          <li><a href="#">Membresías</a></li>
-          <li><a href="#">Afiliados</a></li>
-          <li><a href="#">Estado del sistema</a></li>
-        </ul>
-      </div>
-      <div class="footer-col" id="soporte">
-        <h4>Soporte</h4>
-        <ul>
-          <li><a href="#">Abrir ticket</a></li>
-          <li><a href="#">FAQ</a></li>
-          <li><a href="#">Documentación API</a></li>
-          <li><a href="#">Tutoriales</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Legal</h4>
-        <ul>
-          <li><a href="#">Términos de Servicio</a></li>
-          <li><a href="#">Política de Privacidad</a></li>
-          <li><a href="#">Política de Reembolso</a></li>
-          <li><a href="#">Garantías</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div>© 2026 NEXUS SMM Panel · Todos los derechos reservados</div>
-      <div class="footer-status">
-        <span class="status-dot"></span>
-        Todos los sistemas operativos
+<!-- AFFILIATE VIEW -->
+<div class="view" id="view-affiliate">
+  <header><div class="site-name" id="headerName2">SMMBoost Pro</div><div class="site-tagline">Panel de Afiliados</div></header>
+  <nav>
+    <button class="nav-btn" onclick="showView('store')">&#x1F3EA; Catalogo</button>
+    <button class="nav-btn" onclick="showView('my-account')">&#x1F4B3; Mi Cuenta</button>
+    <button class="nav-btn active" onclick="showView('affiliate')">&#x1F91D; Afiliados</button>
+    <button class="nav-btn" onclick="showView('admin-login')">&#x1F510; Admin</button>
+  </nav>
+  <div id="affLogin">
+    <div class="panel">
+      <h3>&#x1F91D; Panel de Afiliados</h3>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:18px">Gana un <strong style="color:var(--accent2)">10% de comision</strong> por cada venta confirmada. Los clientes por tu enlace ven precios con 10% adicional.</p>
+      <label class="lbl">Nombre</label><input class="input-field" id="affName" placeholder="Nombre o apodo">
+      <label class="lbl">Email</label><input class="input-field" id="affEmail" placeholder="tu@email.com" type="email">
+      <label class="lbl">Contrasena</label><input class="input-field" id="affPass" placeholder="Minimo 6 caracteres" type="password">
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary" onclick="affRegister()" style="flex:1">Registrarse</button>
+        <button class="btn" style="flex:1;background:var(--surface2);color:var(--text)" onclick="affLoginFn()">Iniciar sesion</button>
       </div>
     </div>
   </div>
-</footer>
+  <div id="affDashboard" style="display:none">
+    <div class="panel">
+      <h3>Hola, <span id="affWelcome"></span> <span class="badge badge-green">Activo</span></h3>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-value" id="affClicks">0</div><div class="stat-label">Clics</div></div>
+        <div class="stat-card"><div class="stat-value" id="affPending">0</div><div class="stat-label">Pendientes</div></div>
+        <div class="stat-card"><div class="stat-value" id="affConfirmed">0</div><div class="stat-label">Confirmados</div></div>
+        <div class="stat-card"><div class="stat-value" id="affEarnings">$0</div><div class="stat-label">Ganancias</div></div>
+      </div>
+      <label class="lbl">Tu enlace de afiliado</label>
+      <div class="ref-link-box"><input type="text" id="affLink" readonly><button class="copy-btn" onclick="copyAffLink()">Copiar</button></div>
+      <div class="divider"></div>
+      <label class="lbl">Pedidos confirmados</label>
+      <div id="affOrdersList"><p style="color:var(--muted);font-size:13px">Sin pedidos confirmados aun.</p></div>
+      <div class="divider"></div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <div style="flex:1"><label class="lbl">Solicitar pago</label><div style="font-size:12px;color:var(--muted)">Minimo $5.00</div></div>
+        <button class="btn btn-primary btn-sm" onclick="requestPayout()">Solicitar pago</button>
+      </div>
+      <div class="divider"></div>
+      <button class="btn btn-danger btn-sm" onclick="affLogout()">Cerrar sesion del panel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN VIEW -->
+<div class="view" id="view-admin-login">
+  <div class="login-wrap">
+    <div style="text-align:center;margin-bottom:26px">
+      <div style="font-size:44px">&#x1F510;</div>
+      <div class="site-name" style="margin-top:10px">Panel Admin</div>
+      <div style="color:var(--muted);font-size:13px;margin-top:4px">Solo para administradores</div>
+    </div>
+    <div class="panel">
+      <label class="lbl">Usuario</label>
+      <input class="input-field" id="adminUser" placeholder="Usuario">
+      <label class="lbl">Contrasena</label>
+      <input class="input-field" id="adminPass" placeholder="......" type="password" onkeydown="if(event.key==='Enter')adminLogin()">
+      <button class="btn btn-primary" style="width:100%" onclick="adminLogin()">Entrar al panel</button>
+    </div>
+    <nav style="margin-top:14px"><button class="nav-btn" onclick="showView('store')">Volver al catalogo</button></nav>
+  </div>
+</div>
+
+<!-- ADMIN PANEL VIEW -->
+<div class="view" id="view-admin">
+  <header>
+    <div class="site-name">Panel de Administracion</div>
+    <div class="site-tagline">Gestiona tu tienda SMM</div>
+  </header>
+  <nav>
+    <button class="nav-btn" onclick="showView('store')">&#x1F3EA; Ver tienda</button>
+    <button class="nav-btn" style="background:rgba(239,68,68,0.15);color:#f87171;border-color:rgba(239,68,68,0.3)" onclick="adminLogout()">Cerrar sesion</button>
+  </nav>
+  <div class="admin-tabs">
+    <button class="admin-tab active" onclick="switchTab('general')">&#x2699; General</button>
+    <button class="admin-tab" onclick="switchTab('credits')">&#x1FA99; Creditos</button>
+    <button class="admin-tab" onclick="switchTab('orders')" id="ordersTabBtn">&#x1F4E6; Pedidos <span id="pendingBadge" style="display:none;background:#f59e0b;color:#000;font-size:10px;font-weight:800;padding:2px 6px;border-radius:100px;margin-left:4px">0</span></button>
+    <button class="admin-tab" onclick="switchTab('users')">&#x1F464; Usuarios</button>
+    <button class="admin-tab" onclick="switchTab('platforms')">&#x1F4F1; Plataformas</button>
+    <button class="admin-tab" onclick="switchTab('products')">&#x1F4B0; Productos</button>
+    <button class="admin-tab" onclick="switchTab('promos')">&#x1F4E3; Promos</button>
+    <button class="admin-tab" onclick="switchTab('affiliates')">&#x1F91D; Afiliados</button>
+    <button class="admin-tab" onclick="switchTab('notifs')">&#x1F514; Notificaciones <span id="notifAdminBadge" style="display:none;background:#7c3aed;color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:100px;margin-left:4px">0</span></button>
+  </div>
+
+  <div class="admin-section active" id="admin-general">
+    <div class="panel">
+      <h3>&#x2699; Configuracion General</h3>
+      <div class="form-row">
+        <div><label class="lbl">Nombre de la web</label><input class="input-field" id="cfg-name" placeholder="SMMBoost Pro"></div>
+        <div><label class="lbl">Tagline</label><input class="input-field" id="cfg-tagline" placeholder="Servicios SMM..."></div>
+      </div>
+      <div class="form-row">
+        <div><label class="lbl">WhatsApp</label><input class="input-field" id="cfg-whatsapp" placeholder="+1234567890"></div>
+        <div><label class="lbl">Email</label><input class="input-field" id="cfg-email" placeholder="tu@email.com"></div>
+      </div>
+      <label class="lbl">Foto de perfil (URL)</label>
+      <input class="input-field" id="cfg-photo" placeholder="https://... (vacio para emoji)">
+      <label class="lbl">Emoji de perfil</label>
+      <input class="input-field" id="cfg-emoji" placeholder="Ej: escribe un emoji">
+      <div class="divider"></div>
+      <label class="lbl">Cambiar contrasena admin</label>
+      <div class="form-row">
+        <div><input class="input-field" id="cfg-np1" placeholder="Nueva contrasena" type="password"></div>
+        <div><input class="input-field" id="cfg-np2" placeholder="Repetir" type="password"></div>
+      </div>
+      <div class="divider"></div>
+      <h4 style="font-family:Syne,sans-serif;font-size:14px;margin-bottom:12px">&#x2709;&#xFE0F; Configuracion de Emails (EmailJS)</h4>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Para enviar emails automaticos necesitas una cuenta gratuita en <a href="https://www.emailjs.com" target="_blank" style="color:var(--accent2)">emailjs.com</a>. Crea un servicio y una plantilla, y pega los IDs aqui.</p>
+      <div class="form-row">
+        <div><label class="lbl">EmailJS Public Key</label><input class="input-field" id="cfg-ejs-pubkey" placeholder="user_XXXXXXXXXXXX"></div>
+        <div><label class="lbl">Service ID</label><input class="input-field" id="cfg-ejs-service" placeholder="service_XXXXXXX"></div>
+      </div>
+      <div class="form-row">
+        <div><label class="lbl">Template ID (cliente)</label><input class="input-field" id="cfg-ejs-tmpl-client" placeholder="template_XXXXXXX"></div>
+        <div><label class="lbl">Template ID (admin)</label><input class="input-field" id="cfg-ejs-tmpl-admin" placeholder="template_XXXXXXX"></div>
+      </div>
+      <div id="emailTestResult" style="font-size:12px;margin-bottom:10px"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="saveConfig()">&#x1F4BE; Guardar cambios</button>
+        <button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="testEmailConfig()">Probar email</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-section" id="admin-credits">
+    <div class="recharge-box">
+      <h4>&#x1FA99; Recargar Creditos a Usuario</h4>
+      <label class="lbl">Paso 1: Ingresa el correo del cliente</label>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <input class="input-field" id="rc-email" placeholder="correo@ejemplo.com" type="email" style="margin-bottom:0;flex:1">
+        <button class="btn btn-primary btn-sm" onclick="verifyUserForRecharge()" style="flex-shrink:0">Buscar</button>
+      </div>
+      <div class="verify-result" id="verifyResult"></div>
+      <label class="lbl">Paso 2: Cantidad de creditos a transferir</label>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <input class="input-field" id="rc-amount" placeholder="Ej: 10, 50, 100" type="number" min="1" style="margin-bottom:0;flex:1">
+        <button class="btn btn-gold btn-sm" onclick="rechargeUser()" style="flex-shrink:0">Transferir</button>
+      </div>
+      <p style="font-size:11px;color:var(--muted)">Siempre verifica el nombre del usuario antes de transferir.</p>
+    </div>
+    <div class="panel">
+      <h3>&#x1F4CB; Historial de Recargas</h3>
+      <div id="rechargeHistory"><p style="color:var(--muted);font-size:13px">Sin recargas registradas.</p></div>
+    </div>
+  </div>
+
+  <div class="admin-section" id="admin-orders">
+    <div class="panel">
+      <h3>&#x1F4E6; Pedidos Recibidos</h3>
+      <div class="alert-info">Al confirmar un pedido de afiliado se acredita el 10% automaticamente.</div>
+      <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+        <button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="filterOrders('all')">Todos</button>
+        <button class="btn btn-sm" style="background:rgba(234,179,8,0.15);color:#facc15;border:1px solid rgba(234,179,8,0.2)" onclick="filterOrders('pending')">Pendientes</button>
+        <button class="btn btn-sm btn-success" onclick="filterOrders('confirmed')">Confirmados</button>
+        <button class="btn btn-sm btn-danger" onclick="filterOrders('cancelled')">Cancelados</button>
+      </div>
+      <div id="ordersList"></div>
+    </div>
+  </div>
+
+  <div class="admin-section" id="admin-users">
+    <div class="panel">
+      <h3>&#x1F464; Usuarios Registrados</h3>
+      <div id="usersList"></div>
+    </div>
+  </div>
+
+  <div class="admin-section" id="admin-platforms">
+    <div class="panel">
+      <h3>&#x1F4F1; Gestionar Plataformas</h3>
+      <div id="platformsList"></div>
+      <div class="divider"></div>
+      <label class="lbl">Agregar plataforma</label>
+      <div class="form-row">
+        <div><input class="input-field" id="np-plname" placeholder="Nombre (ej: Twitter)"></div>
+        <div><input class="input-field" id="np-plicon" placeholder="Clave SVG o emoji"></div>
+      </div>
+      <input class="input-field" id="np-plcolor" placeholder="Color hex (ej: #1da1f2)">
+      <button class="btn btn-primary" onclick="addPlatform()">+ Agregar</button>
+    </div>
+  </div>
+
+  <div class="admin-section" id="admin-products">
+    <div class="panel">
+      <h3>&#x1F4B0; Gestionar Productos</h3>
+      <p style="color:var(--muted);font-size:12px;margin-bottom:14px">El precio se define en Creditos. Ej: 100 seguidores = 1 credito, 500 seguidores = 3.5 creditos.</p>
+      <div id="productsList"></div>
+      <div class="divider"></div>
+      <label class="lbl">Agregar nuevo producto</label>
+      <div class="form-row">
+        <div><label class="lbl">Nombre del servicio</label><input class="input-field" id="np-name" placeholder="Ej: 100 Seguidores"></div>
+        <div><label class="lbl">Plataforma</label><select class="input-field" id="np-platform"></select></div>
+      </div>
+      <div class="form-row">
+        <div><label class="lbl">Categoria</label><select class="input-field" id="np-cat"><option value="followers">Seguidores/Suscriptores</option><option value="likes">Likes</option><option value="views">Vistas/Reproducciones</option></select></div>
+        <div><label class="lbl">Costo en Creditos</label><input class="input-field" id="np-price" placeholder="Ej: 1, 1.5, 3.5" type="number" step="0.5" min="0.5"></div>
+      </div>
+      <div class="form-row">
+        <div><label class="lbl">Cantidad (unidades)</label><input class="input-field" id="np-qty" placeholder="Ej: 100, 500, 1000"></div>
+        <div><label class="lbl">Descripcion</label><input class="input-field" id="np-desc" placeholder="Ej: Alta calidad"></div>
+      </div>
+      <label class="lbl">Etiqueta</label>
+      <select class="input-field" id="np-tag" onchange="document.getElementById('customTagWrap').style.display=this.value==='custom'?'block':'none'">
+        <option value="">Sin etiqueta</option>
+        <option value="promo">Promo Especial</option>
+        <option value="hot">Mas Vendido</option>
+        <option value="rec">Recomendado</option>
+        <option value="new">Nuevo</option>
+        <option value="custom">Personalizada</option>
+      </select>
+      <div id="customTagWrap" style="display:none"><input class="input-field" id="np-customtag" placeholder="Texto de etiqueta"></div>
+      <button class="btn btn-primary" onclick="addProduct()">+ Agregar producto</button>
+    </div>
+  </div>
+
+  <div class="admin-section" id="admin-promos">
+    <div class="panel">
+      <h3>&#x1F4E3; Promociones / Anuncios</h3>
+      <p style="color:var(--muted);font-size:12px;margin-bottom:14px">La promocion activa se muestra como popup al entrar a la web.</p>
+      <div id="promoStatusBox" style="margin-bottom:14px"></div>
+      <label class="lbl">Titulo</label><input class="input-field" id="promo-title" placeholder="Ej: SUPER OFERTA HOY">
+      <label class="lbl">Descripcion</label><textarea class="input-field" id="promo-desc" placeholder="Describe la promocion..." rows="3" style="resize:vertical"></textarea>
+      <label class="lbl">Etiqueta del banner</label><input class="input-field" id="promo-label" placeholder="Ej: OFERTA LIMITADA">
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-primary" style="flex:1" onclick="savePromo(true)">&#x1F7E2; Activar</button>
+        <button class="btn btn-danger" onclick="savePromo(false)">Desactivar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-section" id="admin-notifs">
+    <div class="panel">
+      <h3>&#x1F514; Historial de Notificaciones</h3>
+      <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+        <button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="filterNotifs('all')">Todas</button>
+        <button class="btn btn-sm" style="background:rgba(245,158,11,0.15);color:#facc15;border:1px solid rgba(245,158,11,0.2)" onclick="filterNotifs('new_order')">Nuevos pedidos</button>
+        <button class="btn btn-sm btn-success" onclick="filterNotifs('completed')">Completados</button>
+        <button class="btn btn-sm btn-danger" onclick="filterNotifs('cancelled')">Cancelados</button>
+        <button class="btn btn-sm" onclick="markAllNotifsRead()" style="background:var(--accent);color:#fff;margin-left:auto">Marcar leidas</button>
+      </div>
+      <div id="adminNotifsList"></div>
+    </div>
+  </div>
+
+  <div class="admin-section" id="admin-affiliates">
+    <div class="panel">
+      <h3>&#x1F91D; Afiliados Registrados</h3>
+      <div id="affiliatesList"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
 
 <script>
-  // CURSOR
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  document.addEventListener('mousemove', e => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-    setTimeout(() => {
-      ring.style.left = e.clientX + 'px';
-      ring.style.top = e.clientY + 'px';
-    }, 60);
-  });
+// ============================================================
+// SVG BRAND ICONS
+// ============================================================
+var SVGS = {};
+SVGS['instagram'] = '<svg viewBox="0 0 24 24" width="44" height="44" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ig1" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#f09433"/><stop offset="0.25" stop-color="#e6683c"/><stop offset="0.5" stop-color="#dc2743"/><stop offset="0.75" stop-color="#cc2366"/><stop offset="1" stop-color="#bc1888"/></linearGradient></defs><rect width="24" height="24" rx="5" fill="url(#ig1)"/><rect x="6.5" y="6.5" width="11" height="11" rx="3" stroke="white" stroke-width="1.5" fill="none"/><circle cx="12" cy="12" r="3" stroke="white" stroke-width="1.5" fill="none"/><circle cx="16.5" cy="7.5" r="1" fill="white"/></svg>';
+SVGS['youtube']   = '<svg viewBox="0 0 24 24" width="44" height="44" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#FF0000"/><path d="M19.6 8.2c-.2-.7-.7-1.3-1.4-1.5C17 6.5 12 6.5 12 6.5s-5 0-6.2.3c-.7.2-1.2.7-1.4 1.5C4.2 9.4 4.2 12 4.2 12s0 2.6.2 3.8c.2.7.7 1.3 1.4 1.5C7 17.5 12 17.5 12 17.5s5 0 6.2-.3c.7-.2 1.2-.7 1.4-1.5.2-1.2.2-3.7.2-3.7s0-2.6-.2-3.8zm-9 5.8V10l4.3 2-4.3 2z" fill="white"/></svg>';
+SVGS['facebook']  = '<svg viewBox="0 0 24 24" width="44" height="44" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#1877F2"/><path d="M16.7 15.3l.4-2.8h-2.7v-1.8c0-.8.4-1.5 1.5-1.5h1.2V6.7s-1-.2-2.1-.2c-2.2 0-3.6 1.4-3.6 3.8v2.2H8.8v2.8h2.6V22h3.2v-6.7h2.1z" fill="white"/></svg>';
+SVGS['tiktok']    = '<svg viewBox="0 0 24 24" width="44" height="44" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#010101"/><path d="M17 8.5a3.8 3.8 0 0 1-2.3-.8v5.3a4 4 0 1 1-3.4-4v2.2a1.8 1.8 0 1 0 1.2 1.7V4h2.2a3.8 3.8 0 0 0 2.3 3.6V8.5z" fill="#69C9D0"/><path d="M16.5 8a3.8 3.8 0 0 1-2.3-.8v5.3a4 4 0 1 1-3.4-4v2.2a1.8 1.8 0 1 0 1.2 1.7V3.5h2.2A3.8 3.8 0 0 0 16.5 7V8z" fill="white"/></svg>';
+SVGS['whatsapp']  = '<svg viewBox="0 0 24 24" width="44" height="44" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#25D366"/><path d="M12 4a8 8 0 0 0-6.9 12L4 20l4.1-1.1A8 8 0 1 0 12 4zm4.7 10.9c-.2.6-1.2 1.1-1.6 1.2-.4 0-.8.1-2.4-.5-2-1-3.3-3-3.4-3.2-.1-.2-1-1.3-1-2.5s.6-1.8.9-2c.2-.3.5-.3.6-.3h.5c.1 0 .3 0 .5.4l.6 1.6c.1.2.1.4 0 .5l-.3.5-.3.3c.1.2.6.9 1.2 1.5.7.7 1.4 1 1.6 1.1l.5-.6c.1-.2.3-.2.5-.1l1.5.7c.2.1.4.2.4.4s-.1.8-.3 1z" fill="white"/></svg>';
+SVGS['twitter']   = '<svg viewBox="0 0 24 24" width="44" height="44" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#000"/><path d="M13.5 10.6L18.9 4h-1.3l-4.7 5.5L8.9 4H4.5l5.6 8.2L4.5 20h1.3l4.9-5.7 3.9 5.7h4.4L13.5 10.6zm-1.7 2l-.6-.8-4.7-6.7h2l3.8 5.5.6.8 4.9 7.1h-2l-4-5.9z" fill="white"/></svg>';
+SVGS['telegram']  = '<svg viewBox="0 0 24 24" width="44" height="44" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#2AABEE"/><path d="M5 11.6l13-5c.6-.2 1.1.1.9.8l-2.2 10.4c-.2.7-.6.9-1.2.5l-3.3-2.4-1.6 1.5c-.2.2-.4.3-.8.3l.3-3.4 6.7-6.1c.3-.3-.1-.4-.5-.2L8.2 13.5 5 12.5c-.7-.2-.7-.7.1-1z" fill="white"/></svg>';
+SVGS['snapchat']  = '<svg viewBox="0 0 24 24" width="44" height="44" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#FFFC00"/><path d="M12 4.5c-1.8 0-3.3 1.5-3.3 3.3v.6c-.3.1-.7.2-.9.1-.2.1-.2.4 0 .5.4.2.8.5.9.8-.3.5-.7 1.3-1.7 1.6-.2.1-.2.4.1.5.6.1 1.2.5 1.3.6 0 .2.1.3.1.4-.1.1-.3.2-.5.2-.3.1-.7.2-.9.4-.1.1-.1.3.1.4.2.2.5.3 1 .3.4 0 .9.1 1.4.4.8.5 1.7.7 2.8.7s2-.3 2.8-.7c.5-.3.9-.4 1.4-.4.4 0 .8-.1 1-.3.1-.1.1-.3-.1-.4-.2-.2-.6-.3-.9-.4-.2-.1-.4-.1-.5-.2 0-.1.1-.2.1-.4.2-.1.7-.5 1.3-.6.3-.1.3-.4.1-.5-1-.3-1.4-1.1-1.7-1.6.1-.3.5-.6.9-.8.2-.1.2-.4 0-.5-.2.1-.6 0-.9-.1v-.6C15.3 6 13.8 4.5 12 4.5z" fill="#333"/></svg>';
 
-  // SCROLL REVEAL
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-  }, { threshold: 0.12 });
-  reveals.forEach(r => observer.observe(r));
+function getIcon(key, size) {
+  var s = size || 44;
+  if (SVGS[key]) return SVGS[key].replace('width="44"','width="'+s+'"').replace('height="44"','height="'+s+'"');
+  return '<span style="font-size:'+Math.round(s*0.75)+'px;line-height:1">'+key+'</span>';
+}
 
-  // COUNTER ANIMATION
-  function animateCounter(el, target, suffix) {
-    const isDecimal = target % 1 !== 0;
-    const duration = 2000;
-    const start = performance.now();
-    function update(now) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const value = isDecimal ? (target * eased).toFixed(2) : Math.floor(target * eased).toLocaleString();
-      el.innerHTML = value + '<span>' + suffix + '</span>';
-      if (progress < 1) requestAnimationFrame(update);
+// ============================================================
+// CONSTANTS
+// ============================================================
+var ADMIN_USER = 'admin';
+var ADMIN_PASS = 'admin123';
+var ADMIN_SK   = 'smm_admin_sess';
+var USERS_KEY  = 'smm_users';
+var USER_SK    = 'smm_user_sess';
+var RECHARGE_KEY = 'smm_recharges';
+
+var TAG_LABELS  = {promo:'Promo Especial', hot:'Mas Vendido', rec:'Recomendado', 'new':'Nuevo', custom:''};
+var TAG_CLASSES = {promo:'tag-promo', hot:'tag-hot', rec:'tag-rec', 'new':'tag-new', custom:'tag-custom'};
+
+// ============================================================
+// STATE
+// ============================================================
+var state = {
+  config:{name:'SMMBoost Pro',tagline:'Servicios SMM al mejor precio',whatsapp:'+1234567890',email:'contacto@smmboost.com',photo:'',emoji:''},
+  platforms:[
+    {id:'instagram',name:'Instagram',icon:'instagram',color:'#e1306c'},
+    {id:'youtube',name:'YouTube',icon:'youtube',color:'#ff0000'},
+    {id:'facebook',name:'Facebook',icon:'facebook',color:'#1877f2'},
+    {id:'tiktok',name:'TikTok',icon:'tiktok',color:'#010101'},
+    {id:'whatsapp',name:'WhatsApp',icon:'whatsapp',color:'#25d366'}
+  ],
+  products:[
+    {id:'p1',platform:'instagram',category:'followers',name:'100 Seguidores',qty:'100',price:1,desc:'Alta calidad',tag:''},
+    {id:'p2',platform:'instagram',category:'followers',name:'500 Seguidores',qty:'500',price:3,desc:'Entrega 24h',tag:'hot'},
+    {id:'p3',platform:'instagram',category:'followers',name:'1000 Seguidores',qty:'1000',price:5,desc:'Garantizados',tag:'rec'},
+    {id:'p4',platform:'instagram',category:'followers',name:'5000 Seguidores',qty:'5000',price:20,desc:'Premium',tag:'promo'},
+    {id:'p5',platform:'instagram',category:'likes',name:'100 Likes',qty:'100',price:0.5,desc:'Rapido',tag:''},
+    {id:'p6',platform:'instagram',category:'likes',name:'500 Likes',qty:'500',price:2,desc:'Reales',tag:''},
+    {id:'p7',platform:'instagram',category:'likes',name:'1000 Likes',qty:'1000',price:3.5,desc:'Sin caida',tag:'hot'},
+    {id:'p8',platform:'instagram',category:'views',name:'1000 Vistas',qty:'1000',price:0.5,desc:'Instantaneo',tag:''},
+    {id:'p9',platform:'instagram',category:'views',name:'5000 Vistas',qty:'5000',price:2,desc:'Reels y Videos',tag:'rec'},
+    {id:'p10',platform:'instagram',category:'views',name:'10000 Vistas',qty:'10000',price:3.5,desc:'Alta retencion',tag:''},
+    {id:'p11',platform:'youtube',category:'followers',name:'100 Suscriptores',qty:'100',price:1.5,desc:'Reales',tag:''},
+    {id:'p12',platform:'youtube',category:'followers',name:'500 Suscriptores',qty:'500',price:6,desc:'Permanentes',tag:'rec'},
+    {id:'p13',platform:'youtube',category:'views',name:'1000 Reproducciones',qty:'1000',price:1,desc:'Alta retencion',tag:''},
+    {id:'p14',platform:'youtube',category:'likes',name:'100 Likes',qty:'100',price:0.5,desc:'Naturales',tag:''},
+    {id:'p15',platform:'tiktok',category:'followers',name:'500 Seguidores',qty:'500',price:2.5,desc:'Reales',tag:''},
+    {id:'p16',platform:'tiktok',category:'views',name:'5000 Vistas',qty:'5000',price:1.5,desc:'Instantaneo',tag:'hot'},
+    {id:'p17',platform:'tiktok',category:'likes',name:'200 Likes',qty:'200',price:1,desc:'Rapido',tag:''},
+    {id:'p18',platform:'facebook',category:'followers',name:'200 Seguidores',qty:'200',price:1.5,desc:'Reales',tag:''},
+    {id:'p19',platform:'facebook',category:'likes',name:'100 Likes',qty:'100',price:0.5,desc:'Naturales',tag:''},
+    {id:'p20',platform:'whatsapp',category:'followers',name:'100 Miembros canal',qty:'100',price:2.5,desc:'Reales',tag:'new'},
+    {id:'p21',platform:'whatsapp',category:'followers',name:'500 Miembros canal',qty:'500',price:10,desc:'Premium',tag:''}
+  ],
+  orders:[],
+  promo:{active:false,title:'',desc:'',label:'PROMOCION'},
+  affiliates:[],
+  currentAff:null,
+  isAdmin:false,
+  emailjs:null,
+  currentUser:null,
+  affMult:1,
+  nav:{platform:null,category:null},
+  orderFilter:'all',
+  verifiedUser:null
+};
+
+// ============================================================
+// AFFILIATE REF
+// ============================================================
+var refCode = '';
+try { var _up=new URLSearchParams(window.location.search); refCode=_up.get('ref')||''; } catch(e){}
+if (refCode) {
+  state.affMult = 1.10;
+  var _ab=document.getElementById('affBanner');
+  if(_ab) _ab.style.display='block';
+  try {
+    var _af=JSON.parse(localStorage.getItem('smm_affs')||'[]');
+    for(var _i=0;_i<_af.length;_i++) if(_af[_i].code===refCode){_af[_i].clicks=(_af[_i].clicks||0)+1;break;}
+    localStorage.setItem('smm_affs',JSON.stringify(_af));
+  } catch(e){}
+}
+
+// ============================================================
+// STORAGE
+// ============================================================
+function loadState() {
+  try {
+    var s=JSON.parse(localStorage.getItem('smm_state')||'null');
+    if(s){
+      if(s.config)    state.config=s.config;
+      if(s.platforms) state.platforms=s.platforms;
+      if(s.products)  state.products=s.products;
+      if(s.orders)    state.orders=s.orders;
+      if(s.promo)     state.promo=s.promo;
+      if(s.adminPass) ADMIN_PASS=s.adminPass;
+      if(s.emailjs) state.emailjs=s.emailjs;
     }
-    requestAnimationFrame(update);
+    state.affiliates=JSON.parse(localStorage.getItem('smm_affs')||'[]');
+    if(localStorage.getItem(ADMIN_SK)==='1') state.isAdmin=true;
+    var usid=localStorage.getItem(USER_SK);
+    if(usid){ var users=getUsers(); for(var i=0;i<users.length;i++) if(users[i].id===usid){state.currentUser=users[i];break;} }
+  } catch(e){}
+}
+function saveState() {
+  try {
+    localStorage.setItem('smm_state',JSON.stringify({
+      config:state.config,platforms:state.platforms,products:state.products,
+      orders:state.orders,promo:state.promo,adminPass:ADMIN_PASS,
+      emailjs:state.emailjs||null
+    }));
+    localStorage.setItem('smm_affs',JSON.stringify(state.affiliates));
+  } catch(e){}
+}
+function getUsers(){ try{return JSON.parse(localStorage.getItem(USERS_KEY)||'[]');}catch(e){return[];} }
+function saveUsers(u){ try{localStorage.setItem(USERS_KEY,JSON.stringify(u));}catch(e){} }
+function getUserById(id){ var u=getUsers(); for(var i=0;i<u.length;i++) if(u[i].id===id) return u[i]; return null; }
+function getUserByEmail(email){ var u=getUsers(); for(var i=0;i<u.length;i++) if(u[i].email===email.toLowerCase().trim()) return u[i]; return null; }
+function updateUser(updated){ var u=getUsers(); for(var i=0;i<u.length;i++) if(u[i].id===updated.id){u[i]=updated;break;} saveUsers(u); state.currentUser=updated; }
+function getRecharges(){ try{return JSON.parse(localStorage.getItem(RECHARGE_KEY)||'[]');}catch(e){return[];} }
+function saveRecharges(r){ try{localStorage.setItem(RECHARGE_KEY,JSON.stringify(r));}catch(e){} }
+
+loadState();
+
+// ============================================================
+// AUTH GATE
+// ============================================================
+function switchAuthTab(t){
+  document.getElementById('tabReg').classList.toggle('active',t==='reg');
+  document.getElementById('tabLog').classList.toggle('active',t==='log');
+  document.getElementById('authRegForm').style.display=t==='reg'?'block':'none';
+  document.getElementById('authLogForm').style.display=t==='log'?'block':'none';
+  document.getElementById('authErr').textContent='';
+}
+function hashPass(p){ var h=0,i,c; for(i=0;i<p.length;i++){c=p.charCodeAt(i);h=((h<<5)-h)+c;h=h&h;} return h.toString(36); }
+
+function doRegister(){
+  var name=document.getElementById('regName').value.trim();
+  var email=document.getElementById('regEmail').value.trim().toLowerCase();
+  var pass=document.getElementById('regPass').value;
+  var pass2=document.getElementById('regPass2').value;
+  var err=document.getElementById('authErr');
+  if(!name||!email||!pass){err.textContent='Completa todos los campos.';return;}
+  if(pass.length<6){err.textContent='La contrasena debe tener al menos 6 caracteres.';return;}
+  if(pass!==pass2){err.textContent='Las contrasenas no coinciden.';return;}
+  if(!/^[^@]+@[^@]+\.[^@]+$/.test(email)){err.textContent='Ingresa un email valido.';return;}
+  if(getUserByEmail(email)){err.textContent='Este email ya esta registrado. Inicia sesion.';return;}
+  var users=getUsers();
+  var u={id:'u'+Date.now(),name:name,email:email,passHash:hashPass(pass),credits:0,totalSpent:0,joined:new Date().toLocaleDateString('es')};
+  users.push(u); saveUsers(users);
+  localStorage.setItem(USER_SK,u.id);
+  state.currentUser=u; openApp();
+}
+
+function doLogin(){
+  var email=document.getElementById('logEmail').value.trim().toLowerCase();
+  var pass=document.getElementById('logPass').value;
+  var err=document.getElementById('authErr');
+  if(!email||!pass){err.textContent='Ingresa tu email y contrasena.';return;}
+  var ph=hashPass(pass);
+  var users=getUsers();
+  for(var i=0;i<users.length;i++){
+    if(users[i].email===email&&users[i].passHash===ph){
+      state.currentUser=users[i]; localStorage.setItem(USER_SK,users[i].id); openApp(); return;
+    }
   }
+  err.textContent='Email o contrasena incorrectos.';
+}
 
-  const statObserver = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const el = e.target;
-        const target = parseFloat(el.dataset.target);
-        const suffix = el.querySelector('span').textContent;
-        animateCounter(el, target, suffix);
-        statObserver.unobserve(el);
+function openApp(){
+  document.getElementById('authGate').style.display='none';
+  updateHeader(); renderStore(); checkPromo();
+}
+
+function logoutUser(){
+  state.currentUser=null; localStorage.removeItem(USER_SK);
+  document.getElementById('authGate').style.display='flex';
+  document.getElementById('authErr').textContent='';
+  switchAuthTab('log');
+}
+
+// ============================================================
+// PROMO
+// ============================================================
+function checkPromo(){
+  if(!state.promo||!state.promo.active||!state.promo.title) return;
+  var key='smm_promo_'+state.promo.title.replace(/\s/g,'');
+  if(sessionStorage.getItem(key)) return;
+  sessionStorage.setItem(key,'1');
+  document.getElementById('promoLabel').textContent=state.promo.label||'PROMOCION';
+  document.getElementById('promoTitle').textContent=state.promo.title;
+  document.getElementById('promoDesc').textContent=state.promo.desc;
+  setTimeout(function(){ document.getElementById('promoOverlay').classList.add('open'); },900);
+}
+function closePromo(){ document.getElementById('promoOverlay').classList.remove('open'); }
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showView(v){
+  var views=document.querySelectorAll('.view');
+  for(var i=0;i<views.length;i++) views[i].classList.remove('active');
+  if(v==='admin'&&!state.isAdmin) v='admin-login';
+  document.getElementById('view-'+v).classList.add('active');
+  if(v==='store') renderStore();
+  if(v==='admin') renderAdmin();
+  if(v==='affiliate') renderAffiliate();
+  if(v==='my-account') renderMyAccount();
+  window.scrollTo(0,0);
+}
+
+// ============================================================
+// HEADER
+// ============================================================
+function updateHeader(){
+  var c=state.config;
+  var names=['headerName','headerName2'];
+  for(var i=0;i<names.length;i++){var el=document.getElementById(names[i]);if(el)el.textContent=c.name;}
+  var tg=document.getElementById('headerTagline');if(tg)tg.textContent=c.tagline;
+  document.title=c.name;
+  var img=document.getElementById('headerImg'),emo=document.getElementById('headerEmoji');
+  var asn=document.getElementById('authSiteName');if(asn)asn.textContent=c.name;
+  if(c.photo){img.src=c.photo;img.style.display='block';if(emo)emo.style.display='none';}
+  else{img.style.display='none';if(emo){emo.style.display='block';emo.textContent=c.emoji||'';}}
+  var wa=(c.whatsapp||'').replace(/\D/g,'');
+  var waEl=document.getElementById('waFloat');if(waEl)waEl.href='https://wa.me/'+wa+'?text=Hola!';
+  var aWA=document.getElementById('aboutWA');if(aWA)aWA.href='https://wa.me/'+wa+'?text=Hola!';
+  var aWAt=document.getElementById('aboutWAtext');if(aWAt)aWAt.textContent=c.whatsapp||'WhatsApp';
+  var aEM=document.getElementById('aboutEM');if(aEM)aEM.href='mailto:'+(c.email||'');
+  var aEMt=document.getElementById('aboutEMtext');if(aEMt)aEMt.textContent=c.email||'Email';
+  var insufBtn=document.getElementById('insufWABtn');if(insufBtn)insufBtn.href='https://wa.me/'+wa+'?text=Hola!%20Quiero%20recargar%20creditos.';
+  // Balance bar
+  var bar=document.getElementById('balanceBar');
+  var bdisp=document.getElementById('balanceDisplay');
+  var uname=document.getElementById('userBarName');
+  if(state.currentUser&&bar){
+    bar.style.display='flex';
+    var cu=getUserById(state.currentUser.id)||state.currentUser;
+    if(bdisp)bdisp.textContent=parseFloat(cu.credits||0).toFixed(1);
+    if(uname)uname.textContent=cu.name;
+  } else if(bar){ bar.style.display='none'; }
+}
+
+// ============================================================
+// MY ACCOUNT
+// ============================================================
+function renderMyAccount(){
+  if(!state.currentUser) return;
+  var cu=getUserById(state.currentUser.id)||state.currentUser;
+  state.currentUser=cu;
+  var cred=parseFloat(cu.credits||0);
+  document.getElementById('myBalance').textContent=cred.toFixed(1);
+  var myOrders=[];
+  for(var i=0;i<state.orders.length;i++) if(state.orders[i].userEmail===cu.email) myOrders.push(state.orders[i]);
+  document.getElementById('myOrdersCount').textContent=myOrders.length;
+  document.getElementById('myTotalSpent').textContent=parseFloat(cu.totalSpent||0).toFixed(1);
+  // Insufficient alert
+  document.getElementById('insufAlertAccount').style.display=cred<=0?'block':'none';
+  renderUserNotifs();
+  // Recharge history
+  var recharges=getRecharges(),myRec=[];
+  for(var j=0;j<recharges.length;j++) if(recharges[j].userId===cu.id) myRec.push(recharges[j]);
+  if(myRec.length===0){ document.getElementById('myRechargeHistory').innerHTML='<p style="color:var(--muted);font-size:13px">Sin recargas aun.</p>'; }
+  else {
+    var rHtml='';
+    for(var k=myRec.length-1;k>=0;k--){
+      var r=myRec[k];
+      rHtml+='<div class="tx-item"><div class="tx-left">'+r.date+' &middot; Recarga manual</div><div class="tx-right">+'+r.amount+' Cr</div></div>';
+    }
+    document.getElementById('myRechargeHistory').innerHTML=rHtml;
+  }
+  // My orders
+  if(myOrders.length===0){ document.getElementById('myOrdersList').innerHTML='<p style="color:var(--muted);font-size:13px">Sin pedidos aun.</p>'; }
+  else {
+    var oHtml='';
+    for(var l=myOrders.length-1;l>=0;l--){
+      var o=myOrders[l];
+      var sb=o.status==='pending'?'<span class="badge badge-yellow">Pendiente</span>':o.status==='confirmed'?'<span class="badge badge-green">Confirmado</span>':'<span class="badge badge-red">Cancelado</span>';
+      oHtml+='<div class="order-card"><div class="order-header"><span class="order-id">'+o.id+' &middot; '+o.date+'</span>'+sb+'</div>';
+      oHtml+='<div class="order-body"><strong>'+o.productName+'</strong> &middot; '+o.platform+' &middot; '+o.qty+' uds<br>';
+      oHtml+='Costo: <strong style="color:var(--gold)">'+o.creditCost+' Cr</strong> &middot; Perfil: <strong>'+o.user+'</strong></div></div>';
+    }
+    document.getElementById('myOrdersList').innerHTML=oHtml;
+  }
+}
+
+// ============================================================
+// STORE
+// ============================================================
+function getPlatform(id){for(var i=0;i<state.platforms.length;i++)if(state.platforms[i].id===id)return state.platforms[i];return{id:'',name:'',icon:'',color:''};}
+function getCats(pid){var r={followers:false,likes:false,views:false};for(var i=0;i<state.products.length;i++){var p=state.products[i];if(p.platform===pid)r[p.category]=true;}return r;}
+function buildTag(prod){
+  if(!prod.tag)return'';
+  var cls=TAG_CLASSES[prod.tag]||'tag-custom';
+  var lbl=prod.tag==='custom'?(prod.customTag||''):(TAG_LABELS[prod.tag]||'');
+  if(!lbl)return'';
+  return '<span class="tag '+cls+'">'+lbl+'</span>';
+}
+function getUserCredits(){
+  if(!state.currentUser) return 0;
+  var cu=getUserById(state.currentUser.id);
+  return parseFloat((cu&&cu.credits)||0);
+}
+
+function renderStore(){
+  updateHeader();
+  var plt=state.nav.platform,cat=state.nav.category,html='';
+  if(!plt){
+    html='<div class="section-title">Elige una plataforma</div><div class="platforms-grid">';
+    for(var i=0;i<state.platforms.length;i++){var p=state.platforms[i];html+='<div class="platform-card" onclick="selectPlatform(\''+p.id+'\')"><div class="platform-icon">'+getIcon(p.icon,44)+'</div><div class="platform-name">'+p.name+'</div></div>';}
+    html+='</div>';
+  } else if(!cat){
+    var pl=getPlatform(plt),cats=getCats(plt);
+    html='<div class="breadcrumb"><span onclick="goHome()">Inicio</span><span class="sep">&#x276F;</span><span class="current">'+pl.name+'</span></div>';
+    html+='<div class="section-title">Que deseas para '+pl.name+'?</div><div class="categories-grid">';
+    if(cats.followers)html+='<div class="cat-card" onclick="selectCat(\'followers\')"><div class="cat-icon">&#x1F465;</div><div class="cat-name">Seguidores<br>Suscriptores</div></div>';
+    if(cats.likes)html+='<div class="cat-card" onclick="selectCat(\'likes\')"><div class="cat-icon">&#x2764;&#xFE0F;</div><div class="cat-name">Likes</div></div>';
+    if(cats.views)html+='<div class="cat-card" onclick="selectCat(\'views\')"><div class="cat-icon">&#x1F441;&#xFE0F;</div><div class="cat-name">Vistas<br>Reproducciones</div></div>';
+    html+='</div>';
+  } else {
+    var pl2=getPlatform(plt);
+    var catN={followers:'Seguidores/Suscriptores',likes:'Likes',views:'Vistas/Reproducciones'};
+    var catI={followers:'&#x1F465;',likes:'&#x2764;&#xFE0F;',views:'&#x1F441;&#xFE0F;'};
+    var prods=[];for(var j=0;j<state.products.length;j++)if(state.products[j].platform===plt&&state.products[j].category===cat)prods.push(state.products[j]);
+    html='<div class="breadcrumb"><span onclick="goHome()">Inicio</span><span class="sep">&#x276F;</span><span onclick="selectPlatform(\''+plt+'\')">'+pl2.name+'</span><span class="sep">&#x276F;</span><span class="current">'+catN[cat]+'</span></div>';
+    html+='<div class="section-title">'+catI[cat]+' '+catN[cat]+' para '+pl2.name+'</div><div class="products-list">';
+    if(prods.length===0)html+='<div style="text-align:center;padding:36px;color:var(--muted)">No hay productos en esta categoria aun.</div>';
+    var userCr=getUserCredits();
+    for(var k=0;k<prods.length;k++){
+      var pr=prods[k];
+      var creditCost=(parseFloat(pr.price)*state.affMult);
+      var dispCost=creditCost.toFixed(creditCost%1===0?0:1);
+      var canAfford=userCr>=creditCost;
+      var btnClass=canAfford?'buy-btn':'buy-btn insufficient';
+      var btnLabel=canAfford?'Pedir':'Saldo insuficiente';
+      var btnClick=canAfford?'openOrder(\''+pr.id+'\')':'showInsufMsg()';
+      html+='<div class="product-card"><div class="product-info"><div class="product-name">'+pr.name+' '+buildTag(pr)+'</div><div class="product-desc">'+pr.desc+'</div><div class="product-qty">'+pr.qty+' unidades</div></div>';
+      html+='<div class="product-right"><div class="credit-price">&#x1FA99; '+dispCost+' <small>Cr</small></div><button class="'+btnClass+'" onclick="'+btnClick+'">'+btnLabel+'</button></div></div>';
+    }
+    html+='</div>';
+  }
+  document.getElementById('storeContent').innerHTML=html;
+}
+
+function goHome(){state.nav={platform:null,category:null};renderStore();}
+function selectPlatform(id){state.nav={platform:id,category:null};renderStore();}
+function selectCat(c){state.nav.category=c;renderStore();}
+
+function showInsufMsg(){
+  var wa=(state.config.whatsapp||'').replace(/\D/g,'');
+  showToast('Saldo insuficiente. Recarga creditos por WhatsApp.');
+  window.open('https://wa.me/'+wa+'?text=Hola!%20Quiero%20recargar%20creditos.','_blank');
+}
+
+// ============================================================
+// ORDER MODAL
+// ============================================================
+var curProd=null;
+
+var ORDER_PLACEHOLDERS = {
+  'instagram_followers':'https://www.instagram.com/tuusuario',
+  'instagram_likes':'https://www.instagram.com/p/CODIGO_PUBLICACION/',
+  'instagram_views':'https://www.instagram.com/p/CODIGO_PUBLICACION/',
+  'youtube_followers':'https://www.youtube.com/@tucanal',
+  'youtube_likes':'https://www.youtube.com/watch?v=CODIGO_VIDEO',
+  'youtube_views':'https://www.youtube.com/watch?v=CODIGO_VIDEO',
+  'facebook_followers':'https://www.facebook.com/tuperfil',
+  'facebook_likes':'https://www.facebook.com/tupost',
+  'tiktok_followers':'https://www.tiktok.com/@tuusuario',
+  'tiktok_views':'https://www.tiktok.com/@usuario/video/CODIGO',
+  'tiktok_likes':'https://www.tiktok.com/@usuario/video/CODIGO',
+  'whatsapp_followers':'https://whatsapp.com/channel/CODIGO_CANAL',
+  'whatsapp_likes':'https://whatsapp.com/channel/CODIGO - enlace de la publicacion',
+  'whatsapp_views':'https://whatsapp.com/channel/CODIGO - enlace de la publicacion'
+};
+
+function openOrder(pid){
+  for(var i=0;i<state.products.length;i++) if(state.products[i].id===pid){curProd=state.products[i];break;}
+  if(!curProd) return;
+  var pl=getPlatform(curProd.platform);
+  var catN={followers:'Seguidores/Suscriptores',likes:'Likes',views:'Vistas/Reproducciones'};
+  var creditCost=(parseFloat(curProd.price)*state.affMult);
+  var dispCost=creditCost.toFixed(creditCost%1===0?0:1);
+
+  document.getElementById('orderModalContent').innerHTML=
+    '<div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:14px">'+
+    '<div style="font-size:12px;color:var(--muted)">'+pl.name+' &middot; '+catN[curProd.category]+'</div>'+
+    '<div style="font-family:Syne,sans-serif;font-weight:700;font-size:15px;margin:3px 0">'+curProd.name+'</div>'+
+    '<div style="font-size:12px;color:var(--muted)">'+curProd.desc+'</div></div>';
+
+  // Instruction box per category
+  var instrMap={
+    followers:'Envia el enlace de tu <strong>perfil</strong> en '+pl.name+'.',
+    likes:'Envia el enlace de la <strong>publicacion</strong> a la que deseas agregar Likes.',
+    views:'Envia el enlace de la <strong>publicacion o video</strong> al que deseas agregar Vistas/Reproducciones.'
+  };
+  var instrEl=document.getElementById('orderInstructions');
+  instrEl.innerHTML='<div style="background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);border-radius:10px;padding:11px 14px;font-size:12px;color:var(--accent2)">&#x2139;&#xFE0F; '+(instrMap[curProd.category]||'Envia el enlace correspondiente.')+'</div>';
+  instrEl.style.display='block';
+
+  // Marca por Revision: ONLY Instagram + followers
+  var isMarca=(pl.id==='instagram'&&curProd.category==='followers');
+  document.getElementById('marcaRevisionAlert').style.display=isMarca?'block':'none';
+  var mc=document.getElementById('marcaCheck'); if(mc)mc.checked=false;
+
+  // Dynamic label & placeholder
+  var lblMap={followers:'Enlace de tu perfil en '+pl.name,likes:'Enlace de la publicacion (para Likes)',views:'Enlace del video o publicacion (para Vistas)'};
+  var pkey=pl.id+'_'+curProd.category;
+  document.getElementById('orderUserLabel').textContent=lblMap[curProd.category]||'Enlace';
+  document.getElementById('orderUser').placeholder=ORDER_PLACEHOLDERS[pkey]||'https://enlace-del-perfil-o-publicacion';
+  document.getElementById('orderUser').value='';
+
+  var sel=document.getElementById('orderQty'); sel.innerHTML='';
+  var mults=[1,2,3,5];
+  for(var m=0;m<mults.length;m++){
+    var mult=mults[m], q=parseInt(curProd.qty)*mult;
+    var cc=(creditCost*mult), dcc=cc.toFixed(cc%1===0?0:1);
+    var opt=document.createElement('option');
+    opt.value=mult; opt.dataset.credits=cc; opt.dataset.qty=q;
+    opt.textContent=q+' unidades - '+dcc+' Creditos';
+    sel.appendChild(opt);
+  }
+  updateOrderCheck(); sel.onchange=updateOrderCheck;
+  document.getElementById('orderModal').classList.add('open');
+}
+
+function updateOrderCheck(){
+  var sel=document.getElementById('orderQty');
+  var opt=sel.options[sel.selectedIndex];
+  var needed=parseFloat(opt.dataset.credits);
+  var have=getUserCredits();
+  var btn=document.getElementById('confirmOrderBtn');
+  var chk=document.getElementById('creditCheck');
+  var nd=needed.toFixed(needed%1===0?0:1);
+  var hd=have.toFixed(have%1===0?0:1);
+  var marcaAlert=document.getElementById('marcaRevisionAlert');
+  var marcaRequired=(marcaAlert&&marcaAlert.style.display!=='none');
+  var marcaOk=(!marcaRequired)||(document.getElementById('marcaCheck')&&document.getElementById('marcaCheck').checked);
+  if(have<needed){
+    chk.innerHTML='<span style="color:#f87171">&#x26A0;&#xFE0F; Saldo insuficiente: tienes '+hd+' Cr, necesitas '+nd+' Cr.</span>';
+    btn.style.background='rgba(239,68,68,0.3)'; btn.disabled=true;
+  } else if(!marcaOk){
+    chk.innerHTML='<span style="color:#facc15">&#x26A0;&#xFE0F; Debes confirmar que desactivaste "Marca por Revision".</span>';
+    btn.style.background='rgba(234,179,8,0.3)'; btn.disabled=true;
+  } else {
+    chk.innerHTML='<span style="color:var(--accent3)">&#x2705; Todo listo: tienes '+hd+' Cr, se descontaran '+nd+' Cr.</span>';
+    btn.style.background='var(--accent)'; btn.disabled=false;
+  }
+}
+function closeModal(){document.getElementById('orderModal').classList.remove('open');}
+
+function sendOrder(){
+  var user=document.getElementById('orderUser').value.trim();
+  if(!user){showToast('Ingresa el enlace de tu perfil o publicacion');return;}
+  var sel=document.getElementById('orderQty'); var opt=sel.options[sel.selectedIndex];
+  var qty=parseInt(opt.dataset.qty);
+  var creditCost=parseFloat(opt.dataset.credits);
+  var have=getUserCredits();
+  if(have<creditCost){showToast('Saldo insuficiente');return;}
+  var marcaAlert=document.getElementById('marcaRevisionAlert');
+  var marcaRequired=(marcaAlert&&marcaAlert.style.display!=='none');
+  if(marcaRequired&&!document.getElementById('marcaCheck').checked){showToast('Confirma que desactivaste Marca por Revision');return;}
+  var pl=getPlatform(curProd.platform);
+  var catN={followers:'Seguidores/Suscriptores',likes:'Likes',views:'Vistas/Reproducciones'};
+  var ordId='ORD'+Date.now();
+  var cu=getUserById(state.currentUser.id);
+  cu.credits=(parseFloat(cu.credits||0)-creditCost);
+  cu.totalSpent=(parseFloat(cu.totalSpent||0)+creditCost);
+  updateUser(cu);
+  var marcaConf=(marcaRequired?'Si - Marca por Revision desactivada':'N/A');
+  var order={
+    id:ordId, productId:curProd.id, productName:curProd.name,
+    platform:pl.name, category:catN[curProd.category], qty:qty,
+    creditCost:creditCost.toFixed(creditCost%1===0?0:1),
+    profileLink:user, userName:cu.name, userEmail:cu.email,
+    marcaRevision:marcaConf, affCode:refCode,
+    status:'pending', date:new Date().toLocaleDateString('es'),
+    time:new Date().toLocaleTimeString('es'),
+    commission:refCode?(creditCost*0.10).toFixed(2):'0'
+  };
+  state.orders.push(order); saveState();
+  // Notify admin via WhatsApp
+  // Pedido registrado sin WhatsApp - solo notificaciones internas y email
+    // Push internal notification to admin
+  addNotification({
+    type:'new_order', orderId:ordId, read:false,
+    date:order.date, time:order.time,
+    title:'Nuevo pedido: '+curProd.name,
+    body:'Cliente: '+cu.name+' ('+cu.email+') | '+qty+' uds | '+order.creditCost+' Cr | Enlace: '+user,
+    userEmail:cu.email, userName:cu.name
+  });
+  // Push notification to user
+  addUserNotification(cu.id, {
+    type:'order_placed', orderId:ordId, read:false,
+    date:order.date, time:order.time,
+    title:'Pedido registrado: '+curProd.name,
+    body:'Tu pedido de '+qty+' '+catN[curProd.category]+' para '+pl.name+' fue registrado correctamente. ID: '+ordId+'. Te notificaremos cuando sea entregado.'
+  });
+  // Send email to admin
+  sendEmailToAdmin({
+    subject:'Nuevo pedido - '+ordId,
+    order_id:ordId,
+    service:curProd.name,
+    platform:pl.name,
+    qty:qty,
+    cost:order.creditCost+' Creditos',
+    client_name:cu.name,
+    client_email:cu.email,
+    profile_link:user,
+    date:order.date+' '+order.time
+  });
+  closeModal();
+  updateHeader();
+  updatePendingBadge();
+  // Show success notification modal
+  document.getElementById('successDetail').innerHTML=
+    '<strong>ID del pedido:</strong> '+ordId+'<br>'+
+    '<strong>Servicio:</strong> '+curProd.name+'<br>'+
+    '<strong>Cantidad:</strong> '+qty+' unidades<br>'+
+    '<strong>Enlace enviado:</strong> '+user+'<br>'+
+    '<strong>Creditos descontados:</strong> '+order.creditCost+' Cr<br>'+
+    '<strong>Saldo restante:</strong> '+parseFloat(cu.credits).toFixed(1)+' Cr';
+  document.getElementById('successMsg').textContent='Tu pedido ha sido registrado correctamente. Te notificaremos por correo y en tu panel cuando sea entregado.';
+  document.getElementById('successModal').classList.add('open');
+}
+
+function closeSuccess(){
+  document.getElementById('successModal').classList.remove('open');
+  renderStore();
+}
+
+// ============================================================
+// MY ACCOUNT / AFFILIATE / ADMIN (same as before with credit updates)
+// ============================================================
+function renderAffiliate(){
+  var aff=state.currentAff;
+  document.getElementById('affLogin').style.display=aff?'none':'block';
+  document.getElementById('affDashboard').style.display=aff?'block':'none';
+  if(aff){
+    document.getElementById('affWelcome').textContent=aff.name;
+    var base=window.location.origin+window.location.pathname;
+    document.getElementById('affLink').value=base+'?ref='+aff.code;
+    var affs=JSON.parse(localStorage.getItem('smm_affs')||'[]');
+    for(var i=0;i<affs.length;i++)if(affs[i].id===aff.id){state.currentAff=affs[i];break;}
+    var fa=state.currentAff;
+    document.getElementById('affClicks').textContent=fa.clicks||0;
+    var pending=0,confirmed=0;
+    for(var j=0;j<state.orders.length;j++){var o=state.orders[j];if(o.affCode===fa.code){if(o.status==='pending')pending++;if(o.status==='confirmed')confirmed++;}}
+    document.getElementById('affPending').textContent=pending;
+    document.getElementById('affConfirmed').textContent=confirmed;
+    document.getElementById('affEarnings').textContent='$'+(fa.earnings||0).toFixed(2);
+    var confOrds=[];for(var k=0;k<state.orders.length;k++)if(state.orders[k].affCode===fa.code&&state.orders[k].status==='confirmed')confOrds.push(state.orders[k]);
+    if(confOrds.length===0){document.getElementById('affOrdersList').innerHTML='<p style="color:var(--muted);font-size:13px">Sin pedidos confirmados aun.</p>';}
+    else{var oH='';for(var l=0;l<confOrds.length;l++){var co=confOrds[l];oH+='<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:7px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px"><div><strong style="font-size:12px">'+co.productName+'</strong><div style="font-size:11px;color:var(--muted)">'+co.platform+' &middot; '+co.qty+' uds &middot; '+co.date+'</div></div><div style="text-align:right"><span class="badge badge-green">Confirmado</span><div style="font-size:12px;color:var(--accent3);font-weight:700;margin-top:3px">+$'+co.commission+'</div></div></div>';}document.getElementById('affOrdersList').innerHTML=oH;}
+  }
+}
+function affRegister(){
+  var name=document.getElementById('affName').value.trim(),email=document.getElementById('affEmail').value.trim(),pass=document.getElementById('affPass').value.trim();
+  if(!name||!email||!pass){showToast('Completa todos los campos');return;}
+  if(pass.length<6){showToast('Contrasena minimo 6 caracteres');return;}
+  var affs=JSON.parse(localStorage.getItem('smm_affs')||'[]');
+  for(var i=0;i<affs.length;i++)if(affs[i].email===email){showToast('Email ya registrado');return;}
+  var code=Math.random().toString(36).substr(2,8).toUpperCase();
+  var a={id:Date.now().toString(),name:name,email:email,pass:pass,code:code,clicks:0,earnings:0};
+  affs.push(a);localStorage.setItem('smm_affs',JSON.stringify(affs));
+  state.affiliates=affs;state.currentAff=a;renderAffiliate();showToast('Cuenta de afiliado creada!');
+}
+function affLoginFn(){
+  var email=document.getElementById('affEmail').value.trim(),pass=document.getElementById('affPass').value.trim();
+  var affs=JSON.parse(localStorage.getItem('smm_affs')||'[]');
+  for(var i=0;i<affs.length;i++)if(affs[i].email===email&&affs[i].pass===pass){state.currentAff=affs[i];state.affiliates=affs;renderAffiliate();showToast('Bienvenido!');return;}
+  showToast('Credenciales incorrectas');
+}
+function affLogout(){state.currentAff=null;renderAffiliate();}
+function copyAffLink(){var v=document.getElementById('affLink').value;if(navigator.clipboard){navigator.clipboard.writeText(v).then(function(){showToast('Enlace copiado!');});}else{document.getElementById('affLink').select();document.execCommand('copy');showToast('Enlace copiado!');}}
+function requestPayout(){var aff=state.currentAff;if((aff.earnings||0)<5){showToast('Minimo $5.00 para solicitar pago');return;}var wa=(state.config.whatsapp||'').replace(/\D/g,'');var msg='SOLICITUD DE PAGO - AFILIADO\nNombre: '+aff.name+'\nEmail: '+aff.email+'\nCodigo: '+aff.code+'\nGanancias: $'+(aff.earnings||0).toFixed(2);window.open('https://wa.me/'+wa+'?text='+encodeURIComponent(msg),'_blank');}
+
+// ============================================================
+// ADMIN
+// ============================================================
+function adminLogin(){
+  var u=document.getElementById('adminUser').value,p=document.getElementById('adminPass').value;
+  if(u===ADMIN_USER&&p===ADMIN_PASS){state.isAdmin=true;localStorage.setItem(ADMIN_SK,'1');showView('admin');}
+  else showToast('Credenciales incorrectas');
+}
+function adminLogout(){state.isAdmin=false;localStorage.removeItem(ADMIN_SK);showView('store');}
+
+function renderAdmin(){
+  var c=state.config;
+  document.getElementById('cfg-name').value=c.name;document.getElementById('cfg-tagline').value=c.tagline;
+  document.getElementById('cfg-whatsapp').value=c.whatsapp;document.getElementById('cfg-email').value=c.email;
+  document.getElementById('cfg-photo').value=c.photo;document.getElementById('cfg-emoji').value=c.emoji;
+  if(state.promo){document.getElementById('promo-title').value=state.promo.title||'';document.getElementById('promo-desc').value=state.promo.desc||'';document.getElementById('promo-label').value=state.promo.label||'';}
+  if(state.emailjs){
+    document.getElementById('cfg-ejs-pubkey').value=state.emailjs.publicKey||'';
+    document.getElementById('cfg-ejs-service').value=state.emailjs.serviceId||'';
+    document.getElementById('cfg-ejs-tmpl-client').value=state.emailjs.templateClient||'';
+    document.getElementById('cfg-ejs-tmpl-admin').value=state.emailjs.templateAdmin||'';
+  }
+  updatePromoStatusBox();renderOrdersList();renderUsersList();renderPlatformsList();renderProductsList();renderAffList();renderRechargeHistory();renderAdminNotifs();updatePendingBadge();
+}
+
+function updatePromoStatusBox(){var box=document.getElementById('promoStatusBox');if(!box)return;box.innerHTML=state.promo&&state.promo.active&&state.promo.title?'<div class="alert-info" style="color:var(--accent3);border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.07)">Promocion ACTIVA: <strong>'+state.promo.title+'</strong></div>':'<div class="alert-info">Sin promocion activa.</div>';}
+
+function switchTab(tab){
+  var tabs=['general','credits','orders','users','platforms','products','promos','affiliates','notifs'];
+  var btns=document.querySelectorAll('.admin-tab');
+  for(var i=0;i<tabs.length;i++){btns[i].classList.toggle('active',tabs[i]===tab);document.getElementById('admin-'+tabs[i]).classList.toggle('active',tabs[i]===tab);}
+}
+
+function saveConfig(){
+  var np1=document.getElementById('cfg-np1').value.trim(),np2=document.getElementById('cfg-np2').value.trim();
+  if(np1){if(np1!==np2){showToast('Las contrasenas no coinciden');return;}if(np1.length<6){showToast('Minimo 6 caracteres');return;}ADMIN_PASS=np1;document.getElementById('cfg-np1').value='';document.getElementById('cfg-np2').value='';}
+  state.config={name:document.getElementById('cfg-name').value||'SMMBoost Pro',tagline:document.getElementById('cfg-tagline').value||'Servicios SMM al mejor precio',whatsapp:document.getElementById('cfg-whatsapp').value||'+1234567890',email:document.getElementById('cfg-email').value||'',photo:document.getElementById('cfg-photo').value||'',emoji:document.getElementById('cfg-emoji').value||''};
+  // Save EmailJS config
+  var ejsPub=document.getElementById('cfg-ejs-pubkey').value.trim();
+  var ejsSvc=document.getElementById('cfg-ejs-service').value.trim();
+  var ejsTmplC=document.getElementById('cfg-ejs-tmpl-client').value.trim();
+  var ejsTmplA=document.getElementById('cfg-ejs-tmpl-admin').value.trim();
+  if(ejsPub||ejsSvc||ejsTmplC||ejsTmplA){
+    state.emailjs={publicKey:ejsPub,serviceId:ejsSvc,templateClient:ejsTmplC,templateAdmin:ejsTmplA};
+    if(ejsPub) try{emailjs.init(ejsPub);}catch(e){}
+  }
+  saveState();updateHeader();showToast('Configuracion guardada!');
+}
+
+// CREDIT MANAGEMENT
+function verifyUserForRecharge(){
+  var email=document.getElementById('rc-email').value.trim();
+  var box=document.getElementById('verifyResult');
+  var u=getUserByEmail(email);
+  state.verifiedUser=u;
+  if(u){
+    box.className='verify-result found';
+    box.style.display='block';
+    box.innerHTML='<strong style="color:var(--accent3)">&#x2705; Usuario encontrado:</strong><br>Nombre: <strong>'+u.name+'</strong><br>Email: '+u.email+'<br>Creditos actuales: <strong style="color:var(--gold)">'+parseFloat(u.credits||0).toFixed(1)+' Cr</strong>';
+  } else {
+    box.className='verify-result notfound';
+    box.style.display='block';
+    box.innerHTML='<strong style="color:#f87171">&#x26A0;&#xFE0F; Usuario no encontrado.</strong> Verifica que el email sea correcto.';
+  }
+}
+function rechargeUser(){
+  if(!state.verifiedUser){showToast('Primero busca al usuario por correo');return;}
+  var amount=parseFloat(document.getElementById('rc-amount').value);
+  if(!amount||amount<=0){showToast('Ingresa una cantidad valida');return;}
+  var u=getUserById(state.verifiedUser.id);
+  if(!u){showToast('Usuario no encontrado');return;}
+  u.credits=(parseFloat(u.credits||0)+amount);
+  updateUser(u);
+  // Save recharge log
+  var recharges=getRecharges();
+  recharges.push({userId:u.id,userName:u.name,userEmail:u.email,amount:amount,date:new Date().toLocaleDateString('es'),time:new Date().toLocaleTimeString('es')});
+  saveRecharges(recharges);
+  // Update verify box
+  document.getElementById('verifyResult').innerHTML='<strong style="color:var(--accent3)">&#x2705; Transferencia exitosa!</strong><br>Nombre: <strong>'+u.name+'</strong><br>Creditos nuevos: <strong style="color:var(--gold)">'+parseFloat(u.credits).toFixed(1)+' Cr</strong>';
+  document.getElementById('rc-amount').value='';
+  state.verifiedUser=null;
+  renderRechargeHistory();
+  renderUsersList();
+  showToast('+'+amount+' Cr enviados a '+u.name);
+}
+function renderRechargeHistory(){
+  var recharges=getRecharges();
+  if(recharges.length===0){document.getElementById('rechargeHistory').innerHTML='<p style="color:var(--muted);font-size:13px">Sin recargas registradas.</p>';return;}
+  var html='';
+  for(var i=recharges.length-1;i>=0;i--){var r=recharges[i];html+='<div class="prow"><div class="prow-info"><strong>'+r.userName+'</strong><div style="font-size:11px;color:var(--muted)">'+r.userEmail+'</div><div style="font-size:11px;color:var(--muted)">'+r.date+' '+r.time+'</div></div><div class="prow-price" style="color:var(--accent3)">+'+r.amount+' Cr</div></div>';}
+  document.getElementById('rechargeHistory').innerHTML=html;
+}
+
+// ORDERS
+function filterOrders(f){state.orderFilter=f;renderOrdersList();}
+function renderOrdersList(){
+  var f=state.orderFilter||'all',filtered=[],orders=state.orders;
+  for(var i=0;i<orders.length;i++)if(f==='all'||orders[i].status===f)filtered.push(orders[i]);
+  if(filtered.length===0){document.getElementById('ordersList').innerHTML='<p style="color:var(--muted);font-size:13px">No hay pedidos en este filtro.</p>';return;}
+  var html='';
+  for(var j=filtered.length-1;j>=0;j--){
+    var o=filtered[j];
+    var sb=o.status==='pending'?'<span class="badge badge-yellow">Pendiente</span>':o.status==='confirmed'?'<span class="badge badge-green">Confirmado</span>':'<span class="badge badge-red">Cancelado</span>';
+    html+='<div class="order-card"><div class="order-header"><span class="order-id">'+o.id+' &middot; '+o.date+'</span>'+sb+'</div>';
+    html+='<div class="order-body"><strong>'+o.productName+'</strong> &middot; '+o.platform+' &middot; '+o.qty+' uds<br>';
+    html+='Costo: <strong style="color:var(--gold)">'+o.creditCost+' Cr</strong> &middot; Enlace: <strong>'+(o.profileLink||o.user)+'</strong><br>';
+    html+='Cliente: <strong>'+o.userName+'</strong> ('+o.userEmail+')<br>';
+    if(o.affCode)html+='Afiliado: <strong style="color:var(--accent2)">'+o.affCode+'</strong> &middot; Comision: <strong style="color:var(--accent3)">$'+o.commission+'</strong><br>';
+    html+='</div>';
+    if(o.status==='pending')html+='<div class="order-actions"><button class="btn btn-sm btn-success" onclick="confirmOrder(\''+o.id+'\')">Confirmar entrega</button><button class="btn btn-sm btn-danger" onclick="cancelOrderFn(\''+o.id+'\')">Cancelar</button></div>';
+    html+='</div>';
+  }
+  document.getElementById('ordersList').innerHTML=html;
+}
+function confirmOrder(oid){
+  for(var i=0;i<state.orders.length;i++){
+    var o=state.orders[i];
+    if(o.id===oid&&o.status==='pending'){
+      o.status='confirmed';
+      o.confirmedDate=new Date().toLocaleDateString('es');
+      o.confirmedTime=new Date().toLocaleTimeString('es');
+      if(o.affCode){var affs=JSON.parse(localStorage.getItem('smm_affs')||'[]');for(var j=0;j<affs.length;j++)if(affs[j].code===o.affCode){affs[j].earnings=(affs[j].earnings||0)+parseFloat(o.commission);break;}localStorage.setItem('smm_affs',JSON.stringify(affs));state.affiliates=affs;}
+      saveState();
+      // Find user
+      var cu=getUserByEmail(o.userEmail);
+      // Add admin notification
+      addNotification({
+        type:'completed', orderId:o.id, read:false,
+        date:o.confirmedDate, time:o.confirmedTime,
+        title:'Pedido entregado: '+o.productName,
+        body:'Cliente: '+o.userName+' ('+o.userEmail+') | '+o.qty+' uds entregados | Enlace: '+(o.profileLink||o.user),
+        userEmail:o.userEmail, userName:o.userName
+      });
+      // Add user notification
+      if(cu){
+        addUserNotification(cu.id, {
+          type:'order_delivered', orderId:o.id, read:false,
+          date:o.confirmedDate, time:o.confirmedTime,
+          title:'Pedido entregado: '+o.productName,
+          body:'Tu pedido de '+o.qty+' '+o.category+' para '+o.platform+' ha sido entregado. Revisa tu perfil en: '+(o.profileLink||o.user)
+        });
       }
-    });
-  }, { threshold: 0.5 });
-  document.querySelectorAll('[data-target]').forEach(el => statObserver.observe(el));
+      // Send email to client
+      sendEmailToClient({
+        to_email:o.userEmail,
+        to_name:o.userName,
+        subject:'Tu pedido fue entregado - '+o.id,
+        order_id:o.id,
+        service:o.productName,
+        platform:o.platform,
+        qty:o.qty,
+        profile_link:(o.profileLink||o.user),
+        delivered_date:o.confirmedDate+' '+o.confirmedTime
+      });
+      // Send email to admin confirming
+      sendEmailToAdmin({
+        subject:'Pedido completado - '+o.id,
+        order_id:o.id,
+        service:o.productName,
+        platform:o.platform,
+        qty:o.qty,
+        cost:o.creditCost+' Creditos',
+        client_name:o.userName,
+        client_email:o.userEmail,
+        profile_link:(o.profileLink||o.user),
+        date:o.confirmedDate+' '+o.confirmedTime
+      });
+      renderOrdersList();
+      updatePendingBadge();
+      showToast('Pedido confirmado! Email enviado al cliente.');
+      return;
+    }
+  }
+}
+function cancelOrderFn(oid){
+  for(var i=0;i<state.orders.length;i++){
+    if(state.orders[i].id===oid&&state.orders[i].status==='pending'){
+      var o=state.orders[i];
+      o.status='cancelled';
+      o.cancelledDate=new Date().toLocaleDateString('es');
+      var cu=getUserByEmail(o.userEmail);
+      if(cu){cu.credits=(parseFloat(cu.credits||0)+parseFloat(o.creditCost));cu.totalSpent=Math.max(0,parseFloat(cu.totalSpent||0)-parseFloat(o.creditCost));updateUser(cu);}
+      // Notifications
+      var ts=new Date().toLocaleDateString('es');
+      addNotification({
+        type:'cancelled', orderId:o.id, read:false,
+        date:ts, time:new Date().toLocaleTimeString('es'),
+        title:'Pedido cancelado: '+o.productName,
+        body:'Cliente: '+o.userName+' | Creditos devueltos: '+o.creditCost+' Cr',
+        userEmail:o.userEmail, userName:o.userName
+      });
+      if(cu){
+        addUserNotification(cu.id, {
+          type:'order_cancelled', orderId:o.id, read:false,
+          date:ts, time:new Date().toLocaleTimeString('es'),
+          title:'Pedido cancelado: '+o.productName,
+          body:'Tu pedido ID '+o.id+' fue cancelado. Se devolvieron '+o.creditCost+' Creditos a tu cuenta.'
+        });
+      }
+      // Send cancellation email to client
+      sendEmailToClient({
+        to_email:o.userEmail, to_name:o.userName,
+        subject:'Pedido cancelado - '+o.id,
+        order_id:o.id, service:o.productName, platform:o.platform,
+        qty:o.qty, profile_link:(o.profileLink||o.user),
+        delivered_date:ts+' (Cancelado - '+o.creditCost+' Cr devueltos)'
+      });
+      saveState();renderOrdersList();updatePendingBadge();
+      showToast('Pedido cancelado. Creditos devueltos al cliente.');return;
+    }
+  }
+}
 
-  // LIVE ORDER COUNT
-  let orders = 47392;
-  setInterval(() => {
-    orders += Math.floor(Math.random() * 3);
-    const el = document.getElementById('ordersToday');
-    if (el) el.textContent = orders.toLocaleString();
-  }, 3000);
+// USERS
+function renderUsersList(){
+  var users=getUsers();
+  if(users.length===0){document.getElementById('usersList').innerHTML='<p style="color:var(--muted);font-size:13px">No hay usuarios registrados aun.</p>';return;}
+  var html='';
+  for(var i=0;i<users.length;i++){
+    var u=users[i],ords=0;for(var j=0;j<state.orders.length;j++)if(state.orders[j].userEmail===u.email)ords++;
+    html+='<div class="prow"><div class="prow-info"><strong>'+u.name+'</strong><div style="font-size:11px;color:var(--muted)">'+u.email+'</div><div style="font-size:11px;margin-top:3px">Registrado: '+u.joined+' &middot; Pedidos: '+ords+'</div></div>';
+    html+='<div style="text-align:right;flex-shrink:0"><div class="prow-price">'+parseFloat(u.credits||0).toFixed(1)+' Cr</div><div style="font-size:10px;color:var(--muted)">Saldo</div></div></div>';
+  }
+  document.getElementById('usersList').innerHTML=html;
+}
+
+// PLATFORMS
+function renderPlatformsList(){var html='';for(var i=0;i<state.platforms.length;i++){var p=state.platforms[i],cnt=0;for(var j=0;j<state.products.length;j++)if(state.products[j].platform===p.id)cnt++;html+='<div class="prow"><span style="display:flex;align-items:center">'+getIcon(p.icon,26)+'</span><div class="prow-info"><strong>'+p.name+'</strong><div style="font-size:11px;color:var(--muted)">'+cnt+' productos</div></div><span class="color-dot" style="background:'+p.color+'"></span><button class="btn btn-danger btn-sm" onclick="removePlatform(\''+p.id+'\')">Eliminar</button></div>';}document.getElementById('platformsList').innerHTML=html||'<p style="color:var(--muted);font-size:13px">No hay plataformas</p>';}
+function addPlatform(){var name=document.getElementById('np-plname').value.trim(),icon=document.getElementById('np-plicon').value.trim()||'p',color=document.getElementById('np-plcolor').value.trim()||'#7c3aed';if(!name){showToast('Ingresa el nombre');return;}var id=name.toLowerCase().replace(/\s+/g,'_');for(var i=0;i<state.platforms.length;i++)if(state.platforms[i].id===id){showToast('Ya existe');return;}state.platforms.push({id:id,name:name,icon:icon,color:color});document.getElementById('np-plname').value='';document.getElementById('np-plicon').value='';document.getElementById('np-plcolor').value='';saveState();renderPlatformsList();showToast('Plataforma agregada!');}
+function removePlatform(id){if(!confirm('Eliminar esta plataforma y sus productos?'))return;var np=[],npr=[];for(var i=0;i<state.platforms.length;i++)if(state.platforms[i].id!==id)np.push(state.platforms[i]);for(var j=0;j<state.products.length;j++)if(state.products[j].platform!==id)npr.push(state.products[j]);state.platforms=np;state.products=npr;saveState();renderPlatformsList();renderProductsList();showToast('Eliminada');}
+
+// PRODUCTS
+function renderProductsList(){
+  var sel=document.getElementById('np-platform');sel.innerHTML='';
+  for(var i=0;i<state.platforms.length;i++){var op=document.createElement('option');op.value=state.platforms[i].id;op.textContent=state.platforms[i].name;sel.appendChild(op);}
+  var catL={followers:'Seguidores',likes:'Likes',views:'Vistas'},html='';
+  if(state.products.length===0)html='<p style="color:var(--muted);font-size:13px">No hay productos</p>';
+  for(var j=0;j<state.products.length;j++){
+    var pr=state.products[j],pl=getPlatform(pr.platform),th=buildTag(pr);
+    var dpr=parseFloat(pr.price);var dprStr=dpr.toFixed(dpr%1===0?0:1);
+    html+='<div class="prow"><span style="display:flex;align-items:center">'+getIcon(pl.icon,20)+'</span><div class="prow-info"><strong style="font-size:12px">'+pr.name+'</strong>'+th+'<div style="font-size:11px;color:var(--muted)">'+pl.name+' &middot; '+(catL[pr.category]||pr.category)+' &middot; '+pr.qty+' uds</div></div><div class="prow-price">'+dprStr+' Cr</div><button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="editProduct(\''+pr.id+'\')">Editar</button><button class="btn btn-danger btn-sm" onclick="removeProduct(\''+pr.id+'\')">X</button></div>';
+  }
+  document.getElementById('productsList').innerHTML=html;
+}
+function addProduct(){
+  var name=document.getElementById('np-name').value.trim(),platform=document.getElementById('np-platform').value,category=document.getElementById('np-cat').value,price=parseFloat(document.getElementById('np-price').value),qty=document.getElementById('np-qty').value.trim(),desc=document.getElementById('np-desc').value.trim(),tag=document.getElementById('np-tag').value,customTag=tag==='custom'?document.getElementById('np-customtag').value.trim():'';
+  if(!name||!price||!qty){showToast('Completa los campos requeridos');return;}
+  state.products.push({id:'p'+Date.now(),platform:platform,category:category,name:name,qty:qty,price:price,desc:desc||'Alta calidad',tag:tag,customTag:customTag});
+  document.getElementById('np-name').value='';document.getElementById('np-price').value='';document.getElementById('np-qty').value='';document.getElementById('np-desc').value='';document.getElementById('np-tag').value='';document.getElementById('customTagWrap').style.display='none';
+  saveState();renderProductsList();showToast('Producto agregado!');
+}
+function removeProduct(id){var np=[];for(var i=0;i<state.products.length;i++)if(state.products[i].id!==id)np.push(state.products[i]);state.products=np;saveState();renderProductsList();showToast('Eliminado');}
+function editProduct(id){
+  for(var i=0;i<state.products.length;i++){
+    if(state.products[i].id===id){
+      var pr=state.products[i];
+      var choice=prompt('Editar producto "'+pr.name+'"\n\n1) Cambiar precio en creditos (actual: '+pr.price+' Cr)\n2) Cambiar cantidad (actual: '+pr.qty+')\n3) Cambiar nombre\n\nEscribe 1, 2 o 3:');
+      if(choice===null) return;
+      if(choice==='1'){var np=prompt('Nuevo precio en creditos:',pr.price);if(np===null)return;var p=parseFloat(np);if(isNaN(p)||p<=0){showToast('Valor invalido');return;}pr.price=p;showToast('Precio actualizado!');}
+      else if(choice==='2'){var nq=prompt('Nueva cantidad:',pr.qty);if(nq===null)return;if(!nq.trim()){showToast('Valor invalido');return;}pr.qty=nq.trim();showToast('Cantidad actualizada!');}
+      else if(choice==='3'){var nn=prompt('Nuevo nombre:',pr.name);if(nn===null)return;if(!nn.trim()){showToast('Valor invalido');return;}pr.name=nn.trim();showToast('Nombre actualizado!');}
+      saveState();renderProductsList();return;
+    }
+  }
+}
+
+// PROMOS
+function savePromo(active){state.promo={active:active,title:document.getElementById('promo-title').value.trim(),desc:document.getElementById('promo-desc').value.trim(),label:document.getElementById('promo-label').value.trim()||'PROMOCION'};saveState();updatePromoStatusBox();showToast(active&&state.promo.title?'Promocion activada!':'Promocion desactivada');}
+
+// AFFILIATES
+function renderAffList(){
+  var affs=JSON.parse(localStorage.getItem('smm_affs')||'[]');
+  if(affs.length===0){document.getElementById('affiliatesList').innerHTML='<p style="color:var(--muted);font-size:13px">No hay afiliados registrados.</p>';return;}
+  var html='';
+  for(var i=0;i<affs.length;i++){var a=affs[i],pending=0,confirmed=0;for(var j=0;j<state.orders.length;j++){var o=state.orders[j];if(o.affCode===a.code){if(o.status==='pending')pending++;if(o.status==='confirmed')confirmed++;}}html+='<div class="prow"><div class="prow-info"><strong>'+a.name+'</strong><div style="font-size:11px;color:var(--muted)">'+a.email+' &middot; Cod: '+a.code+'</div><div style="font-size:11px;margin-top:3px">Clics: '+(a.clicks||0)+' &middot; Pend: '+pending+' &middot; Conf: '+confirmed+'</div></div><div style="text-align:right"><div class="prow-price" style="color:var(--accent3)">$'+(a.earnings||0).toFixed(2)+'</div><div style="font-size:10px;color:var(--muted)">Ganancias</div></div></div>';}
+  document.getElementById('affiliatesList').innerHTML=html;
+}
+
+// ============================================================
+// NOTIFICATIONS SYSTEM
+// ============================================================
+var NOTIFS_KEY   = 'smm_admin_notifs';
+var UNOTIFS_KEY  = 'smm_user_notifs';
+
+function getAdminNotifs(){ try{return JSON.parse(localStorage.getItem(NOTIFS_KEY)||'[]');}catch(e){return[];} }
+function saveAdminNotifs(n){ try{localStorage.setItem(NOTIFS_KEY,JSON.stringify(n));}catch(e){} }
+function getUserNotifs(uid){ try{var all=JSON.parse(localStorage.getItem(UNOTIFS_KEY)||'{}');return all[uid]||[];}catch(e){return[];} }
+function saveUserNotifs(uid,notifs){ try{var all=JSON.parse(localStorage.getItem(UNOTIFS_KEY)||'{}');all[uid]=notifs;localStorage.setItem(UNOTIFS_KEY,JSON.stringify(all));}catch(e){} }
+
+function addNotification(n){
+  var notifs=getAdminNotifs();
+  n.id='N'+Date.now();
+  notifs.unshift(n);
+  if(notifs.length>200) notifs=notifs.slice(0,200);
+  saveAdminNotifs(notifs);
+}
+
+function addUserNotification(uid,n){
+  var notifs=getUserNotifs(uid);
+  n.id='UN'+Date.now();
+  notifs.unshift(n);
+  if(notifs.length>100) notifs=notifs.slice(0,100);
+  saveUserNotifs(uid,notifs);
+}
+
+function updatePendingBadge(){
+  var pending=0;
+  for(var i=0;i<state.orders.length;i++) if(state.orders[i].status==='pending') pending++;
+  var badge=document.getElementById('pendingBadge');
+  if(badge){badge.textContent=pending;badge.style.display=pending>0?'inline':'none';}
+  var unread=0;
+  var notifs=getAdminNotifs();
+  for(var j=0;j<notifs.length;j++) if(!notifs[j].read) unread++;
+  var nb=document.getElementById('notifAdminBadge');
+  if(nb){nb.textContent=unread;nb.style.display=unread>0?'inline':'none';}
+}
+
+var _notifFilter='all';
+function filterNotifs(f){_notifFilter=f;renderAdminNotifs();}
+
+function renderAdminNotifs(){
+  var notifs=getAdminNotifs();
+  var filtered=[];
+  for(var i=0;i<notifs.length;i++){
+    if(_notifFilter==='all'||notifs[i].type===_notifFilter) filtered.push(notifs[i]);
+  }
+  var el=document.getElementById('adminNotifsList');
+  if(!el) return;
+  if(filtered.length===0){el.innerHTML='<p style="color:var(--muted);font-size:13px">Sin notificaciones en este filtro.</p>';return;}
+  var typeIcon={new_order:'&#x1F6D2;',completed:'&#x2705;',cancelled:'&#x274C;'};
+  var typeLbl={new_order:'Nuevo pedido',completed:'Entregado',cancelled:'Cancelado'};
+  var html='';
+  for(var j=0;j<filtered.length;j++){
+    var n=filtered[j];
+    var unreadStyle=n.read?'':'border-left:3px solid var(--accent);';
+    html+='<div style="background:var(--bg);border:1px solid var(--border);'+unreadStyle+'border-radius:10px;padding:12px;margin-bottom:8px">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">';
+    html+='<div style="display:flex;align-items:center;gap:6px">';
+    html+='<span>'+( typeIcon[n.type]||'&#x1F514;')+'</span>';
+    html+='<strong style="font-size:13px">'+n.title+'</strong>';
+    if(!n.read) html+='<span style="background:var(--accent);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:100px">NUEVA</span>';
+    html+='</div>';
+    html+='<span style="font-size:11px;color:var(--muted);white-space:nowrap">'+n.date+' '+n.time+'</span></div>';
+    html+='<div style="font-size:12px;color:var(--muted);margin-top:5px">'+n.body+'</div>';
+    html+='</div>';
+  }
+  el.innerHTML=html;
+  // Mark as read when viewed
+  var allNotifs=getAdminNotifs();
+  for(var k=0;k<allNotifs.length;k++) if(!allNotifs[k].read && (_notifFilter==='all'||allNotifs[k].type===_notifFilter)) allNotifs[k].read=true;
+  saveAdminNotifs(allNotifs);
+  updatePendingBadge();
+}
+
+function markAllNotifsRead(){
+  var notifs=getAdminNotifs();
+  for(var i=0;i<notifs.length;i++) notifs[i].read=true;
+  saveAdminNotifs(notifs);
+  renderAdminNotifs();
+  updatePendingBadge();
+  showToast('Todas las notificaciones marcadas como leidas');
+}
+
+function renderUserNotifs(){
+  if(!state.currentUser) return;
+  var notifs=getUserNotifs(state.currentUser.id);
+  var el=document.getElementById('userNotifsList');
+  var countEl=document.getElementById('userNotifCount');
+  if(!el) return;
+  if(notifs.length===0){el.innerHTML='<p style="color:var(--muted);font-size:13px">Sin notificaciones aun.</p>';if(countEl)countEl.textContent='';return;}
+  var unread=0;
+  for(var i=0;i<notifs.length;i++) if(!notifs[i].read) unread++;
+  if(countEl) countEl.textContent=unread>0?'('+unread+' nuevas)':'';
+  var typeIcon={order_placed:'&#x1F4CB;',order_delivered:'&#x2705;',order_cancelled:'&#x274C;'};
+  var html='';
+  for(var j=0;j<notifs.length;j++){
+    var n=notifs[j];
+    var unreadStyle=n.read?'':'border-left:3px solid var(--accent);';
+    html+='<div style="background:var(--bg);border:1px solid var(--border);'+unreadStyle+'border-radius:10px;padding:11px;margin-bottom:7px">';
+    html+='<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px">';
+    html+='<div style="display:flex;align-items:center;gap:5px"><span>'+(typeIcon[n.type]||'&#x1F514;')+'</span><strong style="font-size:13px">'+n.title+'</strong>';
+    if(!n.read) html+='<span style="background:var(--accent);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:100px">NUEVA</span>';
+    html+='</div>';
+    html+='<span style="font-size:11px;color:var(--muted)">'+n.date+' '+n.time+'</span></div>';
+    html+='<div style="font-size:12px;color:var(--muted);margin-top:4px">'+n.body+'</div></div>';
+  }
+  el.innerHTML=html;
+  // Mark as read
+  var allN=getUserNotifs(state.currentUser.id);
+  for(var k=0;k<allN.length;k++) allN[k].read=true;
+  saveUserNotifs(state.currentUser.id,allN);
+}
+
+// ============================================================
+// EMAIL SYSTEM (EmailJS)
+// ============================================================
+function getEmailJSConfig(){
+  if(state.emailjs&&state.emailjs.publicKey&&state.emailjs.serviceId) return state.emailjs;
+  return null;
+}
+
+function initEmailJS(){
+  var cfg=getEmailJSConfig();
+  if(cfg&&cfg.publicKey){
+    try{emailjs.init(cfg.publicKey);}catch(e){}
+  }
+}
+
+function sendEmailToClient(params){
+  var cfg=getEmailJSConfig();
+  if(!cfg||!cfg.templateClient){return;}
+  try{
+    emailjs.send(cfg.serviceId, cfg.templateClient, params)
+      .then(function(r){console.log('Email cliente enviado:',r.status);})
+      .catch(function(e){console.warn('Email cliente error:',e);});
+  }catch(e){console.warn('EmailJS error:',e);}
+}
+
+function sendEmailToAdmin(params){
+  var cfg=getEmailJSConfig();
+  if(!cfg||!cfg.templateAdmin){return;}
+  params.to_email=state.config.email;
+  params.to_name='Administrador';
+  try{
+    emailjs.send(cfg.serviceId, cfg.templateAdmin, params)
+      .then(function(r){console.log('Email admin enviado:',r.status);})
+      .catch(function(e){console.warn('Email admin error:',e);});
+  }catch(e){console.warn('EmailJS error:',e);}
+}
+
+function testEmailConfig(){
+  var cfg=getEmailJSConfig();
+  var el=document.getElementById('emailTestResult');
+  if(!cfg){el.innerHTML='<span style="color:#f87171">Completa todos los campos de EmailJS primero.</span>';return;}
+  try{
+    emailjs.init(cfg.publicKey);
+    emailjs.send(cfg.serviceId,cfg.templateAdmin,{
+      to_email:state.config.email,to_name:'Admin Test',
+      subject:'Prueba de configuracion EmailJS',
+      order_id:'TEST-001',service:'Prueba',platform:'Sistema',
+      qty:'1',cost:'0 Cr',client_name:'Sistema',client_email:'test@test.com',
+      profile_link:'https://test.com',date:new Date().toLocaleDateString('es')
+    })
+    .then(function(){el.innerHTML='<span style="color:var(--accent3)">Email de prueba enviado con exito a '+state.config.email+'</span>';})
+    .catch(function(e){el.innerHTML='<span style="color:#f87171">Error: '+e.text+'</span>';});
+  }catch(e){el.innerHTML='<span style="color:#f87171">Error de configuracion: '+e.message+'</span>';}
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2800);}
+
+// ============================================================
+// INIT
+// ============================================================
+updateHeader();
+initEmailJS();
+if(state.isAdmin){
+  document.getElementById('authGate').style.display='none';
+  showView('admin');
+} else if(state.currentUser){
+  document.getElementById('authGate').style.display='none';
+  updateHeader();renderStore();checkPromo();updatePendingBadge();
+} else {
+  var asn=document.getElementById('authSiteName');
+  if(asn)asn.textContent=state.config.name||'SMMBoost Pro';
+  document.getElementById('authGate').style.display='flex';
+}
 </script>
 </body>
 </html>
+
