@@ -200,6 +200,21 @@ select.input-field{appearance:none}
 .tx-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 13px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center;font-size:12px}
 .tx-item .tx-left{color:var(--muted)}.tx-item .tx-right{font-weight:700;color:var(--accent3)}
 
+
+/* IMAGE UPLOAD */
+.img-upload-wrap{position:relative;margin-bottom:14px}
+.img-upload-box{display:flex;align-items:center;gap:12px;background:var(--bg);border:2px dashed var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all 0.2s}
+.img-upload-box:hover{border-color:var(--accent)}
+.img-preview{width:56px;height:56px;border-radius:10px;object-fit:cover;background:var(--surface2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden}
+.img-preview img{width:100%;height:100%;object-fit:cover}
+.img-upload-info{flex:1}
+.img-upload-info strong{font-size:13px;display:block;margin-bottom:3px}
+.img-upload-info span{font-size:11px;color:var(--muted)}
+.img-upload-input{display:none}
+.img-remove-btn{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#f87171;border-radius:8px;padding:5px 10px;font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.platform-card-img{width:44px;height:44px;border-radius:8px;object-fit:cover}
+.promo-img{width:100%;border-radius:12px;object-fit:cover;margin-bottom:14px;max-height:180px}
+
 @media(max-width:600px){
   .categories-grid{grid-template-columns:repeat(3,1fr)}
   .form-row{grid-template-columns:1fr}
@@ -253,6 +268,7 @@ select.input-field{appearance:none}
   <div class="promo-box">
     <button class="promo-close" onclick="closePromo()">&#x2715;</button>
     <div class="promo-badge" id="promoLabel">PROMOCION</div>
+    <img id="promoPopupImg" src="" alt="" style="display:none;width:100%;border-radius:12px;object-fit:cover;max-height:180px;margin-bottom:14px">
     <div class="promo-title" id="promoTitle"></div>
     <div class="promo-desc" id="promoDesc"></div>
     <button class="promo-cta" onclick="closePromo()">&#x1F4AB; Ver ofertas ahora</button>
@@ -479,9 +495,22 @@ select.input-field{appearance:none}
         <div><label class="lbl">WhatsApp</label><input class="input-field" id="cfg-whatsapp" placeholder="+1234567890"></div>
         <div><label class="lbl">Email</label><input class="input-field" id="cfg-email" placeholder="tu@email.com"></div>
       </div>
-      <label class="lbl">Foto de perfil (URL)</label>
-      <input class="input-field" id="cfg-photo" placeholder="https://... (vacio para emoji)">
-      <label class="lbl">Emoji de perfil</label>
+      <label class="lbl">Foto de perfil</label>
+      <div class="img-upload-wrap">
+        <div class="img-upload-box" onclick="document.getElementById('cfg-photo-file').click()">
+          <div class="img-preview" id="profilePicPreview">
+            <img id="profilePicPreviewImg" src="" alt="" style="display:none">
+            <span id="profilePicPreviewEmoji">&#x1F680;</span>
+          </div>
+          <div class="img-upload-info">
+            <strong>Subir foto de perfil</strong>
+            <span>JPG, PNG, GIF &middot; Max 2MB &middot; Clic para seleccionar</span>
+          </div>
+          <button class="img-remove-btn" onclick="event.stopPropagation();removeProfilePic()">Quitar</button>
+        </div>
+        <input type="file" class="img-upload-input" id="cfg-photo-file" accept="image/*" onchange="handleProfilePicUpload(this)">
+      </div>
+      <label class="lbl">Emoji de perfil (alternativa si no hay foto)</label>
       <input class="input-field" id="cfg-emoji" placeholder="Ej: escribe un emoji">
       <div class="divider"></div>
       <label class="lbl">Cambiar contrasena admin</label>
@@ -558,11 +587,27 @@ select.input-field{appearance:none}
       <div class="divider"></div>
       <label class="lbl">Agregar plataforma</label>
       <div class="form-row">
-        <div><input class="input-field" id="np-plname" placeholder="Nombre (ej: Twitter)"></div>
-        <div><input class="input-field" id="np-plicon" placeholder="Clave SVG o emoji"></div>
+        <div><label class="lbl">Nombre</label><input class="input-field" id="np-plname" placeholder="Ej: Twitter"></div>
+        <div><label class="lbl">Clave SVG o emoji (si no hay foto)</label><input class="input-field" id="np-plicon" placeholder="twitter, telegram o emoji"></div>
       </div>
+      <label class="lbl">Color de la tarjeta</label>
       <input class="input-field" id="np-plcolor" placeholder="Color hex (ej: #1da1f2)">
-      <button class="btn btn-primary" onclick="addPlatform()">+ Agregar</button>
+      <label class="lbl">Foto / icono personalizado (opcional)</label>
+      <div class="img-upload-wrap">
+        <div class="img-upload-box" onclick="document.getElementById('np-plimg-file').click()">
+          <div class="img-preview" id="newPlatformImgPreview" style="background:var(--surface)">
+            <img id="newPlatformImgPreviewImg" src="" alt="" style="display:none">
+            <span>&#x1F4F1;</span>
+          </div>
+          <div class="img-upload-info">
+            <strong>Foto del icono (opcional)</strong>
+            <span>Si subes una foto, se usara como icono de la plataforma</span>
+          </div>
+          <button class="img-remove-btn" onclick="event.stopPropagation();removePlatformImg()">Quitar</button>
+        </div>
+        <input type="file" class="img-upload-input" id="np-plimg-file" accept="image/*" onchange="handlePlatformImgUpload(this)">
+      </div>
+      <button class="btn btn-primary" onclick="addPlatform()">+ Agregar plataforma</button>
     </div>
   </div>
 
@@ -607,6 +652,21 @@ select.input-field{appearance:none}
       <label class="lbl">Titulo</label><input class="input-field" id="promo-title" placeholder="Ej: SUPER OFERTA HOY">
       <label class="lbl">Descripcion</label><textarea class="input-field" id="promo-desc" placeholder="Describe la promocion..." rows="3" style="resize:vertical"></textarea>
       <label class="lbl">Etiqueta del banner</label><input class="input-field" id="promo-label" placeholder="Ej: OFERTA LIMITADA">
+      <label class="lbl">Imagen del popup (opcional)</label>
+      <div class="img-upload-wrap">
+        <div class="img-upload-box" onclick="document.getElementById('promo-img-file').click()">
+          <div class="img-preview" id="promoImgPreview" style="background:var(--surface)">
+            <img id="promoImgPreviewImg" src="" alt="" style="display:none">
+            <span>&#x1F4F7;</span>
+          </div>
+          <div class="img-upload-info">
+            <strong>Imagen de la promocion (opcional)</strong>
+            <span>Se mostrara en el popup junto con el texto</span>
+          </div>
+          <button class="img-remove-btn" onclick="event.stopPropagation();removePromoImg()">Quitar</button>
+        </div>
+        <input type="file" class="img-upload-input" id="promo-img-file" accept="image/*" onchange="handlePromoImgUpload(this)">
+      </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button class="btn btn-primary" style="flex:1" onclick="savePromo(true)">&#x1F7E2; Activar</button>
         <button class="btn btn-danger" onclick="savePromo(false)">Desactivar</button>
@@ -652,8 +712,9 @@ SVGS['twitter']   = '<svg viewBox="0 0 24 24" width="44" height="44" xmlns="http
 SVGS['telegram']  = '<svg viewBox="0 0 24 24" width="44" height="44" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#2AABEE"/><path d="M5 11.6l13-5c.6-.2 1.1.1.9.8l-2.2 10.4c-.2.7-.6.9-1.2.5l-3.3-2.4-1.6 1.5c-.2.2-.4.3-.8.3l.3-3.4 6.7-6.1c.3-.3-.1-.4-.5-.2L8.2 13.5 5 12.5c-.7-.2-.7-.7.1-1z" fill="white"/></svg>';
 SVGS['snapchat']  = '<svg viewBox="0 0 24 24" width="44" height="44" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#FFFC00"/><path d="M12 4.5c-1.8 0-3.3 1.5-3.3 3.3v.6c-.3.1-.7.2-.9.1-.2.1-.2.4 0 .5.4.2.8.5.9.8-.3.5-.7 1.3-1.7 1.6-.2.1-.2.4.1.5.6.1 1.2.5 1.3.6 0 .2.1.3.1.4-.1.1-.3.2-.5.2-.3.1-.7.2-.9.4-.1.1-.1.3.1.4.2.2.5.3 1 .3.4 0 .9.1 1.4.4.8.5 1.7.7 2.8.7s2-.3 2.8-.7c.5-.3.9-.4 1.4-.4.4 0 .8-.1 1-.3.1-.1.1-.3-.1-.4-.2-.2-.6-.3-.9-.4-.2-.1-.4-.1-.5-.2 0-.1.1-.2.1-.4.2-.1.7-.5 1.3-.6.3-.1.3-.4.1-.5-1-.3-1.4-1.1-1.7-1.6.1-.3.5-.6.9-.8.2-.1.2-.4 0-.5-.2.1-.6 0-.9-.1v-.6C15.3 6 13.8 4.5 12 4.5z" fill="#333"/></svg>';
 
-function getIcon(key, size) {
+function getIcon(key, size, customImg) {
   var s = size || 44;
+  if (customImg) return '<img src="'+customImg+'" style="width:'+s+'px;height:'+s+'px;border-radius:8px;object-fit:cover">';
   if (SVGS[key]) return SVGS[key].replace('width="44"','width="'+s+'"').replace('height="44"','height="'+s+'"');
   return '<span style="font-size:'+Math.round(s*0.75)+'px;line-height:1">'+key+'</span>';
 }
@@ -844,6 +905,8 @@ function checkPromo(){
   document.getElementById('promoLabel').textContent=state.promo.label||'PROMOCION';
   document.getElementById('promoTitle').textContent=state.promo.title;
   document.getElementById('promoDesc').textContent=state.promo.desc;
+  var pImg=document.getElementById('promoPopupImg');
+  if(pImg){if(state.promo.image){pImg.src=state.promo.image;pImg.style.display='block';}else{pImg.style.display='none';}}
   setTimeout(function(){ document.getElementById('promoOverlay').classList.add('open'); },900);
 }
 function closePromo(){ document.getElementById('promoOverlay').classList.remove('open'); }
@@ -1243,8 +1306,19 @@ function renderAdmin(){
   var c=state.config;
   document.getElementById('cfg-name').value=c.name;document.getElementById('cfg-tagline').value=c.tagline;
   document.getElementById('cfg-whatsapp').value=c.whatsapp;document.getElementById('cfg-email').value=c.email;
-  document.getElementById('cfg-photo').value=c.photo;document.getElementById('cfg-emoji').value=c.emoji;
-  if(state.promo){document.getElementById('promo-title').value=state.promo.title||'';document.getElementById('promo-desc').value=state.promo.desc||'';document.getElementById('promo-label').value=state.promo.label||'';}
+  // Photo is now handled via file upload preview (cfg-photo-file)document.getElementById('cfg-emoji').value=c.emoji;
+  if(state.promo){
+    document.getElementById('promo-title').value=state.promo.title||'';
+    document.getElementById('promo-desc').value=state.promo.desc||'';
+    document.getElementById('promo-label').value=state.promo.label||'';
+    var pPrev=document.getElementById('promoImgPreviewImg');
+    if(pPrev&&state.promo.image){pPrev.src=state.promo.image;pPrev.style.display='block';document.getElementById('promoImgPreview').querySelector('span').style.display='none';}
+  }
+  // Profile pic preview
+  var ppImg=document.getElementById('profilePicPreviewImg');
+  var ppEmoji=document.getElementById('profilePicPreviewEmoji');
+  if(state.config.photo&&ppImg){ppImg.src=state.config.photo;ppImg.style.display='block';if(ppEmoji)ppEmoji.style.display='none';}
+  else{if(ppImg)ppImg.style.display='none';if(ppEmoji){ppEmoji.style.display='block';ppEmoji.textContent=state.config.emoji||'&#x1F680;';}}
   if(state.emailjs){
     document.getElementById('cfg-ejs-pubkey').value=state.emailjs.publicKey||'';
     document.getElementById('cfg-ejs-service').value=state.emailjs.serviceId||'';
@@ -1265,7 +1339,9 @@ function switchTab(tab){
 function saveConfig(){
   var np1=document.getElementById('cfg-np1').value.trim(),np2=document.getElementById('cfg-np2').value.trim();
   if(np1){if(np1!==np2){showToast('Las contrasenas no coinciden');return;}if(np1.length<6){showToast('Minimo 6 caracteres');return;}ADMIN_PASS=np1;document.getElementById('cfg-np1').value='';document.getElementById('cfg-np2').value='';}
-  state.config={name:document.getElementById('cfg-name').value||'SMMBoost Pro',tagline:document.getElementById('cfg-tagline').value||'Servicios SMM al mejor precio',whatsapp:document.getElementById('cfg-whatsapp').value||'+1234567890',email:document.getElementById('cfg-email').value||'',photo:document.getElementById('cfg-photo').value||'',emoji:document.getElementById('cfg-emoji').value||''};
+  var uploadedPhoto=document.getElementById('profilePicPreviewImg').src||'';
+  var photoVal=uploadedPhoto.startsWith('data:')?uploadedPhoto:'';
+  state.config={name:document.getElementById('cfg-name').value||'SMMBoost Pro',tagline:document.getElementById('cfg-tagline').value||'Servicios SMM al mejor precio',whatsapp:document.getElementById('cfg-whatsapp').value||'+1234567890',email:document.getElementById('cfg-email').value||'',photo:photoVal,emoji:document.getElementById('cfg-emoji').value||''};
   // Save EmailJS config
   var ejsPub=document.getElementById('cfg-ejs-pubkey').value.trim();
   var ejsSvc=document.getElementById('cfg-ejs-service').value.trim();
@@ -1457,7 +1533,23 @@ function renderUsersList(){
 
 // PLATFORMS
 function renderPlatformsList(){var html='';for(var i=0;i<state.platforms.length;i++){var p=state.platforms[i],cnt=0;for(var j=0;j<state.products.length;j++)if(state.products[j].platform===p.id)cnt++;html+='<div class="prow"><span style="display:flex;align-items:center">'+getIcon(p.icon,26)+'</span><div class="prow-info"><strong>'+p.name+'</strong><div style="font-size:11px;color:var(--muted)">'+cnt+' productos</div></div><span class="color-dot" style="background:'+p.color+'"></span><button class="btn btn-danger btn-sm" onclick="removePlatform(\''+p.id+'\')">Eliminar</button></div>';}document.getElementById('platformsList').innerHTML=html||'<p style="color:var(--muted);font-size:13px">No hay plataformas</p>';}
-function addPlatform(){var name=document.getElementById('np-plname').value.trim(),icon=document.getElementById('np-plicon').value.trim()||'p',color=document.getElementById('np-plcolor').value.trim()||'#7c3aed';if(!name){showToast('Ingresa el nombre');return;}var id=name.toLowerCase().replace(/\s+/g,'_');for(var i=0;i<state.platforms.length;i++)if(state.platforms[i].id===id){showToast('Ya existe');return;}state.platforms.push({id:id,name:name,icon:icon,color:color});document.getElementById('np-plname').value='';document.getElementById('np-plicon').value='';document.getElementById('np-plcolor').value='';saveState();renderPlatformsList();showToast('Plataforma agregada!');}
+function addPlatform(){
+  var name=document.getElementById('np-plname').value.trim();
+  var icon=document.getElementById('np-plicon').value.trim()||'p';
+  var color=document.getElementById('np-plcolor').value.trim()||'#7c3aed';
+  var hasImg=(_newPlatformImgData&&_newPlatformImgData.startsWith('data:'));
+  if(!name){showToast('Ingresa el nombre');return;}
+  var id=name.toLowerCase().replace(/\s+/g,'_');
+  for(var i=0;i<state.platforms.length;i++)if(state.platforms[i].id===id){showToast('Ya existe');return;}
+  state.platforms.push({id:id,name:name,icon:icon,color:color,customImg:hasImg?_newPlatformImgData:''});
+  document.getElementById('np-plname').value='';
+  document.getElementById('np-plicon').value='';
+  document.getElementById('np-plcolor').value='';
+  var pImg=document.getElementById('newPlatformImgPreviewImg');
+  pImg.src='';pImg.style.display='none';
+  document.getElementById('newPlatformImgPreview').querySelector('span').style.display='block';
+  saveState();renderPlatformsList();showToast('Plataforma agregada!');
+}
 function removePlatform(id){if(!confirm('Eliminar esta plataforma y sus productos?'))return;var np=[],npr=[];for(var i=0;i<state.platforms.length;i++)if(state.platforms[i].id!==id)np.push(state.platforms[i]);for(var j=0;j<state.products.length;j++)if(state.products[j].platform!==id)npr.push(state.products[j]);state.platforms=np;state.products=npr;saveState();renderPlatformsList();renderProductsList();showToast('Eliminada');}
 
 // PRODUCTS
@@ -1496,7 +1588,18 @@ function editProduct(id){
 }
 
 // PROMOS
-function savePromo(active){state.promo={active:active,title:document.getElementById('promo-title').value.trim(),desc:document.getElementById('promo-desc').value.trim(),label:document.getElementById('promo-label').value.trim()||'PROMOCION'};saveState();updatePromoStatusBox();showToast(active&&state.promo.title?'Promocion activada!':'Promocion desactivada');}
+function savePromo(active){
+  var prevImg=state.promo&&state.promo.image?state.promo.image:'';
+  state.promo={
+    active:active,
+    title:document.getElementById('promo-title').value.trim(),
+    desc:document.getElementById('promo-desc').value.trim(),
+    label:document.getElementById('promo-label').value.trim()||'PROMOCION',
+    image:prevImg
+  };
+  saveState();updatePromoStatusBox();
+  showToast(active&&state.promo.title?'Promocion activada!':'Promocion desactivada');
+}
 
 // AFFILIATES
 function renderAffList(){
@@ -1675,6 +1778,85 @@ function testEmailConfig(){
     .then(function(){el.innerHTML='<span style="color:var(--accent3)">Email de prueba enviado con exito a '+state.config.email+'</span>';})
     .catch(function(e){el.innerHTML='<span style="color:#f87171">Error: '+e.text+'</span>';});
   }catch(e){el.innerHTML='<span style="color:#f87171">Error de configuracion: '+e.message+'</span>';}
+}
+
+
+// ============================================================
+// IMAGE UPLOAD HANDLERS
+// ============================================================
+function readFileAsDataURL(file, callback) {
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { showToast('Imagen muy grande. Max 2MB'); return; }
+  var reader = new FileReader();
+  reader.onload = function(e) { callback(e.target.result); };
+  reader.readAsDataURL(file);
+}
+
+// Profile pic
+function handleProfilePicUpload(input) {
+  var file = input.files[0]; if (!file) return;
+  readFileAsDataURL(file, function(dataUrl) {
+    var img = document.getElementById('profilePicPreviewImg');
+    var emo = document.getElementById('profilePicPreviewEmoji');
+    img.src = dataUrl; img.style.display = 'block';
+    if (emo) emo.style.display = 'none';
+    showToast('Foto cargada. Guarda los cambios para aplicar.');
+  });
+}
+function removeProfilePic() {
+  var img = document.getElementById('profilePicPreviewImg');
+  var emo = document.getElementById('profilePicPreviewEmoji');
+  img.src = ''; img.style.display = 'none';
+  if (emo) { emo.style.display = 'block'; emo.textContent = state.config.emoji || ''; }
+  document.getElementById('cfg-photo-file').value = '';
+  state.config.photo = ''; saveState(); updateHeader();
+  showToast('Foto de perfil eliminada');
+}
+
+// Platform image
+var _newPlatformImgData = '';
+function handlePlatformImgUpload(input) {
+  var file = input.files[0]; if (!file) return;
+  readFileAsDataURL(file, function(dataUrl) {
+    _newPlatformImgData = dataUrl;
+    var img = document.getElementById('newPlatformImgPreviewImg');
+    img.src = dataUrl; img.style.display = 'block';
+    var sp = document.getElementById('newPlatformImgPreview').querySelector('span');
+    if (sp) sp.style.display = 'none';
+    showToast('Imagen cargada');
+  });
+}
+function removePlatformImg() {
+  _newPlatformImgData = '';
+  var img = document.getElementById('newPlatformImgPreviewImg');
+  img.src = ''; img.style.display = 'none';
+  var sp = document.getElementById('newPlatformImgPreview').querySelector('span');
+  if (sp) sp.style.display = 'block';
+  document.getElementById('np-plimg-file').value = '';
+}
+
+// Promo image
+function handlePromoImgUpload(input) {
+  var file = input.files[0]; if (!file) return;
+  readFileAsDataURL(file, function(dataUrl) {
+    var img = document.getElementById('promoImgPreviewImg');
+    img.src = dataUrl; img.style.display = 'block';
+    var sp = document.getElementById('promoImgPreview').querySelector('span');
+    if (sp) sp.style.display = 'none';
+    // Save image to promo state immediately
+    if (state.promo) state.promo.image = dataUrl;
+    else state.promo = { active: false, title: '', desc: '', label: 'PROMOCION', image: dataUrl };
+    showToast('Imagen de promo cargada');
+  });
+}
+function removePromoImg() {
+  var img = document.getElementById('promoImgPreviewImg');
+  img.src = ''; img.style.display = 'none';
+  var sp = document.getElementById('promoImgPreview').querySelector('span');
+  if (sp) sp.style.display = 'block';
+  document.getElementById('promo-img-file').value = '';
+  if (state.promo) state.promo.image = '';
+  showToast('Imagen eliminada');
 }
 
 // ============================================================
