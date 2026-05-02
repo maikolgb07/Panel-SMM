@@ -201,6 +201,45 @@ select.input-field{appearance:none}
 .tx-item .tx-left{color:var(--muted)}.tx-item .tx-right{font-weight:700;color:var(--accent3)}
 
 
+
+
+/* MAINTENANCE MODE */
+.maint-pulse{animation:maintPulse 2s infinite}
+@keyframes maintPulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.maint-locked{pointer-events:none;opacity:0.4;filter:grayscale(0.5);cursor:not-allowed!important}
+.maint-banner{background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(245,158,11,0.1));border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:10px 16px;margin-bottom:14px;display:none;align-items:center;gap:10px;flex-wrap:wrap}
+.maint-banner p{font-size:12px;color:#f87171;flex:1}
+
+/* AI EDITOR */
+.ai-editor-wrap{display:flex;flex-direction:column;gap:16px}
+.ai-chat{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:0;overflow:hidden;min-height:360px;max-height:520px;display:flex;flex-direction:column}
+.ai-chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.ai-msg{max-width:88%;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.6;animation:fadeIn 0.2s ease}
+.ai-msg.user{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:4px}
+.ai-msg.assistant{align-self:flex-start;background:var(--surface2);color:var(--text);border-bottom-left-radius:4px;border:1px solid var(--border)}
+.ai-msg.assistant code{background:rgba(0,0,0,0.3);padding:2px 5px;border-radius:4px;font-size:12px;font-family:monospace}
+.ai-msg.assistant pre{background:rgba(0,0,0,0.4);padding:10px;border-radius:8px;overflow-x:auto;margin:8px 0;font-size:11px;line-height:1.5}
+.ai-msg.system{align-self:center;background:rgba(245,158,11,0.1);color:var(--gold);border:1px solid rgba(245,158,11,0.2);font-size:11px;padding:6px 12px;border-radius:100px;max-width:95%}
+.ai-msg.error{align-self:flex-start;background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2)}
+.ai-msg.thinking{align-self:flex-start;background:var(--surface2);color:var(--muted);font-style:italic;border:1px dashed var(--border)}
+.ai-chat-input{border-top:1px solid var(--border);padding:12px;display:flex;gap:8px;background:var(--surface)}
+.ai-chat-input textarea{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:inherit;font-size:13px;outline:none;resize:none;min-height:44px;max-height:120px;transition:border-color 0.2s}
+.ai-chat-input textarea:focus{border-color:var(--accent)}
+.ai-send-btn{padding:10px 18px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.2s;flex-shrink:0;align-self:flex-end}
+.ai-send-btn:hover{background:#6d28d9}
+.ai-send-btn:disabled{background:var(--surface2);color:var(--muted);cursor:not-allowed}
+.ai-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ai-key-box{display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px 12px;flex:1;min-width:200px}
+.ai-key-box input{flex:1;background:none;border:none;color:var(--accent2);font-family:monospace;font-size:12px;outline:none}
+.rollback-list{max-height:200px;overflow-y:auto}
+.rollback-item{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:6px;flex-wrap:wrap}
+.rollback-item .ri-info{flex:1;font-size:12px}
+.rollback-item .ri-desc{color:var(--text);font-weight:600;margin-bottom:2px}
+.rollback-item .ri-date{color:var(--muted);font-size:11px}
+.pending-changes-bar{background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(6,182,212,0.08));border:1px solid rgba(124,58,237,0.3);border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:16px;display:none}
+.pending-changes-bar p{font-size:13px;color:var(--text);flex:1}
+.ai-diff-preview{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:8px;font-size:11px;font-family:monospace;max-height:180px;overflow-y:auto;line-height:1.6;display:none}
+
 /* IMAGE UPLOAD */
 .img-upload-wrap{position:relative;margin-bottom:14px}
 .img-upload-box{display:flex;align-items:center;gap:12px;background:var(--bg);border:2px dashed var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all 0.2s}
@@ -258,6 +297,197 @@ select.input-field{appearance:none}
   </div>
 </div>
 
+<!-- MAINTENANCE MODE OVERLAY -->
+<style>
+/* ===== MAINTENANCE WALL ===== */
+#maintenanceOverlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  z-index:99999;
+  background:linear-gradient(160deg,#030308 0%,#08081c 50%,#030308 100%);
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  text-align:center;
+  overflow:hidden;
+}
+#maintenanceOverlay.visible{ display:flex !important; }
+
+/* Animated orbs */
+.mw-orb{
+  position:absolute;border-radius:50%;
+  filter:blur(100px);pointer-events:none;
+}
+.mw-orb-1{
+  width:600px;height:600px;
+  background:rgba(124,58,237,0.22);
+  top:-200px;right:-200px;
+  animation:mwOrb1 10s ease-in-out infinite;
+}
+.mw-orb-2{
+  width:500px;height:500px;
+  background:rgba(6,182,212,0.13);
+  bottom:-150px;left:-150px;
+  animation:mwOrb2 13s ease-in-out infinite;
+}
+.mw-orb-3{
+  width:350px;height:350px;
+  background:rgba(16,185,129,0.08);
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  animation:mwOrb3 8s ease-in-out infinite;
+}
+@keyframes mwOrb1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
+@keyframes mwOrb2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
+@keyframes mwOrb3{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.2)}}
+
+/* Card */
+#mwCard{
+  position:relative;
+  z-index:2;
+  max-width:480px;
+  width:100%;
+  background:rgba(10,10,20,0.92);
+  border:1px solid rgba(124,58,237,0.45);
+  border-radius:28px;
+  padding:44px 32px 50px;
+  backdrop-filter:blur(28px);
+  animation:mwCardIn 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  box-shadow:0 0 80px rgba(124,58,237,0.25), 0 0 160px rgba(124,58,237,0.08);
+}
+@keyframes mwCardIn{
+  from{opacity:0;transform:scale(0.85) translateY(20px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+
+/* Photo avatar */
+#mwAvatarWrap{
+  width:100px;height:100px;
+  border-radius:50%;
+  border:3px solid rgba(124,58,237,0.6);
+  margin:0 auto 20px;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(124,58,237,0.1);
+  animation:mwFloat 3.5s ease-in-out infinite;
+  box-shadow:0 0 30px rgba(124,58,237,0.3);
+}
+@keyframes mwFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+#mwAvatarImg{width:100%;height:100%;object-fit:cover;display:none}
+#mwAvatarIcon{font-size:44px;line-height:1}
+
+/* Status badge */
+#mwBadge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(245,158,11,0.1));
+  border:1px solid rgba(239,68,68,0.4);
+  border-radius:100px;
+  padding:6px 18px;
+  margin-bottom:20px;
+  font-size:10px;font-weight:800;letter-spacing:3px;
+  text-transform:uppercase;color:#fca5a5;
+}
+#mwBadge .mw-dot{
+  width:8px;height:8px;border-radius:50%;background:#f87171;
+  animation:mwDotPulse 1.2s ease-in-out infinite;
+}
+@keyframes mwDotPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:0.6}}
+
+/* Texts */
+#mwTitle{
+  font-family:'Syne',sans-serif;
+  font-size:28px;font-weight:800;
+  margin-bottom:12px;line-height:1.2;
+  background:linear-gradient(135deg,#ffffff 0%,#c4b5fd 40%,#67e8f9 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+#mwMessage{
+  color:#9090bb;font-size:14px;line-height:1.8;margin-bottom:12px;
+}
+#mwSubMessage{
+  color:#6060aa;font-size:12px;line-height:1.6;margin-bottom:24px;
+  display:none;
+}
+
+/* Progress bar */
+#mwProgressWrap{
+  background:rgba(255,255,255,0.06);
+  border-radius:100px;height:3px;
+  margin-bottom:22px;overflow:hidden;
+}
+#mwProgressBar{
+  height:100%;border-radius:100px;
+  background:linear-gradient(90deg,#7c3aed,#06b6d4,#7c3aed);
+  background-size:200% 100%;
+  animation:mwProgress 2.5s linear infinite;
+}
+@keyframes mwProgress{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+/* Dots */
+#mwDots{display:flex;justify-content:center;gap:8px}
+.mw-loader-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:rgba(255,255,255,0.15);
+}
+.mw-loader-dot:nth-child(1){animation:mwLD 1.4s ease-in-out 0s infinite}
+.mw-loader-dot:nth-child(2){animation:mwLD 1.4s ease-in-out 0.2s infinite}
+.mw-loader-dot:nth-child(3){animation:mwLD 1.4s ease-in-out 0.4s infinite}
+@keyframes mwLD{0%,100%{background:rgba(255,255,255,0.15);transform:scale(1)}50%{background:#06b6d4;transform:scale(1.4)}}
+
+/* Staff access button - barely visible */
+#mwStaffBtn{
+  position:absolute;
+  bottom:14px;right:18px;
+  background:none;border:none;
+  color:rgba(80,80,120,0.3);
+  font-size:10px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  transition:all 0.4s;
+  padding:4px 8px;border-radius:6px;
+  letter-spacing:0.5px;
+  user-select:none;
+}
+#mwStaffBtn:hover{
+  color:rgba(124,58,237,0.7);
+  background:rgba(124,58,237,0.08);
+}
+
+@media(max-width:480px){
+  #mwCard{padding:32px 20px 46px;border-radius:22px}
+  #mwTitle{font-size:22px}
+  #mwMessage{font-size:13px}
+  #mwAvatarWrap{width:80px;height:80px}
+  #mwAvatarIcon{font-size:36px}
+}
+</style>
+
+<div id="maintenanceOverlay">
+  <div class="mw-orb mw-orb-1"></div>
+  <div class="mw-orb mw-orb-2"></div>
+  <div class="mw-orb mw-orb-3"></div>
+  <div id="mwCard">
+    <div id="mwAvatarWrap">
+      <img id="mwAvatarImg" src="" alt="">
+      <span id="mwAvatarIcon">&#x1F6E0;&#xFE0F;</span>
+    </div>
+    <div id="mwBadge"><span class="mw-dot"></span>EN MANTENIMIENTO</div>
+    <div id="mwTitle">Sitio en mantenimiento</div>
+    <p id="mwMessage">Estamos mejorando nuestra plataforma. Volvemos pronto.</p>
+    <p id="mwSubMessage"></p>
+    <div id="mwProgressWrap"><div id="mwProgressBar"></div></div>
+    <div id="mwDots">
+      <div class="mw-loader-dot"></div>
+      <div class="mw-loader-dot"></div>
+      <div class="mw-loader-dot"></div>
+    </div>
+    <button id="mwStaffBtn" onclick="mwShowAdminLogin()">Acceso Staff</button>
+  </div>
+</div>
+
 <!-- WA FLOAT -->
 <a class="wa-float" id="waFloat" href="#" target="_blank">
   <svg viewBox="0 0 24 24" width="28" height="28" fill="white"><path d="M12 4a8 8 0 0 0-6.9 12L4 20l4.1-1.1A8 8 0 1 0 12 4zm4.7 10.9c-.2.6-1.2 1.1-1.6 1.2-.4 0-.8.1-2.4-.5-2-1-3.3-3-3.4-3.2-.1-.2-1-1.3-1-2.5s.6-1.8.9-2c.2-.3.5-.3.6-.3h.5c.1 0 .3 0 .5.4l.6 1.6c.1.2.1.4 0 .5l-.3.5-.3.3c.1.2.6.9 1.2 1.5.7.7 1.4 1 1.6 1.1l.5-.6c.1-.2.3-.2.5-.1l1.5.7c.2.1.4.2.4.4s-.1.8-.3 1z"/></svg>
@@ -271,7 +501,7 @@ select.input-field{appearance:none}
     <img id="promoPopupImg" src="" alt="" style="display:none;width:100%;border-radius:12px;object-fit:cover;max-height:180px;margin-bottom:14px">
     <div class="promo-title" id="promoTitle"></div>
     <div class="promo-desc" id="promoDesc"></div>
-    <button class="promo-cta" onclick="closePromo()">&#x1F4AB; Ver ofertas ahora</button>
+    <button class="promo-cta" onclick="goToPromoOffers()">&#x1F525; Ver oferta especial</button>
   </div>
 </div>
 
@@ -284,7 +514,7 @@ select.input-field{appearance:none}
     <div id="orderInstructions" style="display:none;margin-bottom:14px"></div>
     <div id="marcaRevisionAlert" style="display:none;background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.35);border-radius:12px;padding:14px;margin-bottom:14px">
       <div style="font-family:Syne,sans-serif;font-weight:700;font-size:13px;color:#facc15;margin-bottom:8px">&#x26A0;&#xFE0F; OBLIGATORIO: Desactiva "Marca por Revision" antes de continuar</div>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Si no desactivas esta opcion, los seguidores no llegaran y <strong style="color:#f87171">no se reembolsara tu credito</strong>.</p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Si no desactivas esta opcion, el servicio no se realizara correctamente y <strong style="color:#f87171">no se reembolsara tu credito</strong>.</p>
       <div style="font-size:12px;color:var(--muted);line-height:1.9">
         <div style="display:grid;grid-template-columns:20px 1fr;gap:4px 8px;align-items:start">
           <span style="color:#facc15;font-weight:700">1.</span><span>Abre Instagram y entra a tu perfil.</span>
@@ -328,8 +558,12 @@ select.input-field{appearance:none}
     <div class="site-name" id="headerName">SMMBoost Pro</div>
     <div class="site-tagline" id="headerTagline">Servicios SMM al mejor precio</div>
     <div class="aff-banner" id="affBanner">Estas navegando con enlace de afiliado</div>
+    <div class="maint-banner" id="storeMaintBanner" style="margin:10px auto;max-width:420px">
+      <span style="font-size:16px">&#x1F6A7;</span>
+      <p><strong>Modo mantenimiento activo</strong> &mdash; Las compras estan deshabilitadas temporalmente.</p>
+    </div>
   </header>
-  <div class="balance-bar" id="balanceBar" style="display:none">
+  <div class="balance-bar" id="balanceBar" style="display:none" onclick="showView('my-account')" title="Ver mi cuenta y creditos" style="cursor:pointer">
     <div class="credit-chip"><span class="coin">&#x1FA99;</span><span id="balanceDisplay">0</span> Creditos</div>
     <div class="user-chip">Hola, <strong id="userBarName"></strong></div>
     <button class="logout-chip" onclick="logoutUser()">Salir</button>
@@ -344,6 +578,12 @@ select.input-field{appearance:none}
   <div class="about-section">
     <h2>&#x1F4AC; Sobre Nosotros</h2>
     <p>Somos tu aliado para crecer en redes sociales. Servicios SMM de alta calidad. Contactanos para recargar creditos o cualquier consulta.</p>
+    <div style="margin-bottom:16px">
+      <button onclick="shareWebsite()" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:100px;color:#fff;padding:11px 24px;font-family:DM Sans,sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Compartir esta web
+      </button>
+    </div>
     <div class="about-contacts">
       <a class="about-link about-wa" id="aboutWA" href="#" target="_blank">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 4a8 8 0 0 0-6.9 12L4 20l4.1-1.1A8 8 0 1 0 12 4zm4.7 10.9c-.2.6-1.2 1.1-1.6 1.2-.4 0-.8.1-2.4-.5-2-1-3.3-3-3.4-3.2-.1-.2-1-1.3-1-2.5s.6-1.8.9-2c.2-.3.5-.3.6-.3h.5c.1 0 .3 0 .5.4l.6 1.6c.1.2.1.4 0 .5l-.3.5-.3.3c.1.2.6.9 1.2 1.5.7.7 1.4 1 1.6 1.1l.5-.6c.1-.2.3-.2.5-.1l1.5.7c.2.1.4.2.4.4s-.1.8-.3 1z"/></svg>
@@ -368,20 +608,24 @@ select.input-field{appearance:none}
   </nav>
   <div class="panel">
     <h3>&#x1FA99; Mi Saldo de Creditos</h3>
-    <div class="stat-grid">
-      <div class="stat-card"><div class="stat-value gold" id="myBalance">0</div><div class="stat-label">Creditos disponibles</div></div>
+    <!-- Big credit display -->
+    <div style="background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05));border:2px solid rgba(245,158,11,0.35);border-radius:16px;padding:20px;text-align:center;margin-bottom:16px">
+      <div style="font-size:11px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:4px">Mi Saldo Actual</div>
+      <div style="font-family:Syne,sans-serif;font-size:48px;font-weight:800;color:var(--gold);line-height:1" id="myBalance">0</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:14px">Creditos disponibles</div>
+      <a class="wa-mini-btn" id="insufWABtn" href="#" target="_blank" style="display:inline-flex;justify-content:center;padding:10px 22px;border-radius:100px;font-size:13px;font-weight:700;text-decoration:none;background:var(--wa);color:#fff;gap:6px">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M12 4a8 8 0 0 0-6.9 12L4 20l4.1-1.1A8 8 0 1 0 12 4zm4.7 10.9c-.2.6-1.2 1.1-1.6 1.2-.4 0-.8.1-2.4-.5-2-1-3.3-3-3.4-3.2-.1-.2-1-1.3-1-2.5s.6-1.8.9-2c.2-.3.5-.3.6-.3h.5c.1 0 .3 0 .5.4l.6 1.6c.1.2.1.4 0 .5l-.3.5-.3.3c.1.2.6.9 1.2 1.5.7.7 1.4 1 1.6 1.1l.5-.6c.1-.2.3-.2.5-.1l1.5.7c.2.1.4.2.4.4s-.1.8-.3 1z"/></svg>
+        Solicitar recarga de creditos
+      </a>
+    </div>
+    <div id="insufAlertAccount" style="display:none;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#f87171">
+      &#x26A0;&#xFE0F; Saldo en cero. Solicita una recarga para seguir comprando.
+    </div>
+    <div class="stat-grid" style="margin-bottom:0">
       <div class="stat-card"><div class="stat-value" id="myOrdersCount">0</div><div class="stat-label">Pedidos realizados</div></div>
       <div class="stat-card"><div class="stat-value" id="myTotalSpent">0</div><div class="stat-label">Creditos gastados</div></div>
     </div>
-    <div id="insufAlertAccount" style="display:none">
-      <div class="insuf-alert">
-        <p>No tienes creditos. Contacta al administrador para recargar tu cuenta.</p>
-        <a class="wa-mini-btn" id="insufWABtn" href="#" target="_blank">
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="white"><path d="M12 4a8 8 0 0 0-6.9 12L4 20l4.1-1.1A8 8 0 1 0 12 4zm4.7 10.9c-.2.6-1.2 1.1-1.6 1.2-.4 0-.8.1-2.4-.5-2-1-3.3-3-3.4-3.2-.1-.2-1-1.3-1-2.5s.6-1.8.9-2c.2-.3.5-.3.6-.3h.5c.1 0 .3 0 .5.4l.6 1.6c.1.2.1.4 0 .5l-.3.5-.3.3c.1.2.6.9 1.2 1.5.7.7 1.4 1 1.6 1.1l.5-.6c.1-.2.3-.2.5-.1l1.5.7c.2.1.4.2.4.4s-.1.8-.3 1z"/></svg>
-          Recargar creditos
-        </a>
-      </div>
-    </div>
+
     <div class="divider"></div>
     <label class="lbl">Historial de recargas</label>
     <div id="myRechargeHistory"><p style="color:var(--muted);font-size:13px">Sin recargas aun.</p></div>
@@ -481,6 +725,7 @@ select.input-field{appearance:none}
     <button class="admin-tab" onclick="switchTab('products')">&#x1F4B0; Productos</button>
     <button class="admin-tab" onclick="switchTab('promos')">&#x1F4E3; Promos</button>
     <button class="admin-tab" onclick="switchTab('affiliates')">&#x1F91D; Afiliados</button>
+    <button class="admin-tab" onclick="switchTab('ai')">&#x1F916; IA Editor</button>
     <button class="admin-tab" onclick="switchTab('notifs')">&#x1F514; Notificaciones <span id="notifAdminBadge" style="display:none;background:#7c3aed;color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:100px;margin-left:4px">0</span></button>
   </div>
 
@@ -517,6 +762,50 @@ select.input-field{appearance:none}
       <div class="form-row">
         <div><input class="input-field" id="cfg-np1" placeholder="Nueva contrasena" type="password"></div>
         <div><input class="input-field" id="cfg-np2" placeholder="Repetir" type="password"></div>
+      </div>
+      <div class="divider"></div>
+      <h4 style="font-family:Syne,sans-serif;font-size:14px;margin-bottom:12px">&#x1F6A7; Modo Mantenimiento</h4>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Cuando este activo, <strong style="color:#f87171">solo el administrador</strong> puede ingresar. Los visitantes ven tu mensaje personalizado con foto.</p>
+      <div id="maintenanceStatus" style="margin-bottom:16px"></div>
+
+      <!-- PREVIEW card -->
+      <div id="maintPreviewCard" style="background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.25);border-radius:16px;padding:16px;margin-bottom:18px;text-align:center;display:none">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Vista previa del mensaje</div>
+        <div id="prevPhoto" style="width:60px;height:60px;border-radius:50%;border:2px solid rgba(124,58,237,0.4);margin:0 auto 10px;overflow:hidden;background:rgba(124,58,237,0.1);display:flex;align-items:center;justify-content:center;font-size:28px">&#x1F6E0;&#xFE0F;</div>
+        <div id="prevTitle" style="font-family:Syne,sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px"></div>
+        <div id="prevMsg" style="font-size:12px;color:var(--muted);line-height:1.6"></div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label class="lbl">Titulo del aviso</label>
+          <input class="input-field" id="maint-title" placeholder="Ej: Sitio en mantenimiento" oninput="updateMaintPreview()">
+        </div>
+        <div>
+          <label class="lbl">Mensaje principal</label>
+          <input class="input-field" id="maint-msg" placeholder="Ej: Volvemos pronto..." oninput="updateMaintPreview()">
+        </div>
+      </div>
+      <label class="lbl">Mensaje secundario (opcional)</label>
+      <input class="input-field" id="maint-submsg" placeholder="Ej: Para consultas escribe al WhatsApp">
+      <label class="lbl">Foto de la pantalla de mantenimiento (opcional)</label>
+      <div class="img-upload-wrap">
+        <div class="img-upload-box" onclick="document.getElementById('maint-photo-file').click()">
+          <div class="img-preview" id="maintPhotoAdminPreview" style="background:var(--surface)">
+            <img id="maintPhotoAdminPreviewImg" src="" alt="" style="display:none">
+            <span style="font-size:22px">&#x1F5BC;&#xFE0F;</span>
+          </div>
+          <div class="img-upload-info">
+            <strong>Foto del mensaje de mantenimiento</strong>
+            <span>Aparecera como avatar en la pantalla &bull; Max 2MB</span>
+          </div>
+          <button class="img-remove-btn" onclick="event.stopPropagation();removeMaintPhoto()">Quitar</button>
+        </div>
+        <input type="file" class="img-upload-input" id="maint-photo-file" accept="image/*" onchange="handleMaintPhotoUpload(this)">
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+        <button class="btn" onclick="toggleMaintenance(true)" style="flex:1;background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);font-size:13px">&#x1F6A7; Activar mantenimiento</button>
+        <button class="btn" onclick="toggleMaintenance(false)" style="flex:1;background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3);font-size:13px">&#x2705; Desactivar</button>
       </div>
       <div class="divider"></div>
       <h4 style="font-family:Syne,sans-serif;font-size:14px;margin-bottom:12px">&#x2709;&#xFE0F; Configuracion de Emails (EmailJS)</h4>
@@ -585,14 +874,12 @@ select.input-field{appearance:none}
       <h3>&#x1F4F1; Gestionar Plataformas</h3>
       <div id="platformsList"></div>
       <div class="divider"></div>
-      <label class="lbl">Agregar plataforma</label>
-      <div class="form-row">
-        <div><label class="lbl">Nombre</label><input class="input-field" id="np-plname" placeholder="Ej: Twitter"></div>
-        <div><label class="lbl">Clave SVG o emoji (si no hay foto)</label><input class="input-field" id="np-plicon" placeholder="twitter, telegram o emoji"></div>
-      </div>
-      <label class="lbl">Color de la tarjeta</label>
-      <input class="input-field" id="np-plcolor" placeholder="Color hex (ej: #1da1f2)">
-      <label class="lbl">Foto / icono personalizado (opcional)</label>
+      <label class="lbl">Agregar nueva plataforma</label>
+      <label class="lbl">Nombre</label>
+      <input class="input-field" id="np-plname" placeholder="Ej: Twitter, Threads...">
+      <input type="hidden" id="np-plicon" value="">
+      <input type="hidden" id="np-plcolor" value="#7c3aed">
+      <label class="lbl">Foto / icono de la plataforma (obligatorio)</label>
       <div class="img-upload-wrap">
         <div class="img-upload-box" onclick="document.getElementById('np-plimg-file').click()">
           <div class="img-preview" id="newPlatformImgPreview" style="background:var(--surface)">
@@ -600,8 +887,8 @@ select.input-field{appearance:none}
             <span>&#x1F4F1;</span>
           </div>
           <div class="img-upload-info">
-            <strong>Foto del icono (opcional)</strong>
-            <span>Si subes una foto, se usara como icono de la plataforma</span>
+            <strong>Sube la foto del icono &#x1F4F7;</strong>
+            <span>Esta foto sera el icono de la plataforma en el catalogo</span>
           </div>
           <button class="img-remove-btn" onclick="event.stopPropagation();removePlatformImg()">Quitar</button>
         </div>
@@ -614,7 +901,7 @@ select.input-field{appearance:none}
   <div class="admin-section" id="admin-products">
     <div class="panel">
       <h3>&#x1F4B0; Gestionar Productos</h3>
-      <p style="color:var(--muted);font-size:12px;margin-bottom:14px">El precio se define en Creditos. Ej: 100 seguidores = 1 credito, 500 seguidores = 3.5 creditos.</p>
+      
       <div id="productsList"></div>
       <div class="divider"></div>
       <label class="lbl">Agregar nuevo producto</label>
@@ -674,6 +961,75 @@ select.input-field{appearance:none}
     </div>
   </div>
 
+
+  <div class="admin-section" id="admin-ai">
+    <div class="panel">
+      <h3>&#x1F916; Agente IA &mdash; Editor Autonomo</h3>
+      <p style="color:var(--muted);font-size:12px;margin-bottom:16px">Describe en lenguaje natural los cambios que quieres hacer en tu web. La IA los aplica automaticamente. <strong style="color:var(--accent2)">100% Gratis con Google Gemini.</strong></p>
+
+      <!-- Provider selector -->
+      <label class="lbl">Proveedor de IA</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px" id="aiProviderPicker">
+        <div id="provGroq" onclick="selectAiProvider('groq')" style="border:2px solid var(--accent3);border-radius:12px;padding:12px;cursor:pointer;text-align:center;background:rgba(16,185,129,0.1)">
+          <div style="font-size:20px;margin-bottom:4px">&#x26A1;</div>
+          <div style="font-family:Syne,sans-serif;font-size:11px;font-weight:700;color:var(--accent3)">Groq</div>
+          <div style="font-size:9px;color:var(--accent3);margin-top:2px">&#x2B50; RECOMENDADO</div>
+        </div>
+        <div id="provGemini" onclick="selectAiProvider('gemini')" style="background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;text-align:center">
+          <div style="font-size:20px;margin-bottom:4px">&#x1F3A8;</div>
+          <div style="font-family:Syne,sans-serif;font-size:11px;font-weight:700;color:var(--muted)">Gemini</div>
+          <div style="font-size:9px;color:var(--accent3);margin-top:2px">&#x2705; GRATIS</div>
+        </div>
+        <div id="provOpenRouter" onclick="selectAiProvider('openrouter')" style="background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;text-align:center">
+          <div style="font-size:20px;margin-bottom:4px">&#x1F310;</div>
+          <div style="font-family:Syne,sans-serif;font-size:11px;font-weight:700;color:var(--muted)">OpenRouter</div>
+          <div style="font-size:9px;color:var(--accent3);margin-top:2px">&#x2705; GRATIS</div>
+        </div>
+      </div>
+
+      <!-- API Key input -->
+      <div class="ai-key-box" style="margin-bottom:8px">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent2);flex-shrink:0"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        <input type="password" id="aiApiKey" placeholder="Pega tu API Key aqui..." onchange="saveAiKey()">
+        <button class="copy-btn" onclick="toggleAiKey()" style="background:var(--surface2);color:var(--text)">&#x1F441;</button>
+      </div>
+      <div id="aiKeyHelp" style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6"></div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <button class="btn btn-sm btn-success" onclick="testAiConnection()">&#x26A1; Probar conexion</button>
+        <a id="aiGetKeyLink" href="#" target="_blank" class="btn btn-sm" style="background:var(--surface2);color:var(--text);text-decoration:none">&#x1F511; Obtener API Key gratis</a>
+      </div>
+      <div id="aiConnectionStatus" style="font-size:12px;margin-bottom:14px"></div>
+
+      <!-- Pending changes bar -->
+      <div class="pending-changes-bar" id="pendingChangesBar">
+        <p id="pendingChangesText">La IA propone cambios. Revisa y aplica o descarta.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-sm btn-success" onclick="applyAiChanges()">&#x2705; Aplicar y descargar</button>
+          <button class="btn btn-sm btn-danger" onclick="discardAiChanges()">&#x274C; Descartar</button>
+        </div>
+      </div>
+      <div class="ai-diff-preview" id="aiDiffPreview"></div>
+
+      <!-- Chat -->
+      <div class="ai-chat" id="aiChat">
+        <div class="ai-chat-messages" id="aiMessages">
+          <div class="ai-msg system">&#x1F916; Agente listo. Selecciona un proveedor, pega tu API Key y escribe que cambios quieres.</div>
+        </div>
+        <div class="ai-chat-input">
+          <textarea id="aiInput" placeholder="Ej: Cambia el color de los botones a azul, agrega una seccion de FAQ..." rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAiMessage();}"></textarea>
+          <button class="ai-send-btn" id="aiSendBtn" onclick="sendAiMessage()">Enviar</button>
+        </div>
+      </div>
+
+      <!-- Rollback -->
+      <div class="divider"></div>
+      <h4 style="font-family:Syne,sans-serif;font-size:14px;margin-bottom:8px">&#x23F3; Versiones anteriores (Rollback)</h4>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Antes de cada cambio se guarda una copia automatica. Maximo 5 versiones.</p>
+      <div class="rollback-list" id="rollbackList"><p style="color:var(--muted);font-size:13px">Sin versiones guardadas aun.</p></div>
+    </div>
+  </div>
+
+
   <div class="admin-section" id="admin-notifs">
     <div class="panel">
       <h3>&#x1F514; Historial de Notificaciones</h3>
@@ -714,9 +1070,12 @@ SVGS['snapchat']  = '<svg viewBox="0 0 24 24" width="44" height="44" xmlns="http
 
 function getIcon(key, size, customImg) {
   var s = size || 44;
-  if (customImg) return '<img src="'+customImg+'" style="width:'+s+'px;height:'+s+'px;border-radius:8px;object-fit:cover">';
-  if (SVGS[key]) return SVGS[key].replace('width="44"','width="'+s+'"').replace('height="44"','height="'+s+'"');
-  return '<span style="font-size:'+Math.round(s*0.75)+'px;line-height:1">'+key+'</span>';
+  if (customImg && customImg.length > 10) return '<img src="'+customImg+'" style="width:'+s+'px;height:'+s+'px;border-radius:8px;object-fit:cover;display:block">';
+  var k = (key||'').toLowerCase().trim();
+  if (SVGS[k]) return SVGS[k].replace('width="44"','width="'+s+'"').replace('height="44"','height="'+s+'"');
+  // Try emoji or short text fallback
+  if (key && key.length <= 4) return '<span style="font-size:'+Math.round(s*0.75)+'px;line-height:1">'+key+'</span>';
+  return '<span style="font-size:'+Math.round(s*0.75)+'px;line-height:1;color:var(--muted)">?</span>';
 }
 
 // ============================================================
@@ -736,7 +1095,7 @@ var TAG_CLASSES = {promo:'tag-promo', hot:'tag-hot', rec:'tag-rec', 'new':'tag-n
 // STATE
 // ============================================================
 var state = {
-  config:{name:'SMMBoost Pro',tagline:'Servicios SMM al mejor precio',whatsapp:'+1234567890',email:'contacto@smmboost.com',photo:'',emoji:''},
+  config:{name:'SMMBoost Pro',tagline:'Servicios SMM al mejor precio',whatsapp:'+1234567890',email:'contacto@smmboost.com',photo:'',emoji:'',isMaintenance:false,maintMessage:'Estamos mejorando nuestra plataforma. Volvemos pronto.',maintImage:'',maintSubMsg:''},
   platforms:[
     {id:'instagram',name:'Instagram',icon:'instagram',color:'#e1306c'},
     {id:'youtube',name:'YouTube',icon:'youtube',color:'#ff0000'},
@@ -773,6 +1132,8 @@ var state = {
   currentAff:null,
   isAdmin:false,
   emailjs:null,
+  apiConfig:{url:'',key:'',enabled:false},
+  providerServices:[],
   currentUser:null,
   affMult:1,
   nav:{platform:null,category:null},
@@ -810,6 +1171,7 @@ function loadState() {
       if(s.promo)     state.promo=s.promo;
       if(s.adminPass) ADMIN_PASS=s.adminPass;
       if(s.emailjs) state.emailjs=s.emailjs;
+
     }
     state.affiliates=JSON.parse(localStorage.getItem('smm_affs')||'[]');
     if(localStorage.getItem(ADMIN_SK)==='1') state.isAdmin=true;
@@ -884,13 +1246,23 @@ function doLogin(){
 
 function openApp(){
   document.getElementById('authGate').style.display='none';
-  updateHeader(); renderStore(); checkPromo();
+  if(isMaintMode()){
+    showMaintenanceWall();
+    return;
+  }
+  updateHeader();
+  renderStore();
+  setTimeout(checkPromo, 1200);
 }
 
 function logoutUser(){
-  state.currentUser=null; localStorage.removeItem(USER_SK);
+  state.currentUser=null;
+  localStorage.removeItem(USER_SK);
+  // Show auth gate with LOGIN tab active (not register)
   document.getElementById('authGate').style.display='flex';
   document.getElementById('authErr').textContent='';
+  document.getElementById('logEmail').value='';
+  document.getElementById('logPass').value='';
   switchAuthTab('log');
 }
 
@@ -898,23 +1270,110 @@ function logoutUser(){
 // PROMO
 // ============================================================
 function checkPromo(){
+  // Show EVERY time the user enters or reloads — no session gate
   if(!state.promo||!state.promo.active||!state.promo.title) return;
-  var key='smm_promo_'+state.promo.title.replace(/\s/g,'');
-  if(sessionStorage.getItem(key)) return;
-  sessionStorage.setItem(key,'1');
   document.getElementById('promoLabel').textContent=state.promo.label||'PROMOCION';
   document.getElementById('promoTitle').textContent=state.promo.title;
   document.getElementById('promoDesc').textContent=state.promo.desc;
   var pImg=document.getElementById('promoPopupImg');
-  if(pImg){if(state.promo.image){pImg.src=state.promo.image;pImg.style.display='block';}else{pImg.style.display='none';}}
+  if(pImg){
+    if(state.promo.image){pImg.src=state.promo.image;pImg.style.display='block';}
+    else{pImg.style.display='none';}
+  }
   setTimeout(function(){ document.getElementById('promoOverlay').classList.add('open'); },900);
 }
 function closePromo(){ document.getElementById('promoOverlay').classList.remove('open'); }
+
+function goToPromoOffers(){
+  closePromo();
+  showView('store');
+  // Render a dedicated promo page with ONLY promo-special products
+  var promoProds = [];
+  for(var i=0;i<state.products.length;i++){
+    if(state.products[i].tag==='promo') promoProds.push(state.products[i]);
+  }
+  var userCr = getUserCredits();
+  var html = '';
+
+  // Header banner
+  html += '<div style="background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(245,158,11,0.1));border:2px solid rgba(239,68,68,0.35);border-radius:20px;padding:24px 20px;margin-bottom:24px;text-align:center">';
+  html += '<div style="font-size:36px;margin-bottom:8px">&#x1F525;</div>';
+  html += '<div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:#f87171;margin-bottom:6px">Ofertas Especiales</div>';
+  html += '<div style="font-size:13px;color:var(--muted)">Promociones exclusivas &mdash; Tiempo limitado</div></div>';
+
+  if(promoProds.length === 0){
+    html += '<div style="text-align:center;padding:40px 20px">';
+    html += '<div style="font-size:48px;margin-bottom:16px">&#x1F4CB;</div>';
+    html += '<div style="font-family:Syne,sans-serif;font-size:16px;font-weight:700;margin-bottom:8px">No hay ofertas especiales activas</div>';
+    html += '<div style="font-size:13px;color:var(--muted);margin-bottom:20px">El administrador aun no ha marcado productos como Promo Especial.</div>';
+    html += '<button class="nav-btn active" onclick="goHome()">&#x1F3EA; Ver catalogo completo</button></div>';
+  } else {
+    html += '<div class="products-list">';
+    for(var k=0;k<promoProds.length;k++){
+      var pr = promoProds[k];
+      var pl = getPlatform(pr.platform);
+      var cc = parseFloat(pr.price) * state.affMult;
+      var dc = cc.toFixed(cc%1===0?0:1);
+      var canAfford = userCr >= cc;
+      var _ms = getMaintState();
+      var _isAdm = state.isAdmin || (localStorage.getItem(ADMIN_SK)==='1');
+      var maintLocked = _ms && _ms.active && !_isAdm;
+      var btnCls, btnLbl, btnClick;
+      if(maintLocked){
+        btnCls = 'buy-btn maint-locked'; btnLbl = 'En mantenimiento'; btnClick = 'return false';
+      } else if(!canAfford){
+        btnCls = 'buy-btn insufficient'; btnLbl = 'Saldo insuficiente'; btnClick = 'showInsufMsg()';
+      } else {
+        btnCls = 'buy-btn'; btnLbl = '&#x1F6D2; Pedir ahora'; btnClick = "openOrder('"+pr.id+"')";
+      }
+      html += '<div class="product-card" style="border-color:rgba(239,68,68,0.4);background:linear-gradient(135deg,var(--surface),rgba(239,68,68,0.04))">';
+      html += '<div class="product-info">';
+      html += '<div class="product-name">'+pr.name+' <span class="tag tag-promo">&#x1F525; Promo Especial</span></div>';
+      html += '<div class="product-desc">'+pr.desc+'</div>';
+      html += '<div class="product-qty" style="display:flex;align-items:center;gap:5px">'+getIcon(pl.icon,14,pl.customImg)+'&nbsp;'+pl.name+' &bull; '+pr.qty+' unidades</div>';
+      html += '</div>';
+      html += '<div class="product-right">';
+      html += '<div class="credit-price">&#x1FA99; '+dc+' <small>Cr</small></div>';
+      html += '<button class="'+btnCls+'" onclick="'+btnClick+'">'+btnLbl+'</button>';
+      html += '</div></div>';
+    }
+    html += '</div>';
+    html += '<div style="text-align:center;margin-top:4px;padding-bottom:10px">';
+    html += '<button class="nav-btn" onclick="goHome()">&#x1F3EA; Ver catalogo completo</button>';
+    html += '</div>';
+  }
+
+  document.getElementById('storeContent').innerHTML = html;
+  window.scrollTo(0,0);
+}
+
+
+function shareWebsite(){
+  var url = window.location.href.split('?')[0];
+  var text = (state.config.name || 'SMMBoost Pro') + ' - Servicios SMM al mejor precio';
+  if(navigator.share){
+    navigator.share({title: state.config.name || 'SMMBoost Pro', text: text, url: url})
+      .catch(function(){});
+  } else {
+    // Fallback: copy to clipboard
+    navigator.clipboard.writeText(url).then(function(){
+      showToast('Enlace copiado! Comparte con tus amigos.');
+    }).catch(function(){
+      // Last resort: show the URL
+      prompt('Copia este enlace para compartir:', url);
+    });
+  }
+}
 
 // ============================================================
 // NAVIGATION
 // ============================================================
 function showView(v){
+  // MAINTENANCE WALL: block all navigation for non-admins
+  if(isMaintMode() && v !== 'admin-login'){
+    showMaintenanceWall();
+    return;
+  }
   var views=document.querySelectorAll('.view');
   for(var i=0;i<views.length;i++) views[i].classList.remove('active');
   if(v==='admin'&&!state.isAdmin) v='admin-login';
@@ -937,8 +1396,18 @@ function updateHeader(){
   document.title=c.name;
   var img=document.getElementById('headerImg'),emo=document.getElementById('headerEmoji');
   var asn=document.getElementById('authSiteName');if(asn)asn.textContent=c.name;
-  if(c.photo){img.src=c.photo;img.style.display='block';if(emo)emo.style.display='none';}
-  else{img.style.display='none';if(emo){emo.style.display='block';emo.textContent=c.emoji||'';}}
+  if(c.photo && c.photo.length > 10){
+    img.src=c.photo;
+    img.style.display='block';
+    img.style.width='100%';
+    img.style.height='100%';
+    img.style.objectFit='cover';
+    if(emo)emo.style.display='none';
+  } else {
+    img.src='';
+    img.style.display='none';
+    if(emo){emo.style.display='block';emo.textContent=c.emoji||'';}
+  }
   var wa=(c.whatsapp||'').replace(/\D/g,'');
   var waEl=document.getElementById('waFloat');if(waEl)waEl.href='https://wa.me/'+wa+'?text=Hola!';
   var aWA=document.getElementById('aboutWA');if(aWA)aWA.href='https://wa.me/'+wa+'?text=Hola!';
@@ -973,6 +1442,8 @@ function renderMyAccount(){
   document.getElementById('myTotalSpent').textContent=parseFloat(cu.totalSpent||0).toFixed(1);
   // Insufficient alert
   document.getElementById('insufAlertAccount').style.display=cred<=0?'block':'none';
+  // Update my account stats
+  var mbEl=document.getElementById('myBalance'); if(mbEl)mbEl.textContent=cred.toFixed(1);
   renderUserNotifs();
   // Recharge history
   var recharges=getRecharges(),myRec=[];
@@ -994,7 +1465,7 @@ function renderMyAccount(){
       var o=myOrders[l];
       var sb=o.status==='pending'?'<span class="badge badge-yellow">Pendiente</span>':o.status==='confirmed'?'<span class="badge badge-green">Confirmado</span>':'<span class="badge badge-red">Cancelado</span>';
       oHtml+='<div class="order-card"><div class="order-header"><span class="order-id">'+o.id+' &middot; '+o.date+'</span>'+sb+'</div>';
-      oHtml+='<div class="order-body"><strong>'+o.productName+'</strong> &middot; '+o.platform+' &middot; '+o.qty+' uds<br>';
+      oHtml+='<div class="order-body"><strong>'+o.productName+'</strong> &middot; '+o.platform+' &middot; '+o.qty+' unidades<br>';
       oHtml+='Costo: <strong style="color:var(--gold)">'+o.creditCost+' Cr</strong> &middot; Perfil: <strong>'+o.user+'</strong></div></div>';
     }
     document.getElementById('myOrdersList').innerHTML=oHtml;
@@ -1020,11 +1491,13 @@ function getUserCredits(){
 }
 
 function renderStore(){
+  // Guard: never render store content during maintenance for non-admins
+  if(isMaintMode()){ showMaintenanceWall(); return; }
   updateHeader();
   var plt=state.nav.platform,cat=state.nav.category,html='';
   if(!plt){
     html='<div class="section-title">Elige una plataforma</div><div class="platforms-grid">';
-    for(var i=0;i<state.platforms.length;i++){var p=state.platforms[i];html+='<div class="platform-card" onclick="selectPlatform(\''+p.id+'\')"><div class="platform-icon">'+getIcon(p.icon,44)+'</div><div class="platform-name">'+p.name+'</div></div>';}
+    for(var i=0;i<state.platforms.length;i++){var p=state.platforms[i];html+='<div class="platform-card" onclick="selectPlatform(\''+p.id+'\')"><div class="platform-icon">'+getIcon(p.icon,44,p.customImg)+'</div><div class="platform-name">'+p.name+'</div></div>';}
     html+='</div>';
   } else if(!cat){
     var pl=getPlatform(plt),cats=getCats(plt);
@@ -1057,6 +1530,7 @@ function renderStore(){
     html+='</div>';
   }
   document.getElementById('storeContent').innerHTML=html;
+  setTimeout(updateStoreLockState,50);
 }
 
 function goHome(){state.nav={platform:null,category:null};renderStore();}
@@ -1116,7 +1590,7 @@ function openOrder(pid){
   instrEl.style.display='block';
 
   // Marca por Revision: ONLY Instagram + followers
-  var isMarca=(pl.id==='instagram'&&curProd.category==='followers');
+  var isMarca=(pl.id==='instagram'); // Required for ALL Instagram services
   document.getElementById('marcaRevisionAlert').style.display=isMarca?'block':'none';
   var mc=document.getElementById('marcaCheck'); if(mc)mc.checked=false;
 
@@ -1134,7 +1608,7 @@ function openOrder(pid){
     var cc=(creditCost*mult), dcc=cc.toFixed(cc%1===0?0:1);
     var opt=document.createElement('option');
     opt.value=mult; opt.dataset.credits=cc; opt.dataset.qty=q;
-    opt.textContent=q+' unidades - '+dcc+' Creditos';
+    opt.textContent=q+' unids - '+dcc+' Creditos';
     sel.appendChild(opt);
   }
   updateOrderCheck(); sel.onchange=updateOrderCheck;
@@ -1167,6 +1641,12 @@ function updateOrderCheck(){
 function closeModal(){document.getElementById('orderModal').classList.remove('open');}
 
 function sendOrder(){
+  // SECURITY: Hard block on orders during maintenance
+  if(isMaintMode()){
+    closeModal();
+    showMaintenanceWall();
+    return;
+  }
   var user=document.getElementById('orderUser').value.trim();
   if(!user){showToast('Ingresa el enlace de tu perfil o publicacion');return;}
   var sel=document.getElementById('orderQty'); var opt=sel.options[sel.selectedIndex];
@@ -1198,37 +1678,14 @@ function sendOrder(){
   state.orders.push(order); saveState();
   // Notify admin via WhatsApp
   // Pedido registrado sin WhatsApp - solo notificaciones internas y email
-    // Push internal notification to admin
-  addNotification({
-    type:'new_order', orderId:ordId, read:false,
-    date:order.date, time:order.time,
-    title:'Nuevo pedido: '+curProd.name,
-    body:'Cliente: '+cu.name+' ('+cu.email+') | '+qty+' uds | '+order.creditCost+' Cr | Enlace: '+user,
-    userEmail:cu.email, userName:cu.name
-  });
-  // Push notification to user
-  addUserNotification(cu.id, {
-    type:'order_placed', orderId:ordId, read:false,
-    date:order.date, time:order.time,
-    title:'Pedido registrado: '+curProd.name,
-    body:'Tu pedido de '+qty+' '+catN[curProd.category]+' para '+pl.name+' fue registrado correctamente. ID: '+ordId+'. Te notificaremos cuando sea entregado.'
-  });
-  // Send email to admin
-  sendEmailToAdmin({
-    subject:'Nuevo pedido - '+ordId,
-    order_id:ordId,
-    service:curProd.name,
-    platform:pl.name,
-    qty:qty,
-    cost:order.creditCost+' Creditos',
-    client_name:cu.name,
-    client_email:cu.email,
-    profile_link:user,
-    date:order.date+' '+order.time
-  });
+    
   closeModal();
   updateHeader();
   updatePendingBadge();
+  // AUTO-SEND to provider if API configured and product has provider service ID
+  if(state.apiConfig&&state.apiConfig.url&&state.apiConfig.secret&&curProd.providerServiceId){
+    autoSendToProvider(ordId, curProd.providerServiceId, user, qty);
+  }
   // Show success notification modal
   document.getElementById('successDetail').innerHTML=
     '<strong>ID del pedido:</strong> '+ordId+'<br>'+
@@ -1268,7 +1725,7 @@ function renderAffiliate(){
     document.getElementById('affEarnings').textContent='$'+(fa.earnings||0).toFixed(2);
     var confOrds=[];for(var k=0;k<state.orders.length;k++)if(state.orders[k].affCode===fa.code&&state.orders[k].status==='confirmed')confOrds.push(state.orders[k]);
     if(confOrds.length===0){document.getElementById('affOrdersList').innerHTML='<p style="color:var(--muted);font-size:13px">Sin pedidos confirmados aun.</p>';}
-    else{var oH='';for(var l=0;l<confOrds.length;l++){var co=confOrds[l];oH+='<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:7px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px"><div><strong style="font-size:12px">'+co.productName+'</strong><div style="font-size:11px;color:var(--muted)">'+co.platform+' &middot; '+co.qty+' uds &middot; '+co.date+'</div></div><div style="text-align:right"><span class="badge badge-green">Confirmado</span><div style="font-size:12px;color:var(--accent3);font-weight:700;margin-top:3px">+$'+co.commission+'</div></div></div>';}document.getElementById('affOrdersList').innerHTML=oH;}
+    else{var oH='';for(var l=0;l<confOrds.length;l++){var co=confOrds[l];oH+='<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:7px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px"><div><strong style="font-size:12px">'+co.productName+'</strong><div style="font-size:11px;color:var(--muted)">'+co.platform+' &middot; '+co.qty+' unids &middot; '+co.date+'</div></div><div style="text-align:right"><span class="badge badge-green">Confirmado</span><div style="font-size:12px;color:var(--accent3);font-weight:700;margin-top:3px">+$'+co.commission+'</div></div></div>';}document.getElementById('affOrdersList').innerHTML=oH;}
   }
 }
 function affRegister(){
@@ -1297,16 +1754,39 @@ function requestPayout(){var aff=state.currentAff;if((aff.earnings||0)<5){showTo
 // ============================================================
 function adminLogin(){
   var u=document.getElementById('adminUser').value,p=document.getElementById('adminPass').value;
-  if(u===ADMIN_USER&&p===ADMIN_PASS){state.isAdmin=true;localStorage.setItem(ADMIN_SK,'1');showView('admin');}
-  else showToast('Credenciales incorrectas');
+  if(u===ADMIN_USER&&p===ADMIN_PASS){
+    state.isAdmin=true;
+    localStorage.setItem(ADMIN_SK,'1');
+    // Admin authenticated: tear down the wall completely
+    hideMaintenanceWall();
+    showView('admin');
+  } else showToast('Credenciales incorrectas');
 }
-function adminLogout(){state.isAdmin=false;localStorage.removeItem(ADMIN_SK);showView('store');}
+function adminLogout(){
+  state.isAdmin=false;
+  localStorage.removeItem(ADMIN_SK);
+  // If maintenance still active, raise the wall again
+  if(getMaintState() && getMaintState().active){
+    showMaintenanceWall();
+  } else {
+    showView('store');
+  }
+}
 
 function renderAdmin(){
   var c=state.config;
   document.getElementById('cfg-name').value=c.name;document.getElementById('cfg-tagline').value=c.tagline;
   document.getElementById('cfg-whatsapp').value=c.whatsapp;document.getElementById('cfg-email').value=c.email;
-  // Photo is now handled via file upload preview (cfg-photo-file)document.getElementById('cfg-emoji').value=c.emoji;
+  // Photo preview - show saved photo if exists
+  var ppImg=document.getElementById('profilePicPreviewImg');
+  var ppEmo=document.getElementById('profilePicPreviewEmoji');
+  if(ppImg && c.photo && c.photo.length>10){
+    ppImg.src=c.photo; ppImg.style.display='block';
+    if(ppEmo) ppEmo.style.display='none';
+  } else if(ppImg){
+    ppImg.src=''; ppImg.style.display='none';
+    if(ppEmo){ ppEmo.style.display='block'; ppEmo.textContent=c.emoji||''; }
+  }document.getElementById('cfg-emoji').value=c.emoji;
   if(state.promo){
     document.getElementById('promo-title').value=state.promo.title||'';
     document.getElementById('promo-desc').value=state.promo.desc||'';
@@ -1325,13 +1805,13 @@ function renderAdmin(){
     document.getElementById('cfg-ejs-tmpl-client').value=state.emailjs.templateClient||'';
     document.getElementById('cfg-ejs-tmpl-admin').value=state.emailjs.templateAdmin||'';
   }
-  updatePromoStatusBox();renderOrdersList();renderUsersList();renderPlatformsList();renderProductsList();renderAffList();renderRechargeHistory();renderAdminNotifs();updatePendingBadge();
+  updatePromoStatusBox();renderOrdersList();renderUsersList();renderPlatformsList();renderProductsList();renderAffList();renderRechargeHistory();renderAdminNotifs();updatePendingBadge();updateMaintStatusBox();renderApiPanel();
 }
 
 function updatePromoStatusBox(){var box=document.getElementById('promoStatusBox');if(!box)return;box.innerHTML=state.promo&&state.promo.active&&state.promo.title?'<div class="alert-info" style="color:var(--accent3);border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.07)">Promocion ACTIVA: <strong>'+state.promo.title+'</strong></div>':'<div class="alert-info">Sin promocion activa.</div>';}
 
 function switchTab(tab){
-  var tabs=['general','credits','orders','users','platforms','products','promos','affiliates','notifs'];
+  var tabs=['general','credits','orders','users','platforms','products','promos','affiliates','ai','notifs'];
   var btns=document.querySelectorAll('.admin-tab');
   for(var i=0;i<tabs.length;i++){btns[i].classList.toggle('active',tabs[i]===tab);document.getElementById('admin-'+tabs[i]).classList.toggle('active',tabs[i]===tab);}
 }
@@ -1340,8 +1820,26 @@ function saveConfig(){
   var np1=document.getElementById('cfg-np1').value.trim(),np2=document.getElementById('cfg-np2').value.trim();
   if(np1){if(np1!==np2){showToast('Las contrasenas no coinciden');return;}if(np1.length<6){showToast('Minimo 6 caracteres');return;}ADMIN_PASS=np1;document.getElementById('cfg-np1').value='';document.getElementById('cfg-np2').value='';}
   var uploadedPhoto=document.getElementById('profilePicPreviewImg').src||'';
-  var photoVal=uploadedPhoto.startsWith('data:')?uploadedPhoto:'';
+  var photoVal='';
+  if(uploadedPhoto && uploadedPhoto.startsWith('data:')){
+    // Compress image to max 400x400 before saving to avoid storage limits
+    try{
+      var canvas=document.createElement('canvas');
+      var tmpImg=new Image();
+      tmpImg.src=uploadedPhoto;
+      var maxDim=400;
+      var w=tmpImg.naturalWidth||200, h=tmpImg.naturalHeight||200;
+      var ratio=Math.min(maxDim/w, maxDim/h, 1);
+      canvas.width=Math.round(w*ratio);
+      canvas.height=Math.round(h*ratio);
+      var ctx=canvas.getContext('2d');
+      ctx.drawImage(tmpImg,0,0,canvas.width,canvas.height);
+      photoVal=canvas.toDataURL('image/jpeg',0.75);
+    }catch(e){ photoVal=uploadedPhoto; }
+  }
   state.config={name:document.getElementById('cfg-name').value||'SMMBoost Pro',tagline:document.getElementById('cfg-tagline').value||'Servicios SMM al mejor precio',whatsapp:document.getElementById('cfg-whatsapp').value||'+1234567890',email:document.getElementById('cfg-email').value||'',photo:photoVal,emoji:document.getElementById('cfg-emoji').value||''};
+  // Save API config
+  
   // Save EmailJS config
   var ejsPub=document.getElementById('cfg-ejs-pubkey').value.trim();
   var ejsSvc=document.getElementById('cfg-ejs-service').value.trim();
@@ -1409,12 +1907,28 @@ function renderOrdersList(){
     var o=filtered[j];
     var sb=o.status==='pending'?'<span class="badge badge-yellow">Pendiente</span>':o.status==='confirmed'?'<span class="badge badge-green">Confirmado</span>':'<span class="badge badge-red">Cancelado</span>';
     html+='<div class="order-card"><div class="order-header"><span class="order-id">'+o.id+' &middot; '+o.date+'</span>'+sb+'</div>';
-    html+='<div class="order-body"><strong>'+o.productName+'</strong> &middot; '+o.platform+' &middot; '+o.qty+' uds<br>';
-    html+='Costo: <strong style="color:var(--gold)">'+o.creditCost+' Cr</strong> &middot; Enlace: <strong>'+(o.profileLink||o.user)+'</strong><br>';
+    var provInfo=o.providerOrderId?'<br>Proveedor ID: <strong style="color:var(--accent2)">#'+o.providerOrderId+'</strong> &middot; Estado: <strong>'+( o.providerStatus||'Enviado')+'</strong>':'';
+    var provErr=o.providerError?'<br><span style="color:#f87171">Error proveedor: '+o.providerError+'</span>':'';
+    html+='<div class="order-body"><strong>'+o.productName+'</strong> &middot; '+o.platform+' &middot; '+o.qty+' unidades<br>';
+    html+='Costo: <strong style="color:var(--gold)">'+o.creditCost+' Cr</strong> &middot; Enlace: <strong>'+(o.profileLink||o.user)+'</strong>'+provInfo+provErr+'<br>';
     html+='Cliente: <strong>'+o.userName+'</strong> ('+o.userEmail+')<br>';
     if(o.affCode)html+='Afiliado: <strong style="color:var(--accent2)">'+o.affCode+'</strong> &middot; Comision: <strong style="color:var(--accent3)">$'+o.commission+'</strong><br>';
     html+='</div>';
-    if(o.status==='pending')html+='<div class="order-actions"><button class="btn btn-sm btn-success" onclick="confirmOrder(\''+o.id+'\')">Confirmar entrega</button><button class="btn btn-sm btn-danger" onclick="cancelOrderFn(\''+o.id+'\')">Cancelar</button></div>';
+    if(o.status==='pending'){
+      var apiBtn='';
+      if(o.providerOrderId){
+        apiBtn='<button class="btn btn-sm" style="background:rgba(6,182,212,0.15);color:var(--accent2);border:1px solid rgba(6,182,212,0.2)" onclick="checkProviderStatus(\''+o.id+'\')">' +
+          '&#x1F504; Estado proveedor</button>';
+      } else {
+        apiBtn='<button class="btn btn-sm" style="background:rgba(245,158,11,0.15);color:var(--gold);border:1px solid rgba(245,158,11,0.3)" onclick="sendToProvider(\''+o.id+'\')">' +
+          '&#x26A1; Enviar al proveedor</button>';
+      }
+      html+='<div class="order-actions">'+apiBtn+
+        '<button class="btn btn-sm btn-success" onclick="confirmOrder(\''+o.id+'\')">' +
+        '&#x2705; Confirmar entregado</button>'+
+        '<button class="btn btn-sm btn-danger" onclick="cancelOrderFn(\''+o.id+'\')">' +
+        'Cancelar</button></div>';
+    }
     html+='</div>';
   }
   document.getElementById('ordersList').innerHTML=html;
@@ -1427,6 +1941,10 @@ function confirmOrder(oid){
       o.confirmedDate=new Date().toLocaleDateString('es');
       o.confirmedTime=new Date().toLocaleTimeString('es');
       if(o.affCode){var affs=JSON.parse(localStorage.getItem('smm_affs')||'[]');for(var j=0;j<affs.length;j++)if(affs[j].code===o.affCode){affs[j].earnings=(affs[j].earnings||0)+parseFloat(o.commission);break;}localStorage.setItem('smm_affs',JSON.stringify(affs));state.affiliates=affs;}
+      // If auto-submitted to provider, show provider order ID
+      if(o.providerOrderId){
+        showToast('Confirmado. ID proveedor: '+o.providerOrderId);
+      }
       saveState();
       // Find user
       var cu=getUserByEmail(o.userEmail);
@@ -1435,7 +1953,7 @@ function confirmOrder(oid){
         type:'completed', orderId:o.id, read:false,
         date:o.confirmedDate, time:o.confirmedTime,
         title:'Pedido entregado: '+o.productName,
-        body:'Cliente: '+o.userName+' ('+o.userEmail+') | '+o.qty+' uds entregados | Enlace: '+(o.profileLink||o.user),
+        body:'Cliente: '+o.userName+' ('+o.userEmail+') | '+o.qty+' unidades entregados | Enlace: '+(o.profileLink||o.user),
         userEmail:o.userEmail, userName:o.userName
       });
       // Add user notification
@@ -1532,23 +2050,28 @@ function renderUsersList(){
 }
 
 // PLATFORMS
-function renderPlatformsList(){var html='';for(var i=0;i<state.platforms.length;i++){var p=state.platforms[i],cnt=0;for(var j=0;j<state.products.length;j++)if(state.products[j].platform===p.id)cnt++;html+='<div class="prow"><span style="display:flex;align-items:center">'+getIcon(p.icon,26)+'</span><div class="prow-info"><strong>'+p.name+'</strong><div style="font-size:11px;color:var(--muted)">'+cnt+' productos</div></div><span class="color-dot" style="background:'+p.color+'"></span><button class="btn btn-danger btn-sm" onclick="removePlatform(\''+p.id+'\')">Eliminar</button></div>';}document.getElementById('platformsList').innerHTML=html||'<p style="color:var(--muted);font-size:13px">No hay plataformas</p>';}
+function renderPlatformsList(){var html='';for(var i=0;i<state.platforms.length;i++){var p=state.platforms[i],cnt=0;for(var j=0;j<state.products.length;j++)if(state.products[j].platform===p.id)cnt++;html+='<div class="prow"><span style="display:flex;align-items:center">'+getIcon(p.icon,26,p.customImg)+'</span><div class="prow-info"><strong>'+p.name+'</strong><div style="font-size:11px;color:var(--muted)">'+cnt+' productos</div></div><span class="color-dot" style="background:'+p.color+'"></span><button class="btn btn-danger btn-sm" onclick="removePlatform(\''+p.id+'\')">Eliminar</button></div>';}document.getElementById('platformsList').innerHTML=html||'<p style="color:var(--muted);font-size:13px">No hay plataformas</p>';}
 function addPlatform(){
   var name=document.getElementById('np-plname').value.trim();
-  var icon=document.getElementById('np-plicon').value.trim()||'p';
-  var color=document.getElementById('np-plcolor').value.trim()||'#7c3aed';
+  if(!name){showToast('Ingresa el nombre de la plataforma');return;}
+  var id=name.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+  for(var i=0;i<state.platforms.length;i++)if(state.platforms[i].id===id){showToast('Ya existe una plataforma con ese nombre');return;}
   var hasImg=(_newPlatformImgData&&_newPlatformImgData.startsWith('data:'));
-  if(!name){showToast('Ingresa el nombre');return;}
-  var id=name.toLowerCase().replace(/\s+/g,'_');
-  for(var i=0;i<state.platforms.length;i++)if(state.platforms[i].id===id){showToast('Ya existe');return;}
-  state.platforms.push({id:id,name:name,icon:icon,color:color,customImg:hasImg?_newPlatformImgData:''});
+  if(!hasImg){showToast('Sube una foto para el icono de la plataforma');return;}
+  // Auto-assign icon key from name (try known SVGs first)
+  var iconKey = name.toLowerCase().trim();
+  // Use a random accent color from palette
+  var colors=['#e1306c','#ff0000','#1877f2','#010101','#25d366','#2AABEE','#ff6600','#9146FF','#ff0050'];
+  var color = colors[Math.floor(Math.random()*colors.length)];
+  state.platforms.push({id:id, name:name, icon:iconKey, color:color, customImg:_newPlatformImgData});
   document.getElementById('np-plname').value='';
-  document.getElementById('np-plicon').value='';
-  document.getElementById('np-plcolor').value='';
+  _newPlatformImgData='';
   var pImg=document.getElementById('newPlatformImgPreviewImg');
   pImg.src='';pImg.style.display='none';
-  document.getElementById('newPlatformImgPreview').querySelector('span').style.display='block';
-  saveState();renderPlatformsList();showToast('Plataforma agregada!');
+  var sp=document.getElementById('newPlatformImgPreview').querySelector('span');
+  if(sp) sp.style.display='block';
+  saveState();renderPlatformsList();renderProductsList();
+  showToast('Plataforma agregada correctamente!');
 }
 function removePlatform(id){if(!confirm('Eliminar esta plataforma y sus productos?'))return;var np=[],npr=[];for(var i=0;i<state.platforms.length;i++)if(state.platforms[i].id!==id)np.push(state.platforms[i]);for(var j=0;j<state.products.length;j++)if(state.products[j].platform!==id)npr.push(state.products[j]);state.platforms=np;state.products=npr;saveState();renderPlatformsList();renderProductsList();showToast('Eliminada');}
 
@@ -1561,7 +2084,7 @@ function renderProductsList(){
   for(var j=0;j<state.products.length;j++){
     var pr=state.products[j],pl=getPlatform(pr.platform),th=buildTag(pr);
     var dpr=parseFloat(pr.price);var dprStr=dpr.toFixed(dpr%1===0?0:1);
-    html+='<div class="prow"><span style="display:flex;align-items:center">'+getIcon(pl.icon,20)+'</span><div class="prow-info"><strong style="font-size:12px">'+pr.name+'</strong>'+th+'<div style="font-size:11px;color:var(--muted)">'+pl.name+' &middot; '+(catL[pr.category]||pr.category)+' &middot; '+pr.qty+' uds</div></div><div class="prow-price">'+dprStr+' Cr</div><button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="editProduct(\''+pr.id+'\')">Editar</button><button class="btn btn-danger btn-sm" onclick="removeProduct(\''+pr.id+'\')">X</button></div>';
+    html+='<div class="prow"><span style="display:flex;align-items:center">'+getIcon(pl.icon,20,pl.customImg)+'</span><div class="prow-info"><strong style="font-size:12px">'+pr.name+'</strong>'+th+'<div style="font-size:11px;color:var(--muted)">'+pl.name+' &middot; '+(catL[pr.category]||pr.category)+' &middot; '+pr.qty+' unidades</div></div><div class="prow-price">'+dprStr+' Cr</div><button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="editProduct(\''+pr.id+'\')">Editar</button><button class="btn btn-danger btn-sm" onclick="removeProduct(\''+pr.id+'\')">X</button></div>';
   }
   document.getElementById('productsList').innerHTML=html;
 }
@@ -1608,6 +2131,167 @@ function renderAffList(){
   var html='';
   for(var i=0;i<affs.length;i++){var a=affs[i],pending=0,confirmed=0;for(var j=0;j<state.orders.length;j++){var o=state.orders[j];if(o.affCode===a.code){if(o.status==='pending')pending++;if(o.status==='confirmed')confirmed++;}}html+='<div class="prow"><div class="prow-info"><strong>'+a.name+'</strong><div style="font-size:11px;color:var(--muted)">'+a.email+' &middot; Cod: '+a.code+'</div><div style="font-size:11px;margin-top:3px">Clics: '+(a.clicks||0)+' &middot; Pend: '+pending+' &middot; Conf: '+confirmed+'</div></div><div style="text-align:right"><div class="prow-price" style="color:var(--accent3)">$'+(a.earnings||0).toFixed(2)+'</div><div style="font-size:10px;color:var(--muted)">Ganancias</div></div></div>';}
   document.getElementById('affiliatesList').innerHTML=html;
+}
+
+// ============================================================
+// SMM API PROVIDER INTEGRATION
+// ============================================================
+
+function getApiConfig() {
+  if (state.apiConfig && state.apiConfig.url && state.apiConfig.secret) return state.apiConfig;
+  return null;
+}
+
+function updateApiStatusBar() {
+  if (!bar) return;
+  var cfg = getApiConfig();
+  if (cfg) {
+    bar.innerHTML = '<div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--accent3)">&#x2705; API configurada: <strong>' + cfg.url + '</strong></div>';
+  } else {
+    bar.innerHTML = '<div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--gold)">&#x26A0;&#xFE0F; API no configurada. Completa los campos y guarda.</div>';
+  }
+}
+
+function smmApiCall(action, extraBody, callback) {
+  var cfg = getApiConfig();
+  if (!cfg) { showToast('Configura la API primero'); return; }
+  var body = Object.assign({ action: action }, extraBody || {});
+  fetch(cfg.url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Admin-Secret': cfg.secret },
+    body: JSON.stringify(body)
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) { callback(null, data); })
+  .catch(function(err) { callback(err, null); });
+}
+
+function filterApiServices() {
+  var q = (document.getElementById('apiServiceFilter').value || '').toLowerCase();
+  if (!q) { renderApiServicesList(state._providerServices); return; }
+  var filtered = state._providerServices.filter(function(s) {
+    var name = (s.name || '') + ' ' + (s.category || '') + ' ' + (s.service || '');
+    return name.toLowerCase().indexOf(q) >= 0;
+  });
+  renderApiServicesList(filtered);
+}
+
+function linkServiceToProduct(providerSid, providerName) {
+  // Let admin pick which product to link this provider service to
+  var opts = 'Elige el numero del producto a vincular con "' + providerName + '" (ID: ' + providerSid + '):\n\n';
+  for (var i = 0; i < state.products.length; i++) {
+    var p = state.products[i];
+    opts += (i + 1) + ') ' + p.name + ' [' + getPlatform(p.platform).name + ']\n';
+  }
+  var choice = prompt(opts);
+  if (!choice) return;
+  var idx = parseInt(choice) - 1;
+  if (isNaN(idx) || idx < 0 || idx >= state.products.length) { showToast('Numero invalido'); return; }
+  state.products[idx].providerServiceId = providerSid;
+  state.products[idx].providerServiceName = providerName;
+  saveState();
+  renderProductsList();
+  showToast('Producto "' + state.products[idx].name + '" vinculado al servicio #' + providerSid);
+}
+
+function linkServiceFromBtn(btn) {
+  var sid = btn.getAttribute('data-sid');
+  var row = btn.closest('[style]');
+  var nameEl = row ? row.querySelector('div div') : null;
+  var pName = nameEl ? nameEl.textContent : 'Servicio ' + sid;
+  linkServiceToProduct(sid, pName);
+}
+
+function autoSendToProvider(orderId, providerServiceId, link, quantity) {
+  // Called automatically when client places order and product has providerServiceId
+  smmApiCall('place_order', {
+    service_id: providerServiceId,
+    link: link,
+    quantity: quantity
+  }, function(err, data) {
+    // Find and update the order with provider info
+    for (var i = 0; i < state.orders.length; i++) {
+      if (state.orders[i].id === orderId) {
+        if (data && data.ok && data.provider_order) {
+          state.orders[i].providerOrderId = data.provider_order;
+          state.orders[i].providerStatus = 'In progress';
+          state.orders[i].autoSent = true;
+          showToast('Pedido enviado al proveedor! ID: ' + data.provider_order);
+        } else {
+          state.orders[i].providerError = (data && data.error) ? data.error : 'Error desconocido';
+          state.orders[i].autoSent = false;
+          var errMsg = state.orders[i].providerError;
+          showToast('Error proveedor: ' + errMsg);
+        }
+        break;
+      }
+    }
+    saveState();
+  });
+}
+
+function sendToProvider(orderId) {
+  var order = null;
+  for (var i = 0; i < state.orders.length; i++) if (state.orders[i].id === orderId) { order = state.orders[i]; break; }
+  if (!order) return;
+  var product = null;
+  for (var j = 0; j < state.products.length; j++) if (state.products[j].id === order.productId) { product = state.products[j]; break; }
+
+  if (!product || !product.providerServiceId) {
+    showToast('Este producto no tiene ID de proveedor. Ve a Productos y vincúlalo primero.');
+    return;
+  }
+
+  showToast('Enviando al proveedor...');
+  smmApiCall('place_order', {
+    service_id: product.providerServiceId,
+    link: order.profileLink || order.user,
+    quantity: parseInt(order.qty)
+  }, function(err, data) {
+    if (data && data.ok && data.provider_order) {
+      order.providerOrderId = data.provider_order;
+      order.providerStatus = 'In progress';
+      order.autoSent = true;
+      saveState();
+      renderOrdersList();
+      showToast('Enviado al proveedor! ID: #' + data.provider_order);
+      addNotification({
+        type: 'new_order', orderId: order.id, read: false,
+        date: new Date().toLocaleDateString('es'), time: new Date().toLocaleTimeString('es'),
+        title: 'Pedido enviado al proveedor',
+        body: 'Pedido ' + order.id + ' enviado. Provider ID: ' + data.provider_order,
+        userEmail: order.userEmail, userName: order.userName
+      });
+    } else {
+      var errMsg = (data && data.error) ? data.error : 'Error al enviar';
+      showToast('Error: ' + errMsg);
+      order.providerError = errMsg;
+      saveState();
+    }
+  });
+}
+
+function checkProviderStatus(orderId) {
+  var order = null;
+  for (var i = 0; i < state.orders.length; i++) if (state.orders[i].id === orderId) { order = state.orders[i]; break; }
+  if (!order || !order.providerOrderId) return;
+  showToast('Consultando estado...');
+  smmApiCall('check_status', { provider_order_id: order.providerOrderId }, function(err, data) {
+    if (err || !data || !data.ok) { showToast('Error al consultar estado'); return; }
+    var st = data.status;
+    var statusStr = typeof st === 'object' ? (st.status || JSON.stringify(st)) : st;
+    order.providerStatus = statusStr;
+    saveState();
+    renderOrdersList();
+    showToast('Estado del proveedor: ' + statusStr);
+    // Auto-confirm if completed
+    if (statusStr && (statusStr.toLowerCase() === 'completed' || statusStr.toLowerCase() === 'complete')) {
+      if (order.status === 'pending') {
+        confirmOrder(orderId);
+        showToast('El proveedor completo el pedido. Marcado como entregado!');
+      }
+    }
+  });
 }
 
 // ============================================================
@@ -1781,6 +2465,492 @@ function testEmailConfig(){
 }
 
 
+
+// ============================================================
+// API PROVIDER INTEGRATION
+// ============================================================
+var _allProviderServices = [];
+
+function getProxyUrl(){
+  // When hosted on a server, api.php is in the same folder as index.html/index.php
+  // Locally this won't work (expected behavior - needs a server)
+  return 'api.php';
+}
+
+function saveApiConfig(){
+  var url = document.getElementById('api-url').value.trim();
+  var key = document.getElementById('api-key').value.trim();
+  if(!url||!key){showToast('Ingresa la URL y la API Key');return;}
+  if(!url.startsWith('https://')){showToast('La URL debe empezar con https://');return;}
+  state.apiConfig = {url:url, key:key, enabled:true};
+  saveState();
+  renderApiPanel();
+  showToast('API guardada correctamente');
+}
+
+function testApiBalance(){
+  var el = document.getElementById('apiTestResult');
+  el.innerHTML = '<span style="color:var(--muted)">Consultando balance...</span>';
+  callProviderAPI({action:'balance'}, function(data){
+    if(data.error){
+      el.innerHTML = '<span style="color:#f87171">Error: '+data.error+'</span>';
+    } else {
+      var bal = data.balance||data.Balance||JSON.stringify(data);
+      el.innerHTML = '<span style="color:var(--accent3)">Balance disponible: <strong>$'+bal+'</strong></span>';
+    }
+  });
+}
+
+function loadProviderServices(){
+  var el = document.getElementById('apiTestResult');
+  el.innerHTML = '<span style="color:var(--muted)">Cargando servicios...</span>';
+  callProviderAPI({action:'services'}, function(data){
+    if(data.error){
+      el.innerHTML = '<span style="color:#f87171">Error: '+data.error+'</span>';
+      return;
+    }
+    var services = Array.isArray(data) ? data : (data.services||data.data||[]);
+    _allProviderServices = services;
+    state.providerServices = services;
+    el.innerHTML = '<span style="color:var(--accent3)">'+services.length+' servicios cargados</span>';
+    renderProviderServicesTable(services);
+    document.getElementById('providerServicesList').style.display='block';
+    renderProductProviderList();
+  });
+}
+
+function filterProviderServices(q){
+  var q2 = q.toLowerCase();
+  var filtered = _allProviderServices.filter(function(s){
+    return (s.name||'').toLowerCase().includes(q2) ||
+           String(s.service||s.id||'').includes(q);
+  });
+  renderProviderServicesTable(filtered);
+}
+
+function renderProviderServicesTable(services){
+  var wrap = document.getElementById('servicesTableWrap');
+  if(!wrap) return;
+  if(!services||services.length===0){
+    wrap.innerHTML='<p style="padding:14px;color:var(--muted);font-size:13px">Sin resultados</p>';
+    return;
+  }
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:12px">';
+  html += '<thead><tr style="background:var(--surface2)">';
+  html += '<th style="padding:8px 10px;text-align:left;color:var(--muted);font-weight:600">ID</th>';
+  html += '<th style="padding:8px 10px;text-align:left;color:var(--muted);font-weight:600">Nombre del servicio</th>';
+  html += '<th style="padding:8px 10px;text-align:left;color:var(--muted);font-weight:600">Categoria</th>';
+  html += '<th style="padding:8px 10px;text-align:right;color:var(--muted);font-weight:600">Min/Max</th>';
+  html += '<th style="padding:8px 10px;text-align:right;color:var(--muted);font-weight:600">Precio/1000</th>';
+  html += '</tr></thead><tbody>';
+  for(var i=0;i<Math.min(services.length,200);i++){
+    var s=services[i];
+    var sid = s.service||s.id||i;
+    var sname = s.name||'Sin nombre';
+    var scat = s.category||s.type||'-';
+    var smin = s.min||'-';
+    var smax = s.max||'-';
+    var sprice = s.rate||s.price||'-';
+    html += '<tr style="border-top:1px solid var(--border)">';
+    html += '<td style="padding:7px 10px"><code style="background:var(--surface2);padding:2px 6px;border-radius:4px;color:var(--accent2)">'+sid+'</code></td>';
+    html += '<td style="padding:7px 10px;color:var(--text)">'+sname+'</td>';
+    html += '<td style="padding:7px 10px;color:var(--muted)">'+scat+'</td>';
+    html += '<td style="padding:7px 10px;text-align:right;color:var(--muted)">'+smin+'/'+smax+'</td>';
+    html += '<td style="padding:7px 10px;text-align:right;color:var(--gold)">$'+sprice+'</td>';
+    html += '</tr>';
+  }
+  if(services.length>200) html+='<tr><td colspan="5" style="padding:8px 10px;color:var(--muted);font-size:11px">... y '+(services.length-200)+' servicios mas. Usa el buscador para filtrar.</td></tr>';
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+
+function renderProductProviderList(){
+  var el = document.getElementById('productProviderList');
+  if(!el) return;
+  if(state.products.length===0){
+    el.innerHTML='<p style="color:var(--muted);font-size:13px">No hay productos creados aun.</p>';
+    return;
+  }
+  var html='';
+  for(var i=0;i<state.products.length;i++){
+    var pr=state.products[i];
+    var pl=getPlatform(pr.platform);
+    var hasId=pr.providerId?true:false;
+    html+='<div class="prow" style="flex-wrap:wrap;gap:8px">';
+    html+='<div class="prow-info"><strong style="font-size:12px">'+pr.name+'</strong>';
+    html+='<div style="font-size:11px;color:var(--muted)">'+pl.name+' &middot; '+pr.qty+' unidades &middot; '+pr.price+' Cr</div></div>';
+    html+='<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">';
+    if(hasId){
+      html+='<span style="background:rgba(16,185,129,0.12);color:var(--accent3);border:1px solid rgba(16,185,129,0.3);border-radius:6px;padding:3px 8px;font-size:11px">ID: '+pr.providerId+'</span>';
+    } else {
+      html+='<span style="background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2);border-radius:6px;padding:3px 8px;font-size:11px">Sin ID asignado</span>';
+    }
+    html+='<input placeholder="ID servicio" value="'+(pr.providerId||'')+'" style="width:90px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:5px 8px;color:var(--text);font-size:12px;outline:none" id="pid_'+pr.id+'">';
+    html+='<button class="btn btn-sm" style="background:var(--accent);color:#fff;padding:5px 10px;font-size:11px" onclick="assignProviderId(\"'+pr.id+'\")">Asignar</button>';
+    html+='</div></div>';
+  }
+  el.innerHTML = html;
+}
+
+function assignProviderId(val, productId){
+  var pid = val!==undefined ? val : '';
+  var input = document.getElementById('pid_'+productId);
+  if(input) pid = input.value.trim();
+  // fall through
+  if(!input) return;
+  if(!pid&&input) pid=input.value.trim();
+  for(var i=0;i<state.products.length;i++){
+    if(state.products[i].id===productId){
+      state.products[i].providerId = pid;
+      saveState();
+      renderProductProviderList();
+      showToast(pid ? 'ID '+pid+' asignado' : 'ID eliminado');
+      return;
+    }
+  }
+}
+
+function renderApiPanel(){
+  var urlEl = document.getElementById('api-url');
+  var keyEl = document.getElementById('api-key');
+  if(urlEl&&state.apiConfig) urlEl.value = state.apiConfig.url||'';
+  // Don't pre-fill key for security - just show placeholder
+  var statusBox = document.getElementById('apiStatusBox');
+  if(statusBox){
+    if(state.apiConfig&&state.apiConfig.enabled&&state.apiConfig.url){
+      statusBox.innerHTML='<div class="alert-info" style="color:var(--accent3);border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.07)">API configurada: <strong>'+state.apiConfig.url+'</strong> &middot; Estado: <span style="color:var(--accent3)">Activa</span></div>';
+    } else {
+      statusBox.innerHTML='<div class="alert-info">No hay API configurada. Ingresa los datos de tu proveedor arriba.</div>';
+    }
+  }
+  renderProductProviderList();
+}
+
+// Auto-submit order to provider
+function submitOrderToProvider(orderId, serviceId, link, quantity){
+  callProviderAPI({
+    action: 'add',
+    service: serviceId,
+    link: link,
+    quantity: quantity
+  }, function(data){
+    if(data.error){
+      // Log error in order
+      for(var i=0;i<state.orders.length;i++){
+        if(state.orders[i].id===orderId){
+          state.orders[i].providerError=data.error;
+          state.orders[i].providerStatus='error';
+          break;
+        }
+      }
+      saveState();
+      addNotification({
+        type:'new_order', orderId:orderId, read:false,
+        date:new Date().toLocaleDateString('es'),
+        time:new Date().toLocaleTimeString('es'),
+        title:'Error al enviar al proveedor: '+orderId,
+        body:'Error: '+data.error+' | El pedido sigue registrado. Procesalo manualmente.'
+      });
+    } else {
+      var provOrderId = data.order||data.id||data.order_id||JSON.stringify(data);
+      for(var i=0;i<state.orders.length;i++){
+        if(state.orders[i].id===orderId){
+          state.orders[i].providerOrderId = String(provOrderId);
+          state.orders[i].providerStatus = 'submitted';
+          break;
+        }
+      }
+      saveState();
+    }
+  });
+}
+
+// Check status of an order at the provider
+function checkProviderOrderStatus(orderId){
+  var order = null;
+  for(var i=0;i<state.orders.length;i++) if(state.orders[i].id===orderId){order=state.orders[i];break;}
+  if(!order||!order.providerOrderId){showToast('Este pedido no tiene ID de proveedor');return;}
+  showToast('Consultando estado...');
+  callProviderAPI({action:'status', order:order.providerOrderId}, function(data){
+    if(data.error){showToast('Error: '+data.error);return;}
+    var status = data.status||data.charge||JSON.stringify(data);
+    showToast('Estado proveedor: '+status);
+    // Update order with provider status
+    for(var i=0;i<state.orders.length;i++){
+      if(state.orders[i].id===orderId){
+        state.orders[i].providerRealStatus=typeof status==='object'?JSON.stringify(status):status;
+        saveState();
+        renderOrdersList();
+        break;
+      }
+    }
+  });
+}
+
+
+// ============================================================
+// MAINTENANCE MODE SYSTEM
+// ============================================================
+var MAINT_KEY = 'smm_maintenance';
+
+// ================================================================
+// MAINTENANCE WALL — Core functions
+// ================================================================
+var MAINT_KEY = 'smm_maintenance';
+
+function getMaintState(){
+  try{
+    // ALWAYS read from localStorage — this persists across reloads
+    var s = JSON.parse(localStorage.getItem(MAINT_KEY)||'null');
+    // Sync to state.config so runtime checks work too
+    if(s && s.active){
+      state.config.isMaintenance = true;
+      if(s.msg)    state.config.maintMessage = s.msg;
+      if(s.submsg) state.config.maintSubMsg  = s.submsg;
+      if(s.image)  state.config.maintImage   = s.image;
+    }
+    return s;
+  }catch(e){ return null; }
+}
+function saveMaintState(s){
+  try{
+    // Always persist to localStorage first
+    localStorage.setItem(MAINT_KEY, JSON.stringify(s));
+    // Sync runtime state
+    state.config.isMaintenance = !!(s && s.active);
+    if(s && s.msg)    state.config.maintMessage = s.msg;
+    if(s && s.submsg) state.config.maintSubMsg  = s.submsg;
+    if(s && s.image)  state.config.maintImage   = s.image;
+  }catch(e){}
+}
+
+// ---- THE WALL: Show full-screen maintenance overlay ----
+function showMaintenanceWall(){
+  var ms = getMaintState();
+  if(!ms || !ms.active) return;
+
+  var overlay = document.getElementById('maintenanceOverlay');
+  if(!overlay) return;
+
+  // Inject dynamic content from state.config / ms
+  var title  = ms.title  || (state.config.name ? state.config.name + ' — En mantenimiento' : 'Sitio en mantenimiento');
+  var msg    = ms.msg    || state.config.maintMessage || 'Estamos mejorando nuestra plataforma. Volvemos pronto.';
+  var submsg = ms.submsg || state.config.maintSubMsg  || '';
+  var image  = ms.image  || state.config.maintImage   || '';
+
+  var titleEl  = document.getElementById('mwTitle');
+  var msgEl    = document.getElementById('mwMessage');
+  var subEl    = document.getElementById('mwSubMessage');
+  var imgEl    = document.getElementById('mwAvatarImg');
+  var iconEl   = document.getElementById('mwAvatarIcon');
+
+  if(titleEl)  titleEl.textContent  = title;
+  if(msgEl)    msgEl.textContent    = msg;
+  if(subEl){   subEl.textContent    = submsg; subEl.style.display = submsg ? 'block' : 'none'; }
+
+  // Photo or icon
+  if(image && image.length > 10){
+    if(imgEl){  imgEl.src = image; imgEl.style.display = 'block'; }
+    if(iconEl)  iconEl.style.display = 'none';
+  } else {
+    if(imgEl)   imgEl.style.display = 'none';
+    if(iconEl)  iconEl.style.display = 'block';
+  }
+
+  // Show the wall — FULL LOCKDOWN
+  overlay.classList.add('visible');
+  overlay.style.display = 'flex';
+  overlay.style.zIndex  = '99999';
+  document.body.style.overflow = 'hidden';
+
+  // Hide auth gate and every view — nothing loads behind the wall
+  var ag = document.getElementById('authGate');
+  if(ag){ ag.style.display = 'none'; ag.style.visibility = 'hidden'; }
+  document.querySelectorAll('.view').forEach(function(v){
+    v.classList.remove('active');
+    v.style.display = 'none';
+  });
+  // Hide WA float and promo
+  ['waFloat','promoOverlay','orderModal'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+}
+
+function hideMaintenanceWall(){
+  var overlay = document.getElementById('maintenanceOverlay');
+  if(overlay){
+    overlay.classList.remove('visible');
+    overlay.style.display = 'none';
+    overlay.style.zIndex  = '';
+  }
+  document.body.style.overflow = '';
+  // Restore views
+  document.querySelectorAll('.view').forEach(function(v){
+    v.style.display = '';
+  });
+  // Restore WA float
+  var wa = document.getElementById('waFloat');
+  if(wa) wa.style.display = '';
+}
+
+// ---- Staff button on overlay → show admin login ----
+function mwShowAdminLogin(){
+  // Remove the wall temporarily to show admin login
+  var overlay = document.getElementById('maintenanceOverlay');
+  if(overlay) overlay.style.display = 'none';
+  document.body.style.overflow = '';
+  document.querySelectorAll('.view').forEach(function(v){
+    v.style.display = ''; v.classList.remove('active');
+  });
+  var adminView = document.getElementById('view-admin-login');
+  if(adminView){
+    adminView.style.display = 'block';
+    adminView.classList.add('active');
+  }
+}
+
+function isMaintMode(){
+  // Admin is NEVER blocked
+  if(state.isAdmin || localStorage.getItem(ADMIN_SK) === '1') return false;
+  // Read directly from localStorage for freshness
+  try{
+    var s = JSON.parse(localStorage.getItem(MAINT_KEY)||'null');
+    return !!(s && s.active === true);
+  }catch(e){ return false; }
+}
+
+// ---- Check on page load ----
+function checkMaintenanceOnLoad(){
+  // Admin bypass: if admin session is active, skip wall
+  if(state.isAdmin || localStorage.getItem(ADMIN_SK) === '1'){
+    showMaintBannerForAdmin();
+    updateMaintStatusBox();
+    return;
+  }
+  var ms = getMaintState();
+  if(ms && ms.active){
+    showMaintenanceWall();
+  }
+}
+
+// Admin-only banner (shows while admin navigates during maintenance)
+function showMaintBannerForAdmin(){
+  var banner = document.getElementById('storeMaintBanner');
+  if(banner) banner.style.display = 'flex';
+  updateMaintStatusBox();
+}
+
+// Toggle maintenance from admin panel
+function toggleMaintenance(activate){
+  var titleIn  = (document.getElementById('maint-title')  ||{}).value || '';
+  var msgIn    = (document.getElementById('maint-msg')    ||{}).value || '';
+  var submsgIn = (document.getElementById('maint-submsg') ||{}).value || '';
+  var photoEl  = document.getElementById('maintPhotoAdminPreviewImg');
+  var imageIn  = (photoEl && photoEl.src && photoEl.src.startsWith('data:')) ? photoEl.src : (state._maintPhoto||'');
+
+  var title  = titleIn.trim()  || (state.config.name ? state.config.name+' — En mantenimiento' : 'Sitio en mantenimiento');
+  var msg    = msgIn.trim()    || 'Estamos mejorando nuestra plataforma. Volvemos pronto.';
+  var submsg = submsgIn.trim() || '';
+
+  var ms = {active:activate, title:title, msg:msg, submsg:submsg, image:imageIn, since:new Date().toLocaleString('es')};
+  saveMaintState(activate ? ms : {active:false});
+  state.config.isMaintenance = activate;
+
+  var banner = document.getElementById('storeMaintBanner');
+  if(banner) banner.style.display = activate ? 'flex' : 'none';
+  updateMaintStatusBox();
+
+  if(activate){
+    showToast('MANTENIMIENTO ACTIVADO — Solo admins pueden entrar');
+  } else {
+    hideMaintenanceWall();
+    showToast('Mantenimiento desactivado — Sitio abierto');
+  }
+}
+
+function updateMaintStatusBox(){
+  var box = document.getElementById('maintenanceStatus');
+  if(!box) return;
+  var ms = getMaintState();
+  if(ms && ms.active){
+    box.innerHTML = '<div style="display:flex;align-items:center;gap:10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:12px 14px;margin-bottom:4px"><span style="font-size:22px">&#x1F6A7;</span><div><div style="font-size:13px;font-weight:700;color:#f87171">MANTENIMIENTO ACTIVO</div><div style="font-size:11px;color:var(--muted)">Activado: '+ms.since+'</div></div></div>';
+    var tf=document.getElementById('maint-title');   if(tf) tf.value=ms.title||'';
+    var mf=document.getElementById('maint-msg');     if(mf) mf.value=ms.msg||'';
+    var sf=document.getElementById('maint-submsg');  if(sf) sf.value=ms.submsg||'';
+    if(ms.image && ms.image.length>10){
+      var pi=document.getElementById('maintPhotoAdminPreviewImg');
+      if(pi){pi.src=ms.image;pi.style.display='block';}
+      state._maintPhoto=ms.image;
+    }
+    updateMaintPreview();
+  } else {
+    box.innerHTML = '<div style="display:flex;align-items:center;gap:10px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:12px 14px"><span style="font-size:22px">&#x2705;</span><div style="font-size:13px;color:#34d399;font-weight:600">Sitio operativo &mdash; sin mantenimiento</div></div>';
+  }
+}
+
+// Maintenance photo upload
+function handleMaintPhotoUpload(input){
+  var file=input.files[0]; if(!file) return;
+  if(file.size>2*1024*1024){showToast('Max 2MB');return;}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var tmpImg=new Image();
+    tmpImg.onload=function(){
+      var canvas=document.createElement('canvas');
+      var max=300; var ratio=Math.min(max/tmpImg.width,max/tmpImg.height,1);
+      canvas.width=Math.round(tmpImg.width*ratio);
+      canvas.height=Math.round(tmpImg.height*ratio);
+      canvas.getContext('2d').drawImage(tmpImg,0,0,canvas.width,canvas.height);
+      var data=canvas.toDataURL('image/jpeg',0.82);
+      state._maintPhoto=data;
+      var pi=document.getElementById('maintPhotoAdminPreviewImg');
+      if(pi){pi.src=data;pi.style.display='block';}
+      var sp=document.getElementById('maintPhotoAdminPreview');
+      if(sp){var spn=sp.querySelector('span');if(spn)spn.style.display='none';}
+      updateMaintPreview();
+      showToast('Foto cargada');
+    };
+    tmpImg.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function removeMaintPhoto(){
+  state._maintPhoto='';
+  state.config.maintImage='';
+  var pi=document.getElementById('maintPhotoAdminPreviewImg');
+  if(pi){pi.src='';pi.style.display='none';}
+  var sp=document.getElementById('maintPhotoAdminPreview');
+  if(sp){var spn=sp.querySelector('span');if(spn)spn.style.display='block';}
+  document.getElementById('maint-photo-file').value='';
+  updateMaintPreview();
+}
+function updateMaintPreview(){
+  var preview=document.getElementById('maintPreviewCard');
+  var tf=document.getElementById('maint-title');
+  var mf=document.getElementById('maint-msg');
+  if(!preview||!tf) return;
+  var t=(tf.value||'').trim();
+  var m=(mf&&mf.value||'').trim();
+  if(!t&&!m){preview.style.display='none';return;}
+  preview.style.display='block';
+  var pt=document.getElementById('prevTitle'); if(pt) pt.textContent=t||'(sin titulo)';
+  var pm=document.getElementById('prevMsg');   if(pm) pm.textContent=m||'(sin mensaje)';
+  var pp=document.getElementById('prevPhoto');
+  if(pp){
+    if(state._maintPhoto&&state._maintPhoto.length>10){
+      pp.innerHTML='<img src="'+state._maintPhoto+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+    } else {
+      pp.innerHTML='&#x1F6E0;&#xFE0F;';
+    }
+  }
+}
+
+// Legacy aliases (keep compatibility)
+function showMaintenanceOverlay(ms){ showMaintenanceWall(); }
+function hideMaintenanceOverlay(){ hideMaintenanceWall(); }
+function showAdminLogin(){ mwShowAdminLogin(); }
+
 // ============================================================
 // IMAGE UPLOAD HANDLERS
 // ============================================================
@@ -1795,13 +2965,33 @@ function readFileAsDataURL(file, callback) {
 // Profile pic
 function handleProfilePicUpload(input) {
   var file = input.files[0]; if (!file) return;
-  readFileAsDataURL(file, function(dataUrl) {
-    var img = document.getElementById('profilePicPreviewImg');
-    var emo = document.getElementById('profilePicPreviewEmoji');
-    img.src = dataUrl; img.style.display = 'block';
-    if (emo) emo.style.display = 'none';
-    showToast('Foto cargada. Guarda los cambios para aplicar.');
-  });
+  if(file.size > 5*1024*1024){showToast('Imagen muy grande. Max 5MB');return;}
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var raw = e.target.result;
+    // Compress to max 400px before setting
+    var tmpImg = new Image();
+    tmpImg.onload = function(){
+      var canvas = document.createElement('canvas');
+      var maxDim = 400;
+      var ratio = Math.min(maxDim/tmpImg.width, maxDim/tmpImg.height, 1);
+      canvas.width  = Math.round(tmpImg.width  * ratio);
+      canvas.height = Math.round(tmpImg.height * ratio);
+      canvas.getContext('2d').drawImage(tmpImg, 0, 0, canvas.width, canvas.height);
+      var compressed = canvas.toDataURL('image/jpeg', 0.8);
+      var previewImg = document.getElementById('profilePicPreviewImg');
+      var emo = document.getElementById('profilePicPreviewEmoji');
+      previewImg.src = compressed;
+      previewImg.style.display = 'block';
+      previewImg.style.width = '100%';
+      previewImg.style.height = '100%';
+      previewImg.style.objectFit = 'cover';
+      if(emo) emo.style.display = 'none';
+      showToast('Foto cargada. Presiona Guardar cambios.');
+    };
+    tmpImg.src = raw;
+  };
+  reader.readAsDataURL(file);
 }
 function removeProfilePic() {
   var img = document.getElementById('profilePicPreviewImg');
@@ -1817,14 +3007,27 @@ function removeProfilePic() {
 var _newPlatformImgData = '';
 function handlePlatformImgUpload(input) {
   var file = input.files[0]; if (!file) return;
-  readFileAsDataURL(file, function(dataUrl) {
-    _newPlatformImgData = dataUrl;
-    var img = document.getElementById('newPlatformImgPreviewImg');
-    img.src = dataUrl; img.style.display = 'block';
-    var sp = document.getElementById('newPlatformImgPreview').querySelector('span');
-    if (sp) sp.style.display = 'none';
-    showToast('Imagen cargada');
-  });
+  if(file.size > 3*1024*1024){showToast('Imagen muy grande. Max 3MB');return;}
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var tmpImg = new Image();
+    tmpImg.onload = function(){
+      var canvas = document.createElement('canvas');
+      var maxDim = 200;
+      var ratio = Math.min(maxDim/tmpImg.width, maxDim/tmpImg.height, 1);
+      canvas.width  = Math.round(tmpImg.width  * ratio);
+      canvas.height = Math.round(tmpImg.height * ratio);
+      canvas.getContext('2d').drawImage(tmpImg, 0, 0, canvas.width, canvas.height);
+      _newPlatformImgData = canvas.toDataURL('image/jpeg', 0.85);
+      var img = document.getElementById('newPlatformImgPreviewImg');
+      img.src = _newPlatformImgData; img.style.display = 'block';
+      var sp = document.getElementById('newPlatformImgPreview').querySelector('span');
+      if(sp) sp.style.display = 'none';
+      showToast('Icono cargado');
+    };
+    tmpImg.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 function removePlatformImg() {
   _newPlatformImgData = '';
@@ -1859,27 +3062,461 @@ function removePromoImg() {
   showToast('Imagen eliminada');
 }
 
+
+// ============================================================
+// AI EDITOR — MULTI-PROVIDER (GEMINI FREE + OPENROUTER FREE)
+// ============================================================
+var AI_KEY_STORAGE = 'smm_ai_key';
+var AI_PROV_STORAGE = 'smm_ai_provider';
+var ROLLBACK_STORAGE = 'smm_rollbacks';
+var _aiHistory = [];
+var _pendingCode = null;
+var _aiThinking = false;
+var _aiProvider = 'gemini'; // default
+
+var AI_PROVIDERS = {
+  groq: {
+    name: 'Groq (Llama 3)',
+    model: 'llama-3.1-8b-instant',
+    url: 'https://api.groq.com/openai/v1/chat/completions',
+    keyLink: 'https://console.groq.com/keys',
+    keyHint: '100% GRATIS. Ve a console.groq.com > Sign Up con Google > API Keys > Create key. La key empieza con gsk_',
+    keyPrefix: 'gsk_'
+  },
+  gemini: {
+    name: 'Google Gemini',
+    model: 'gemini-1.5-pro',
+    url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent',
+    keyLink: 'https://aistudio.google.com/app/apikey',
+    keyHint: 'Gratis en aistudio.google.com > Get API Key > Create API Key. Sin tarjeta de credito.',
+    keyPrefix: 'AIza'
+  },
+  openrouter: {
+    name: 'OpenRouter',
+    model: 'meta-llama/llama-3.3-70b-instruct:free',
+    url: 'https://openrouter.ai/api/v1/chat/completions',
+    keyLink: 'https://openrouter.ai/keys',
+    keyHint: 'Gratis en openrouter.ai > Sign Up > Keys > Create Key.',
+    keyPrefix: 'sk-or-'
+  }
+};
+
+function selectAiProvider(prov) {
+  _aiProvider = prov;
+  localStorage.setItem(AI_PROV_STORAGE, prov);
+  var cfg = AI_PROVIDERS[prov];
+  document.getElementById('aiKeyHelp').textContent = cfg.keyHint;
+  document.getElementById('aiGetKeyLink').href = cfg.keyLink;
+  document.getElementById('aiApiKey').placeholder = 'Pega tu API Key de ' + cfg.name + ' aqui...';
+  // Update UI picker highlight
+  var ids = ['provGroq','provGemini','provOpenRouter'];
+  var provKeys = ['groq','gemini','openrouter'];
+  var activeColors = {groq:'var(--accent3)',gemini:'#4285f4',openrouter:'#a855f7'};
+  var activeBgs = {groq:'rgba(16,185,129,0.1)',gemini:'rgba(66,133,244,0.1)',openrouter:'rgba(168,85,247,0.1)'};
+  for(var i=0;i<ids.length;i++){
+    var el=document.getElementById(ids[i]);
+    if(!el) continue;
+    if(provKeys[i]===prov){
+      el.style.borderColor=activeColors[prov];
+      el.style.background=activeBgs[prov];
+    } else {
+      el.style.borderColor='var(--border)';
+      el.style.background='var(--bg)';
+    }
+  }
+  // Reset status
+  document.getElementById('aiConnectionStatus').innerHTML='';
+  // Load saved key for this provider
+  var savedKey=localStorage.getItem(AI_KEY_STORAGE+'_'+prov)||'';
+  if(savedKey) document.getElementById('aiApiKey').value=savedKey;
+  else document.getElementById('aiApiKey').value='';
+}
+
+function saveAiKey(){
+  var k = document.getElementById('aiApiKey').value.trim();
+  if(k) localStorage.setItem(AI_KEY_STORAGE + '_' + _aiProvider, k);
+}
+
+function loadAiKey(){
+  var k = localStorage.getItem(AI_KEY_STORAGE + '_' + _aiProvider) || '';
+  var inp = document.getElementById('aiApiKey');
+  if(inp) inp.value = k;
+  return k;
+}
+
+function toggleAiKey(){
+  var inp = document.getElementById('aiApiKey');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function testAiConnection(){
+  var key = document.getElementById('aiApiKey').value.trim();
+  if(!key){ saveAiKey(); key = loadAiKey(); }
+  var status = document.getElementById('aiConnectionStatus');
+  if(!key){ status.innerHTML='<span style="color:#f87171">Ingresa tu API Key primero.</span>'; return; }
+  saveAiKey();
+  status.innerHTML = '<span style="color:var(--muted)">Probando conexion con ' + AI_PROVIDERS[_aiProvider].name + '...</span>';
+  callAiApi(key, 'Responde solo con la palabra: CONECTADO', function(resp){
+    if(resp){ status.innerHTML = '<span style="color:var(--accent3)">&#x2705; Conexion exitosa con ' + AI_PROVIDERS[_aiProvider].name + '. Lista para usarse.</span>'; }
+    else { status.innerHTML = '<span style="color:#f87171">&#x26A0;&#xFE0F; Error de conexion. Verifica que la API Key sea correcta.</span>'; }
+  }, function(err){ status.innerHTML = '<span style="color:#f87171">Error: ' + err + '</span>'; });
+}
+
+// ---- Core API caller (supports Gemini + OpenRouter) ----
+function callAiApi(key, prompt, onSuccess, onError) {
+  var prov = AI_PROVIDERS[_aiProvider];
+  var url, body, headers;
+
+  if(_aiProvider === 'gemini'){
+    url = prov.url + '?key=' + encodeURIComponent(key);
+    headers = {'Content-Type':'application/json'};
+    var parts = [{text: prompt}];
+    body = JSON.stringify({contents:[{role:'user', parts:parts}], generationConfig:{maxOutputTokens:8000}});
+  } else {
+    // Groq and OpenRouter both use OpenAI-compatible format
+    url = prov.url;
+    headers = {'Content-Type':'application/json','Authorization':'Bearer '+key};
+    if(_aiProvider === 'openrouter'){
+      headers['HTTP-Referer'] = 'https://smm.local';
+      headers['X-Title'] = 'SMMBoost Admin';
+    }
+    body = JSON.stringify({model:prov.model, max_tokens:4000, messages:[{role:'user',content:prompt}]});
+  }
+
+  fetch(url, {method:'POST', headers:headers, body:body})
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var text = '';
+      if(_aiProvider === 'gemini'){
+        if(data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts){
+          text = data.candidates[0].content.parts[0].text || '';
+        } else if(data.error){
+          var errMsg = data.error.message || 'Error de Gemini';
+          // If model not found, try fallback model
+          if(errMsg.indexOf('not found') >= 0 || errMsg.indexOf('not supported') >= 0){
+            errMsg = 'Modelo no disponible. Intentando con gemini-1.5-flash-latest...';
+            onError(errMsg);
+            // Auto-retry with fallback model
+            var fallbackUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=' + encodeURIComponent(key);
+            fetch(fallbackUrl, {method:'POST', headers:headers, body:body})
+              .then(function(r2){ return r2.json(); })
+              .then(function(d2){
+                if(d2.candidates && d2.candidates[0] && d2.candidates[0].content && d2.candidates[0].content.parts){
+                  onSuccess(d2.candidates[0].content.parts[0].text || '');
+                } else {
+                  onError((d2.error && d2.error.message) || 'Ambos modelos fallaron. Revisa tu cuota en aistudio.google.com');
+                }
+              })
+              .catch(function(e2){ onError('Error red: ' + e2.message); });
+            return;
+          }
+          onError(errMsg); return;
+        }
+      } else {
+        // Groq and OpenRouter both return OpenAI format
+        if(data.choices && data.choices[0]){ text = data.choices[0].message && data.choices[0].message.content || ''; }
+        else if(data.error){ onError(data.error.message||'Error: ' + JSON.stringify(data.error)); return; }
+        else { onError('Respuesta inesperada del servidor'); return; }
+      }
+      onSuccess(text);
+    })
+    .catch(function(e){ onError(e.message); });
+}
+
+// ---- Markdown renderer ----
+function simpleMarkdown(text){
+  var s = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  var result = '', i = 0;
+  while(i < s.length){
+    var cb = s.indexOf('```', i);
+    if(cb === -1){ result += s.slice(i); break; }
+    result += s.slice(i, cb);
+    var end = s.indexOf('```', cb+3);
+    if(end === -1){ result += s.slice(cb); break; }
+    var code = s.slice(cb+3, end).replace(/^[a-z]*/,'').replace(/^\n/,'');
+    result += '<pre>' + code + '</pre>';
+    i = end + 3;
+  }
+  result = result.replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  var parts = result.split('\n');
+  return parts.join('<br>');
+}
+
+// ---- Chat UI ----
+function addAiMsg(role, text){
+  var msgs = document.getElementById('aiMessages');
+  var div = document.createElement('div');
+  div.className = 'ai-msg ' + role;
+  if(role === 'assistant'){ div.innerHTML = simpleMarkdown(text); }
+  else { div.textContent = text; }
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+function removeThinking(){ var el=document.getElementById('aiThinkingMsg'); if(el)el.remove(); }
+
+// ---- Source getter ----
+function getFullSource(){
+  var full = document.documentElement.outerHTML;
+  // Keep only first 25KB to stay within token limits
+  if(full.length > 25000) return full.slice(0, 25000) + '\n<!-- HTML truncado -->';
+  return full;
+}
+
+// ---- Rollback system ----
+function getRollbacks(){ try{return JSON.parse(localStorage.getItem(ROLLBACK_STORAGE)||'[]');}catch(e){return[];} }
+
+function saveRollback(desc, htmlSnapshot){
+  var list = getRollbacks();
+  list.unshift({id:'rb_'+Date.now(), desc:desc, date:new Date().toLocaleString('es'), snapshot:htmlSnapshot});
+  if(list.length > 5) list = list.slice(0,5);
+  try{ localStorage.setItem(ROLLBACK_STORAGE, JSON.stringify(list)); }
+  catch(e){ list=[list[0]]; try{localStorage.setItem(ROLLBACK_STORAGE,JSON.stringify(list));}catch(e2){} }
+}
+
+function renderRollbackList(){
+  var list = getRollbacks();
+  var el = document.getElementById('rollbackList');
+  if(!el) return;
+  if(list.length===0){ el.innerHTML='<p style="color:var(--muted);font-size:13px">Sin versiones guardadas aun.</p>'; return; }
+  el.innerHTML='';
+  list.forEach(function(rb){
+    var wrap=document.createElement('div'); wrap.className='rollback-item';
+    var info=document.createElement('div'); info.className='ri-info';
+    info.innerHTML='<div class="ri-desc">'+escHtml(rb.desc)+'</div><div class="ri-date">'+rb.date+'</div>';
+    var btnR=document.createElement('button'); btnR.className='btn btn-sm';
+    btnR.style.cssText='background:rgba(234,179,8,0.15);color:#facc15;border:1px solid rgba(234,179,8,0.2)';
+    btnR.innerHTML='&#x21A9; Restaurar';
+    (function(id){btnR.onclick=function(){doRollback(id);};})(rb.id);
+    var btnD=document.createElement('button'); btnD.className='btn btn-danger btn-sm'; btnD.innerHTML='&#x1F5D1;';
+    (function(id){btnD.onclick=function(){deleteRollback(id);};})(rb.id);
+    wrap.appendChild(info); wrap.appendChild(btnR); wrap.appendChild(btnD);
+    el.appendChild(wrap);
+  });
+}
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function doRollback(rbId){
+  if(!confirm('Restaurar esta version? Se perderan los cambios no guardados.')) return;
+  var list=getRollbacks(), rb=null;
+  for(var i=0;i<list.length;i++) if(list[i].id===rbId){rb=list[i];break;}
+  if(!rb){showToast('Version no encontrada');return;}
+  var blob=new Blob([rb.snapshot],{type:'text/html'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='smm-store-restaurado.html'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Archivo restaurado descargado. Reemplaza tu smm-store.html con este.');
+}
+
+function deleteRollback(rbId){
+  var list=getRollbacks().filter(function(r){return r.id!==rbId;});
+  localStorage.setItem(ROLLBACK_STORAGE,JSON.stringify(list));
+  renderRollbackList();
+}
+
+// ---- Pending changes ----
+function showPendingChanges(newHtml, summary){
+  _pendingCode = newHtml;
+  document.getElementById('pendingChangesBar').style.display='flex';
+  document.getElementById('pendingChangesText').textContent = summary||'La IA propone cambios.';
+  var diffEl=document.getElementById('aiDiffPreview');
+  diffEl.style.display='block';
+  var oldLines=getFullSource().split('\n');
+  var newLines=newHtml.split('\n');
+  var diffLines=[], checked=0;
+  for(var i=0;i<Math.max(oldLines.length,newLines.length)&&checked<30;i++){
+    var ol=oldLines[i]||'', nl=newLines[i]||'';
+    if(ol!==nl){
+      if(ol) diffLines.push('<span style="color:#f87171;display:block">- '+escHtml(ol.trim())+'</span>');
+      if(nl) diffLines.push('<span style="color:#34d399;display:block">+ '+escHtml(nl.trim())+'</span>');
+      checked++;
+    }
+  }
+  diffEl.innerHTML = diffLines.length>0 ? diffLines.join('') : '<span style="color:var(--muted)">Cambios aplicados en el documento.</span>';
+}
+
+function applyAiChanges(){
+  if(!_pendingCode){showToast('Sin cambios pendientes');return;}
+  var desc = _aiHistory.length>0 ? _aiHistory[_aiHistory.length-1].content.slice(0,80) : 'Cambio IA';
+  saveRollback(desc, getFullSource());
+  var blob=new Blob([_pendingCode],{type:'text/html'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download='smm-store.html'; a.click();
+  URL.revokeObjectURL(url);
+  _pendingCode=null;
+  document.getElementById('pendingChangesBar').style.display='none';
+  document.getElementById('aiDiffPreview').style.display='none';
+  renderRollbackList();
+  addAiMsg('system','&#x2705; Archivo descargado. Reemplaza smm-store.html con el archivo descargado.');
+  showToast('Archivo con cambios descargado!');
+}
+
+function discardAiChanges(){
+  _pendingCode=null;
+  document.getElementById('pendingChangesBar').style.display='none';
+  document.getElementById('aiDiffPreview').style.display='none';
+  addAiMsg('system','&#x274C; Cambios descartados.');
+}
+
+// ---- Main AI send ----
+function sendAiMessage(){
+  if(_aiThinking) return;
+  var input=document.getElementById('aiInput');
+  var text=input.value.trim();
+  if(!text) return;
+  var key=document.getElementById('aiApiKey').value.trim();
+  if(!key){ addAiMsg('error','Ingresa tu API Key primero.'); return; }
+  saveAiKey();
+  input.value='';
+  addAiMsg('user', text);
+  _aiHistory.push({role:'user', content:text});
+  _aiThinking=true;
+  var btn=document.getElementById('aiSendBtn');
+  btn.disabled=true; btn.textContent='Pensando...';
+  var thinkEl=addAiMsg('thinking','&#x1F4AD; Analizando el codigo...');
+  thinkEl.id='aiThinkingMsg';
+
+  var src = getFullSource().slice(0, 120000);
+  var sysPrompt = [
+    'Eres un experto en desarrollo web (HTML/CSS/JS).',
+    'Tu tarea: aplicar cambios especificos en un archivo HTML de una tienda SMM.',
+    'REGLAS IMPORTANTES:',
+    '1. El usuario te describira que cambiar. Tu propones el codigo del cambio.',
+    '2. NO devuelvas el archivo completo. Solo devuelve el FRAGMENTO de codigo que cambia.',
+    '3. Indica claramente QUE texto/codigo reemplaza a CUAL texto/codigo existente.',
+    '4. No uses template literals (backticks). Usa concatenacion con +.',
+    '5. Responde en espanol.',
+    '6. Si el cambio es de texto/color/estilo, solo muestra esa parte especifica.',
+    '7. Si el cambio es mas complejo, muestra solo la funcion o seccion afectada.',
+    '',
+    'FORMATO DE RESPUESTA:',
+    'CAMBIOS: [descripcion breve de lo que haces]',
+    '',
+    'BUSCA ESTE TEXTO EN EL ARCHIVO:',
+    '```',
+    '[fragmento original]',
+    '```',
+    '',
+    'REEMPLAZALO CON:',
+    '```',
+    '[fragmento nuevo]',
+    '```',
+    '',
+    'NOTA: Si hay multiples cambios, usa este formato para cada uno.',
+    'Si el usuario pide algo que requiere el archivo completo, indicalo y explica como hacerlo manualmente.'
+  ].join('\n');
+
+  // Add last 2 exchanges as context
+  var ctx = '';
+  if(_aiHistory.length > 0){
+    var recent = _aiHistory.slice(-4);
+    for(var hi=0;hi<recent.length;hi++) ctx += (recent[hi].role==='user'?'Usuario':'Asistente')+': '+recent[hi].content+'\n';
+  }
+  var fullPrompt = sysPrompt + '\n\n' + (ctx?'CONVERSACION PREVIA:\n'+ctx+'\n':'') + 'NUEVA INSTRUCCION DEL ADMINISTRADOR: ' + text;
+
+  callAiApi(key, fullPrompt,
+    function(resp){
+      removeThinking();
+      _aiThinking=false;
+      btn.disabled=false; btn.textContent='Enviar';
+      if(!resp){ addAiMsg('error','Respuesta vacia de la IA.'); return; }
+      _aiHistory.push({role:'assistant', content:resp.slice(0,200)});
+      var startM='===INICIO_HTML===', endM='===FIN_HTML===';
+      var si=resp.indexOf(startM), ei=resp.indexOf(endM);
+      if(si>=0 && ei>si){
+        var summary=resp.slice(0,si).trim();
+        var newHtml=resp.slice(si+startM.length,ei).trim();
+        if(summary) addAiMsg('assistant', summary);
+        showPendingChanges(newHtml, summary.slice(0,100));
+        addAiMsg('system','&#x270F;&#xFE0F; Cambios listos. Revisa el diff y presiona "Aplicar y descargar".');
+      } else {
+        addAiMsg('assistant', resp);
+      }
+    },
+    function(err){
+      removeThinking();
+      _aiThinking=false;
+      btn.disabled=false; btn.textContent='Enviar';
+      addAiMsg('error','Error: '+err+'. Verifica tu API Key.');
+    }
+  );
+}
+
+// ---- Init AI tab ----
+function initAiTab(){
+  var savedProv = localStorage.getItem(AI_PROV_STORAGE) || 'groq';
+  selectAiProvider(savedProv);
+  // Load key for current provider
+  var k = localStorage.getItem(AI_KEY_STORAGE+'_'+savedProv) || localStorage.getItem(AI_KEY_STORAGE) || '';
+  if(k){ document.getElementById('aiApiKey').value = k; }
+  renderRollbackList();
+}
+
 // ============================================================
 // TOAST
 // ============================================================
-function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2800);}
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2800);
+}
 
 // ============================================================
 // INIT
 // ============================================================
 updateHeader();
 initEmailJS();
-if(state.isAdmin){
-  document.getElementById('authGate').style.display='none';
-  showView('admin');
-} else if(state.currentUser){
-  document.getElementById('authGate').style.display='none';
-  updateHeader();renderStore();checkPromo();updatePendingBadge();
-} else {
-  var asn=document.getElementById('authSiteName');
-  if(asn)asn.textContent=state.config.name||'SMMBoost Pro';
-  document.getElementById('authGate').style.display='flex';
-}
+// ============================================================
+// INIT — Entry point of the entire app
+// ============================================================
+(function(){
+  var adminActive = state.isAdmin || (localStorage.getItem(ADMIN_SK) === '1');
+
+  // STEP 1: Maintenance wall check — ABSOLUTE PRIORITY
+  // Read fresh from localStorage (not state which resets on load)
+  var maintActive = false;
+  try{
+    var _ms = JSON.parse(localStorage.getItem(MAINT_KEY)||'null');
+    maintActive = !!(_ms && _ms.active === true);
+  }catch(e){}
+
+  if(maintActive && !adminActive){
+    // Non-admin: show the wall IMMEDIATELY, load nothing else
+    showMaintenanceWall();
+    return;
+  }
+
+  if(maintActive && adminActive){
+    // Admin during maintenance: show banner, proceed normally
+    showMaintBannerForAdmin();
+  }
+
+  // STEP 2: Normal routing
+  if(adminActive){
+    document.getElementById('authGate').style.display='none';
+    showView('admin');
+    return;
+  }
+
+  if(state.currentUser){
+    // Returning logged-in user
+    document.getElementById('authGate').style.display='none';
+    updateHeader();
+    renderStore();
+    updatePendingBadge();
+    setTimeout(checkPromo, 1200);
+    return;
+  }
+
+  // STEP 3: No session — show auth gate (login/register screen)
+  var asn = document.getElementById('authSiteName');
+  if(asn) asn.textContent = state.config.name || 'SMMBoost Pro';
+  document.getElementById('authGate').style.display = 'flex';
+  // Default to LOGIN tab for returning users
+  switchAuthTab('log');
+})();
 </script>
 </body>
 </html>
