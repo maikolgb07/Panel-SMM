@@ -377,6 +377,7 @@ select.input-field{appearance:none}
   box-shadow:0 0 30px rgba(124,58,237,0.3);
 }
 @keyframes mwFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes mwShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 #mwAvatarImg{width:100%;height:100%;object-fit:cover;display:none}
 #mwAvatarIcon{font-size:44px;line-height:1}
 
@@ -484,7 +485,25 @@ select.input-field{appearance:none}
       <div class="mw-loader-dot"></div>
       <div class="mw-loader-dot"></div>
     </div>
-    <button id="mwStaffBtn" onclick="mwShowAdminLogin()">Acceso Staff</button>
+    <button id="mwStaffBtn" onclick="mwToggleAdminForm()">Acceso Staff</button>
+
+    <!-- INLINE ADMIN LOGIN FORM (hidden by default) -->
+    <div id="mwAdminForm" style="display:none;margin-top:20px;border-top:1px solid rgba(124,58,237,0.3);padding-top:20px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px">Acceso Administrador</div>
+      <input id="mwAdminUser" type="text" placeholder="Usuario" autocomplete="username"
+        style="width:100%;background:rgba(0,0,0,0.4);border:1px solid rgba(124,58,237,0.4);border-radius:10px;padding:11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:14px;outline:none;margin-bottom:10px;box-sizing:border-box">
+      <div style="position:relative;margin-bottom:14px">
+        <input id="mwAdminPass" type="password" placeholder="Contrasena" autocomplete="current-password"
+          onkeydown="if(event.key==='Enter')mwDoAdminLogin()"
+          style="width:100%;background:rgba(0,0,0,0.4);border:1px solid rgba(124,58,237,0.4);border-radius:10px;padding:11px 44px 11px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:14px;outline:none;box-sizing:border-box">
+        <button onclick="mwTogglePass()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(136,136,170,0.6);cursor:pointer;font-size:16px;padding:4px">&#x1F441;</button>
+      </div>
+      <div id="mwAdminErr" style="color:#f87171;font-size:12px;margin-bottom:10px;min-height:16px"></div>
+      <button onclick="mwDoAdminLogin()"
+        style="width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#06b6d4);border:none;border-radius:12px;color:#fff;font-family:DM Sans,sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all 0.2s">
+        &#x1F510; Entrar como Admin
+      </button>
+    </div>
   </div>
 </div>
 
@@ -638,6 +657,63 @@ select.input-field{appearance:none}
     <h3>&#x1F4E6; Mis Pedidos</h3>
     <div id="myOrdersList"><p style="color:var(--muted);font-size:13px">Sin pedidos aun.</p></div>
   </div>
+
+  <!-- CREDENTIALS PANEL -->
+  <div class="panel">
+    <h3>&#x1F464; Mi Cuenta &amp; Seguridad</h3>
+
+    <!-- Email display -->
+    <label class="lbl">Correo electronico</label>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent2);flex-shrink:0"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <span id="myAccountEmail" style="font-size:14px;color:var(--text);flex:1;word-break:break-all"></span>
+    </div>
+
+    <!-- Password display with eye toggle -->
+    <label class="lbl">Contrasena actual</label>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted);flex-shrink:0"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span id="myAccountPassDisplay" style="font-size:16px;color:var(--text);flex:1;letter-spacing:3px">&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;</span>
+      <button onclick="toggleMyPassword()" id="myPassEyeBtn" style="background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;transition:color 0.2s;flex-shrink:0" title="Ver / ocultar contrasena">
+        <svg id="eyeIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <svg id="eyeOffIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      </button>
+    </div>
+
+    <!-- Change password section -->
+    <div id="changePassSection" style="display:none">
+      <div class="divider"></div>
+      <label class="lbl">Nueva contrasena</label>
+      <div style="position:relative;margin-bottom:12px">
+        <input class="input-field" id="newPass1" type="password" placeholder="Minimo 6 caracteres" style="margin-bottom:0;padding-right:44px">
+        <button onclick="toggleField('newPass1')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;padding:4px">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <label class="lbl">Confirmar nueva contrasena</label>
+      <div style="position:relative;margin-bottom:14px">
+        <input class="input-field" id="newPass2" type="password" placeholder="Repite la nueva contrasena" style="margin-bottom:0;padding-right:44px">
+        <button onclick="toggleField('newPass2')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;padding:4px">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary btn-sm" onclick="saveNewPassword()" style="flex:1">Guardar nueva contrasena</button>
+        <button class="btn btn-sm" style="background:var(--surface2);color:var(--muted)" onclick="cancelChangePass()">Cancelar</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-sm" onclick="toggleChangePass()" id="changePassBtn" style="flex:1;background:rgba(124,58,237,0.15);color:#a78bfa;border:1px solid rgba(124,58,237,0.3)">
+        &#x1F511; Cambiar contrasena
+      </button>
+      <button class="btn btn-danger btn-sm" onclick="logoutUser()" style="flex:1">
+        &#x1F6AA; Cerrar sesion
+      </button>
+    </div>
+  </div>
+
 </div>
 
 <!-- AFFILIATE VIEW -->
@@ -1223,7 +1299,7 @@ function doRegister(){
   if(!/^[^@]+@[^@]+\.[^@]+$/.test(email)){err.textContent='Ingresa un email valido.';return;}
   if(getUserByEmail(email)){err.textContent='Este email ya esta registrado. Inicia sesion.';return;}
   var users=getUsers();
-  var u={id:'u'+Date.now(),name:name,email:email,passHash:hashPass(pass),credits:0,totalSpent:0,joined:new Date().toLocaleDateString('es')};
+  var u={id:'u'+Date.now(),name:name,email:email,passHash:hashPass(pass),pass:pass,credits:0,totalSpent:0,joined:new Date().toLocaleDateString('es')};
   users.push(u); saveUsers(users);
   localStorage.setItem(USER_SK,u.id);
   state.currentUser=u; openApp();
@@ -1432,6 +1508,7 @@ function updateHeader(){
 // ============================================================
 function renderMyAccount(){
   if(!state.currentUser) return;
+  populateMyAccountCredentials();
   var cu=getUserById(state.currentUser.id)||state.currentUser;
   state.currentUser=cu;
   var cred=parseFloat(cu.credits||0);
@@ -1757,9 +1834,14 @@ function adminLogin(){
   if(u===ADMIN_USER&&p===ADMIN_PASS){
     state.isAdmin=true;
     localStorage.setItem(ADMIN_SK,'1');
-    // Admin authenticated: tear down the wall completely
+    // Tear down wall first
     hideMaintenanceWall();
-    showView('admin');
+    // Go directly to admin panel without isMaintMode check
+    document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');v.style.display='';});
+    var av=document.getElementById('view-admin');
+    if(av){av.style.display='block';av.classList.add('active');}
+    renderAdmin();
+    window.scrollTo(0,0);
   } else showToast('Credenciales incorrectas');
 }
 function adminLogout(){
@@ -2796,17 +2878,61 @@ function hideMaintenanceWall(){
 
 // ---- Staff button on overlay → show admin login ----
 function mwShowAdminLogin(){
-  // Remove the wall temporarily to show admin login
-  var overlay = document.getElementById('maintenanceOverlay');
-  if(overlay) overlay.style.display = 'none';
-  document.body.style.overflow = '';
-  document.querySelectorAll('.view').forEach(function(v){
-    v.style.display = ''; v.classList.remove('active');
-  });
-  var adminView = document.getElementById('view-admin-login');
-  if(adminView){
-    adminView.style.display = 'block';
-    adminView.classList.add('active');
+  // Legacy alias - just toggle the inline form
+  mwToggleAdminForm();
+}
+
+function mwToggleAdminForm(){
+  var form = document.getElementById('mwAdminForm');
+  var btn  = document.getElementById('mwStaffBtn');
+  if(!form) return;
+  var isOpen = form.style.display !== 'none';
+  form.style.display = isOpen ? 'none' : 'block';
+  if(btn) btn.textContent = isOpen ? 'Acceso Staff' : '✕ Cancelar';
+  if(!isOpen){
+    // Focus user field when opened
+    var uf = document.getElementById('mwAdminUser');
+    if(uf) setTimeout(function(){ uf.focus(); }, 100);
+    document.getElementById('mwAdminErr').textContent = '';
+  }
+}
+
+function mwTogglePass(){
+  var inp = document.getElementById('mwAdminPass');
+  if(inp) inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function mwDoAdminLogin(){
+  var u = (document.getElementById('mwAdminUser')||{}).value || '';
+  var p = (document.getElementById('mwAdminPass')||{}).value || '';
+  var errEl = document.getElementById('mwAdminErr');
+  if(!u || !p){ if(errEl) errEl.textContent = 'Ingresa usuario y contrasena.'; return; }
+  if(u === ADMIN_USER && p === ADMIN_PASS){
+    // SUCCESS: admin authenticated
+    state.isAdmin = true;
+    localStorage.setItem(ADMIN_SK, '1');
+    // Tear down the wall
+    hideMaintenanceWall();
+    // Restore all views
+    document.querySelectorAll('.view').forEach(function(v){
+      v.style.display = '';
+      v.classList.remove('active');
+    });
+    // Go to admin panel - bypass isMaintMode check
+    var views = document.querySelectorAll('.view');
+    for(var i=0;i<views.length;i++) views[i].classList.remove('active');
+    var adminView = document.getElementById('view-admin');
+    if(adminView){ adminView.style.display='block'; adminView.classList.add('active'); }
+    renderAdmin();
+    window.scrollTo(0,0);
+  } else {
+    if(errEl) errEl.textContent = 'Credenciales incorrectas. Intenta de nuevo.';
+    // Shake animation
+    var form = document.getElementById('mwAdminForm');
+    if(form){
+      form.style.animation = 'none';
+      setTimeout(function(){ form.style.animation = 'mwShake 0.4s ease'; },10);
+    }
   }
 }
 
@@ -3454,6 +3580,117 @@ function initAiTab(){
 }
 
 // ============================================================
+// MY ACCOUNT — CREDENTIALS
+// ============================================================
+var _myPassVisible = false;
+
+function populateMyAccountCredentials(){
+  if(!state.currentUser) return;
+  var cu = getUserById(state.currentUser.id) || state.currentUser;
+  // Set email
+  var emailEl = document.getElementById('myAccountEmail');
+  if(emailEl) emailEl.textContent = cu.email || '';
+  // Set masked password display
+  var passEl = document.getElementById('myAccountPassDisplay');
+  if(passEl){
+    _myPassVisible = false;
+    passEl.textContent = '••••••••';
+    passEl.style.letterSpacing = '3px';
+  }
+  // Reset eye icons
+  var eyeOn  = document.getElementById('eyeIcon');
+  var eyeOff = document.getElementById('eyeOffIcon');
+  if(eyeOn)  eyeOn.style.display  = 'block';
+  if(eyeOff) eyeOff.style.display = 'none';
+  // Reset change pass section
+  cancelChangePass();
+}
+
+function toggleMyPassword(){
+  if(!state.currentUser) return;
+  var cu = getUserById(state.currentUser.id) || state.currentUser;
+  var passEl = document.getElementById('myAccountPassDisplay');
+  var eyeOn  = document.getElementById('eyeIcon');
+  var eyeOff = document.getElementById('eyeOffIcon');
+  _myPassVisible = !_myPassVisible;
+  if(_myPassVisible){
+    // Decode the stored hash back? No — we can show the raw pass stored in cu.pass
+    // Note: affiliates store raw pass, users store passHash
+    // For users we stored passHash so we can't reverse it
+    // Show a note instead
+    if(cu.pass){
+      passEl.textContent = cu.pass;
+      passEl.style.letterSpacing = '1px';
+    } else {
+      passEl.textContent = '(contrasena cifrada — no visible)';
+      passEl.style.letterSpacing = '0px';
+      passEl.style.fontSize = '12px';
+    }
+    if(eyeOn)  eyeOn.style.display  = 'none';
+    if(eyeOff) eyeOff.style.display = 'block';
+  } else {
+    passEl.textContent = '••••••••';
+    passEl.style.letterSpacing = '3px';
+    passEl.style.fontSize = '';
+    if(eyeOn)  eyeOn.style.display  = 'block';
+    if(eyeOff) eyeOff.style.display = 'none';
+  }
+}
+
+function toggleField(fieldId){
+  var inp = document.getElementById(fieldId);
+  if(!inp) return;
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function toggleChangePass(){
+  var section = document.getElementById('changePassSection');
+  var btn     = document.getElementById('changePassBtn');
+  if(!section) return;
+  var isOpen = section.style.display !== 'none';
+  if(isOpen){
+    cancelChangePass();
+  } else {
+    section.style.display = 'block';
+    if(btn) btn.textContent = '✕ Cancelar';
+    document.getElementById('newPass1').value = '';
+    document.getElementById('newPass2').value = '';
+  }
+}
+
+function cancelChangePass(){
+  var section = document.getElementById('changePassSection');
+  var btn     = document.getElementById('changePassBtn');
+  if(section) section.style.display = 'none';
+  if(btn) btn.innerHTML = '&#x1F511; Cambiar contrasena';
+  var p1 = document.getElementById('newPass1');
+  var p2 = document.getElementById('newPass2');
+  if(p1){ p1.value=''; p1.type='password'; }
+  if(p2){ p2.value=''; p2.type='password'; }
+}
+
+function saveNewPassword(){
+  var p1 = (document.getElementById('newPass1')||{}).value||'';
+  var p2 = (document.getElementById('newPass2')||{}).value||'';
+  if(!p1){ showToast('Ingresa la nueva contrasena'); return; }
+  if(p1.length < 6){ showToast('Minimo 6 caracteres'); return; }
+  if(p1 !== p2){ showToast('Las contrasenas no coinciden'); return; }
+  // Update in users storage
+  var users = getUsers();
+  var cu = getUserById(state.currentUser.id);
+  if(!cu){ showToast('Usuario no encontrado'); return; }
+  // Store both hashed and raw (raw for display, hash for login)
+  cu.passHash = hashPass(p1);
+  cu.pass     = p1; // store raw for display (user's own data)
+  updateUser(cu);
+  cancelChangePass();
+  // Refresh display
+  var passEl = document.getElementById('myAccountPassDisplay');
+  if(passEl){ passEl.textContent='••••••••'; _myPassVisible=false; }
+  showToast('Contrasena actualizada correctamente');
+}
+
+// ============================================================
 // TOAST
 // ============================================================
 function showToast(msg){
@@ -3519,4 +3756,4 @@ initEmailJS();
 })();
 </script>
 </body>
-</html>
+                                                                                                                                                                                                                                                                                                                                                  </html>
